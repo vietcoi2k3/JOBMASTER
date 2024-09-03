@@ -20,8 +20,7 @@ import java.util.function.Function;
 public class JWTUntil {
     public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60 * 60 * 60 * 60;
 
-    @Value("${jwt.secret}")
-    private String secret;
+    public static final String SECRET = "ihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihiHIHIHIHHIIHh";
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
     }
@@ -33,7 +32,7 @@ public class JWTUntil {
         return claimsResolver.apply(claims);
     }
     private Claims getAllClaimsFromToken(String token) {
-        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+        return Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody();
     }
     private Boolean isTokenExpired(String token) {
         final Date expiration = getExpirationDateFromToken(token);
@@ -46,7 +45,7 @@ public class JWTUntil {
     private String doGenerateToken(Map<String, Object> claims, String subject) {
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
-                .signWith(SignatureAlgorithm.HS256, secret).compact();
+                .signWith(SignatureAlgorithm.HS256, SECRET).compact();
     }
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = getUsernameFromToken(token);
