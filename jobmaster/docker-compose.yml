@@ -16,7 +16,7 @@ services:
     ports:
       - "3307:3306"
     environment:
-      - MYSQL_DATABASE=iot_food_04
+      - MYSQL_DATABASE=jobmaster
       - MYSQL_ROOT_PASSWORD=Quocviet2003@
     volumes:
       - ./data:/docker-entrypoint-initdb.d
