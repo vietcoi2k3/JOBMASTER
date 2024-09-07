@@ -32,6 +32,11 @@ const AuthApi = {
     registerEnterprise:(data)=>{
       const url = "auth/register-enterprise"
       return axiosClient.post(url,data)
+    },
+
+    confirmToken:(token)=>{
+      const url ="auth/confirm"
+      return axiosClient.get(url+"?token="+token)
     }
 };
 

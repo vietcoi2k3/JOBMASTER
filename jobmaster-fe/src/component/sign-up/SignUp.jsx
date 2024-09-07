@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import logo from "../../assets/logo.png";
+import Province from "../../api/Province"
 import Checkbox from "@mui/material/Checkbox";
 import Button from "@mui/material/Button";
 import GoogleIcon from "@mui/icons-material/Google";
 import { Snackbar, Alert } from "@mui/material";
+import { useNavigate } from 'react-router-dom';
+import Notification from "../notification/Notification";
+import { CircularProgress } from '@mui/material'; // Import CircularProgress
 import {
   TextField,
   Radio,
@@ -12,10 +16,19 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-import { findByPlaceholderText } from "@testing-library/react";
 import AuthApi from "../../api/AuthApi";
 
 const SignUp = () => {
+
+  const navigate = useNavigate();
+  const handleCloseNotification = () => {
+    setNotification({
+      open: false,
+      message: '',
+    });
+  };
+  const [loading, setLoading] = useState(false);
+  const [notification, setNotification] = useState({ open: false, message: '' });
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -27,9 +40,22 @@ const SignUp = () => {
   });
   const [isAgree, setIsAgree] = useState(false);
   const [open, setOpen] = useState(false);
-  const label = { inputProps: { "aria-label": "Checkbox demo" } };
+  const [listCity,setListCity] = useState([])
+  const [listDistrict,setListDistrict] = useState([])
+  const [idCity,setIdCity] = useState("01")
+  const getProvince = () => {
+
+    return Province.getProvince().then(response => setListCity(response.results));
+  };
+  const getDistrict = () => {
+     Province.getDistrictByProvince(idCity).then(response => setListDistrict(response.results));
+     console.log(listDistrict)
+     
+  };
 
   const handleChange = (e) => {
+    console.log("")
+    console.log(e)
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -37,10 +63,12 @@ const SignUp = () => {
   };
 
   const handleLogin = () => {
-    const clientId = '421794227239-vvm5o77fkd4qsendqmr4movhv6kmqt3m.apps.googleusercontent.com';
-    const redirectUri = 'http://localhost:3000/callback';
-    const scope = 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email';
-    const responseType = 'code';
+    const clientId =
+      "421794227239-vvm5o77fkd4qsendqmr4movhv6kmqt3m.apps.googleusercontent.com";
+    const redirectUri = "http://localhost:3000/callback";
+    const scope =
+      "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email";
+    const responseType = "code";
     const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}&scope=${scope}`;
 
     window.location.href = authUrl;
@@ -48,31 +76,63 @@ const SignUp = () => {
   const [errors, setErrors] = useState({});
   const validate = () => {
     let tempErrors = {};
-    tempErrors.email = formData.email ? "" : "Email không được để trống!";
-    tempErrors.password = formData.password ? "" : "Mật khẩu không được để trống!";
-    tempErrors.confirmPassword = formData.confirmPassword === formData.password ? "" : "Mật khẩu không khớp!";
-    tempErrors.fullName = formData.fullName ? "" : "Họ và tên không được để trống!";
-    tempErrors.companyName = formData.companyName ? "" : "Tên công ty không được để trống!";
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    tempErrors.email =    emailPattern.test(formData.email) ? "" : "Email không hợp lệ!";
+    tempErrors.password = formData.password
+      ? ""
+      : "Mật khẩu không được để trống!";
+    tempErrors.fullName = formData.fullName
+      ? ""
+      : "Họ và tên không được để trống!";
+    tempErrors.companyName = formData.companyName
+      ? ""
+      : "Tên công ty không được để trống!";
     tempErrors.city = formData.city ? "" : "Vui lòng chọn tỉnh/thành phố!";
     tempErrors.district = formData.district ? "" : "Vui lòng chọn quận/huyện!";
     setErrors(tempErrors);
-    return Object.values(tempErrors).every(x => x === "");
+    return Object.values(tempErrors).every((x) => x === "");
   };
   const handleSubmit = async (e) => {
-    e.preventDefault();
     if (validate()) {
       if (!isAgree) {
         setOpen(true);
         return;
       }
 
-      await AuthApi.registerEnterprise(formData);
-      window.location.href = "http://localhost:3000/dashboard";
+      setLoading(true)
+     AuthApi.registerEnterprise(formData).then(()=>{
+      let email = formData.email
+      navigate('/verify-email', { state: { email } });
+     })
+     .catch((error)=>{
+        if(error.response.data==="Tài khoản đã tồn tại"){
+          setNotification({
+            open: true,
+            message: "Tài khoản đã tồn tại!",
+          });
+        }
+     }
+    ).
+    finally(() => {
+        setLoading(false)
+    });
     }
-  };
+  }
 
   return (
+    <div>
+    {loading?(<CircularProgress className="justify-center"/>):
     <div className="p-12">
+       
+       <div> 
+
+      <Notification
+        open={notification.open}
+        onClose={handleCloseNotification}
+        message={notification.message}
+      />
+    </div>
       <img src={logo} alt="" width={200} />
       <h2 className="text-primary font-black text-2xl">
         Đăng kí tài khoản nhà tuyển dụng
@@ -125,139 +185,164 @@ const SignUp = () => {
           <div className="flex-grow border-t border-gray-300"></div>
         </div>
         {/* <form className="w-full mx-auto p-6 bg-white rounded-lg shadow-md" onSubmit={handleSubmit}> */}
+        <TextField
+          fullWidth
+          label="Email đăng nhập"
+          variant="outlined"
+          sx={{
+            marginBottom: 4,
+            "& .MuiInputLabel-asterisk": {
+              color: "red",
+            },
+          }}
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          error={!!errors.email}
+          required
+          helperText={errors.email}
+        />
+        <TextField
+          fullWidth
+          label="Mật khẩu"
+          type="password"
+          variant="outlined"
+          sx={{
+            marginBottom: 4,
+            "& .MuiInputLabel-asterisk": {
+              color: "red",
+            },
+          }}
+          name="password"
+          value={formData.password}
+          onChange={handleChange}
+          error={!!errors.password}
+          helperText={errors.password}
+          required
+        />
+
+        <h3 className="text-lg font-semibold mb-4">Thông tin nhà tuyển dụng</h3>
+
+        <div className="flex gap-4 mb-4">
           <TextField
             fullWidth
-            label="Email đăng nhập"
+            label="Họ và tên"
             variant="outlined"
-            className="mb-4"
-            name="email"
-            value={formData.email}
+            name="fullName"
+            value={formData.fullName}
             onChange={handleChange}
-            error={!!errors.email}
-            helperText={errors.email}
-          />
-          <TextField
-            fullWidth
-            label="Mật khẩu"
-            type="password"
-            variant="outlined"
-            className="mb-4"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            error={!!errors.password}
-            helperText={errors.password}
+            error={!!errors.fullName}
+            helperText={errors.fullName}
+            sx={{
+              "& .MuiInputLabel-asterisk": {
+                color: "red",
+              },
+            }}
             required
           />
-          <TextField
-            fullWidth
-            label="Nhập lại mật khẩu"
-            type="password"
-            variant="outlined"
-            className="mb-6"
-            error={!!errors.confirmPassword}
-            helperText={errors.confirmPassword}
-            required
-          />
-
-          <h3 className="text-lg font-semibold mb-4">
-            Thông tin nhà tuyển dụng
-          </h3>
-
-          <div className="flex gap-4 mb-4">
-            <TextField
-              fullWidth
-              label="Họ và tên"
-              variant="outlined"
-              name="fullName"
-              value={formData.fullName}
-              onChange={handleChange}
-              error={!!errors.fullName}
-              helperText={errors.fullName}
-              required
-            />
-            <RadioGroup
-              row
-              name="gender"
-              value={formData.gender}
-              onChange={handleChange}
-            >
-              <FormControlLabel value="nam" control={<Radio />} label="Nam" />
-              <FormControlLabel value="nu" control={<Radio />} label="Nữ" />
-            </RadioGroup>
-          </div>
-
-          <TextField
-            fullWidth
-            label="Công ty"
-            variant="outlined"
-            className="mb-4"
-            name="companyName"
-            value={formData.companyName}
+          <RadioGroup
+            row
+            name="gender"
+            value={formData.gender}
             onChange={handleChange}
-            required
-            error={!!errors.companyName}
-            helperText={errors.companyName}
-          />
-
-          <div className="flex gap-4 mb-6">
-            <Select
-              fullWidth
-              displayEmpty
-              name="city"
-              value={formData.city}
-              error={!!errors.city}
-              onChange={handleChange}
-              renderValue={(selected) => selected || "Chọn tỉnh/thành phố"}
-            >
-              <MenuItem value="">Chọn tỉnh/thành phố</MenuItem>
-
-            </Select>
-            <Select
-              fullWidth
-              displayEmpty
-              name="district"
-              value={formData.district}
-              onChange={handleChange}
-              error={!!errors.district}
-              renderValue={(selected) => selected || "Chọn quận/huyện"}
-            >
-              <MenuItem value="">Chọn quận/huyện</MenuItem>
-
-            </Select>
-          </div>
-
-          <div>
-            <Checkbox
-              {...label}
-              checked={isAgree}
-              onClick={() => setIsAgree(!isAgree)}
-            />
-            <p className="inline">
-              Tôi đã đọc và đồng ý với{" "}
-              <span className="text-primary">Điều khoản dịch vụ </span>và{" "}
-              <span className="text-primary">Điều khoản dịch </span> của
-              JobMaster.
-            </p>
-          </div>
-          <Button
-            type="submit"
-            variant="contained"
-            fullWidth
-            className="bg-blue-500 hover:bg-blue-600 mb-4"
-            onClick={handleSubmit}
           >
-            Đăng ký
-          </Button>
+            <FormControlLabel value="nam" control={<Radio />} label="Nam" />
+            <FormControlLabel value="nu" control={<Radio />} label="Nữ" />
+          </RadioGroup>
+        </div>
 
-          <p className="text-center">
-            Đã có tài khoản?{" "}
-            <a href="#" className="text-blue-600 hover:underline">
-              Đăng nhập ngay
-            </a>
+        <TextField
+          fullWidth
+          label="Công ty"
+          variant="outlined"
+          sx={{
+            marginBottom: 4,
+            "& .MuiInputLabel-asterisk": {
+              color: "red",
+            },
+          }}
+          name="companyName"
+          value={formData.companyName}
+          onChange={handleChange}
+          required
+          error={!!errors.companyName}
+          helperText={errors.companyName}
+        />
+
+        <div className="flex gap-4 mb-6">
+        <Select
+      fullWidth
+      displayEmpty
+      name="city"
+      value={formData.city}
+      error={!!errors.city}
+      onChange={handleChange}
+      // onClick={getProvince} 
+      onOpen={getProvince}// Gọi API khi click vào Select
+      renderValue={(selected) => {
+        return selected || "Chọn tỉnh/thành phố"}
+      }
+    >
+      {listCity.map((e) => (
+        <MenuItem onClick={()=>setIdCity(e.province_id)} key={e.province_id} value={e.province_name}>
+          {e.province_name}
+        </MenuItem>
+      ))}
+    </Select>
+          <Select
+            fullWidth
+            displayEmpty
+            name="district"
+            value={formData.district}
+            onChange={handleChange}
+            onOpen={getDistrict}
+            error={!!errors.district}
+            renderValue={(selected) => {
+              return selected ||"Chọn quận/huyện"
+            }}
+          >
+            {
+              listDistrict.map((e)=>{
+              return  <MenuItem  key={e.district_id} value={e.district_name}>
+                {e.district_name}
+              </MenuItem>
+              })
+            }
+          </Select>
+        </div>
+
+        <div>
+          <Checkbox
+  
+            checked={isAgree}
+            onClick={() => setIsAgree(!isAgree)}
+          />
+          <p className="inline">
+            Tôi đã đọc và đồng ý với{" "}
+            <span className="text-primary">Điều khoản dịch vụ </span>và{" "}
+            <span className="text-primary">Điều khoản dịch </span> của
+            JobMaster.
           </p>
+        </div>
+        <Button
+          type="submit"
+          variant="contained"
+          fullWidth
+          className="bg-blue-500 hover:bg-blue-600 mb-4"
+          onClick={handleSubmit}
+        >
+          Đăng ký
+        </Button>
+
+        <p className="text-center">
+          Đã có tài khoản?{" "}
+          <a href="#" className="text-blue-600 hover:underline">
+            Đăng nhập ngay
+          </a>
+        </p>
         {/* </form> */}
       </div>
+    </div>}
     </div>
   );
 };
