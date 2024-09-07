@@ -2,6 +2,7 @@ package com.example.jobmaster.service;
 
 import com.example.jobmaster.dto.Request.RegisterRequest;
 import com.example.jobmaster.dto.TokenDTO;
+import jakarta.mail.MessagingException;
 import org.springframework.http.ResponseEntity;
 
 /**
@@ -15,6 +16,9 @@ public interface IUserService {
 
     ResponseEntity loginByGoogle(String token);
 
-    TokenDTO registerEnterprise(RegisterRequest registerRequest);
+    TokenDTO registerEnterprise(RegisterRequest registerRequest) throws MessagingException;
+
+    public String confirmToken(String token) ;
+
 
 }
