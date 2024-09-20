@@ -18,7 +18,7 @@ import java.util.function.Function;
 @Service
 @Slf4j
 public class JWTUntil {
-    public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60 * 60 * 60 * 60;
+    public static final long JWT_TOKEN_VALIDITY = 240 * 60 * 60 ;
 
     public static final String SECRET = "ihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihiHIHIHIHHIIHh";
     public String getUsernameFromToken(String token) {
@@ -43,6 +43,7 @@ public class JWTUntil {
         return doGenerateToken(claims, userDetails.getUsername());
     }
     private String doGenerateToken(Map<String, Object> claims, String subject) {
+        Date date = new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000);
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
                 .signWith(SignatureAlgorithm.HS256, SECRET).compact();

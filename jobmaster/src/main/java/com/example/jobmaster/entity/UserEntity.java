@@ -37,7 +37,7 @@ public class UserEntity implements UserDetails {
      * Tập hợp các vai trò của người dùng.
      * Được ánh xạ với bảng `user_roles` để xác định các vai trò mà người dùng sở hữu.
      */
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),

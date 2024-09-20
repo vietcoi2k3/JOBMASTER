@@ -1,5 +1,6 @@
 package com.example.jobmaster.service;
 
+import com.example.jobmaster.dto.Request.LoginRequest;
 import com.example.jobmaster.dto.Request.RegisterRequest;
 import com.example.jobmaster.dto.TokenDTO;
 import jakarta.mail.MessagingException;
@@ -19,6 +20,10 @@ public interface IUserService {
     TokenDTO registerEnterprise(RegisterRequest registerRequest) throws MessagingException;
 
     public String confirmToken(String token) ;
+
+    public String sendEmail(String email) throws MessagingException;
+
+    public TokenDTO login(LoginRequest loginRequest);
 
 
 }

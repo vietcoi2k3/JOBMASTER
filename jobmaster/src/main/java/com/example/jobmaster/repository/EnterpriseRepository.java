@@ -12,5 +12,6 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository
-public interface EnterpriseRepository extends JpaRepository<EnterpriseEntity,Integer> {
+public interface EnterpriseRepository extends JpaRepository<EnterpriseEntity,String> {
+    EnterpriseEntity findByUserId(String userId);
 }

@@ -1,6 +1,7 @@
 package com.example.jobmaster.service.impl;
 
 import com.example.jobmaster.dto.GoogleUserInfoDTO;
+import com.example.jobmaster.dto.Request.LoginRequest;
 import com.example.jobmaster.dto.Request.RegisterRequest;
 import com.example.jobmaster.dto.TokenDTO;
 import com.example.jobmaster.entity.*;
@@ -13,6 +14,7 @@ import com.example.jobmaster.service.IUserService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.transaction.Transactional;
+import org.apache.catalina.User;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -121,6 +123,7 @@ public class UserServiceImpl implements IUserService {
                 .companyName(registerRequest.getCompanyName())
                 .city(registerRequest.getCity())
                 .district(registerRequest.getDistrict())
+                .isActive(UserEnum.INACTIVE.name())
                 .userId(user.getId()) // Sử dụng ID của user sau khi đã lưu
                 .build();
 
@@ -130,17 +133,40 @@ public class UserServiceImpl implements IUserService {
         user.setEnterpriseId(enterpriseEntity.getId());
         user = userRepository.save(user);
 
-        // Tạo token xác thực
-        VerifyTokenEntity token = new VerifyTokenEntity(user);
-        tokenRepository.save(token);
+        this.sendEmail(user.getUsername());
 
+        return TokenDTO.builder()
+                .userId(user.getId())
+                .token(jwtUntil.generateToken(user))
+                .build();
+    }
+
+    @Override
+    public String sendEmail(String email) throws MessagingException {
+        UserEntity user = userRepository.findByUsername(email);
+        VerifyTokenEntity token = new VerifyTokenEntity(user);
         // Gửi email xác thực
         String recipientName = user.getFullName();
         String confirmationLink = baseUrl +"verify?token=" + token.getToken();
         String emailContent = buildEmailContent(recipientName, confirmationLink);
 
         this.sendEmail(user.getUsername(), "Xác thực email", emailContent);
+        return "success";
+    }
 
+    @Override
+    public TokenDTO login(LoginRequest loginRequest) {
+        UserEntity user = userRepository.findByUsername(loginRequest.getEmail());
+        if (user==null){
+            throw new RuntimeException("Tài khoản không tồn tại");
+        }
+        if (user.getIsActive().equals(UserEnum.WAITING_ACTIVE.name()  )){
+            System.out.println();
+            throw new RuntimeException("Tài khoản chưa xác thực");
+        }
+        if (!passwordEncoder.matches(loginRequest.getPassword(),user.getPassword())){
+                throw new RuntimeException("Mật khẩu không khớp");
+        }
         return TokenDTO.builder()
                 .userId(user.getId())
                 .token(jwtUntil.generateToken(user))
@@ -185,7 +211,7 @@ public class UserServiceImpl implements IUserService {
                 "  .email-container { background-color: #ffffff; padding: 20px; margin: 30px auto; width: 600px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }" +
                 "  h2 { color: #444444; }" +
                 "  p { font-size: 16px; line-height: 1.6; }" +
-                "  .button { display: inline-block; padding: 10px 20px; margin-top: 20px; background-color: #e63946; color: white; text-decoration: none; border-radius: 5px; font-size: 16px; }" +
+                "  .button { display: inline-block; padding: 15px 25px; margin-top: 20px; background-color: #e63946; color: white; text-decoration: none; border-radius: 5px; font-size: 16px; }" +
                 "</style>" +
                 "</head>" +
                 "<body>" +
