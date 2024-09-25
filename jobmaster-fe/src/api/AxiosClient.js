@@ -1,15 +1,16 @@
 import axios from "axios";
 import { STATIC_HOST_LOCAL } from "../enviroment";
+import { STATIC_HOST_PRODUCT } from "../enviroment";
 
 // Tạo một instance của axios với baseURL
 const axiosClient = axios.create({
-  baseURL: `${STATIC_HOST_LOCAL}`,
+  baseURL: `${STATIC_HOST_PRODUCT}`,
 })
 // Thêm một interceptor cho request
 axiosClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("access_token")
-    if (token && !config.url.includes("http")) {
+    if (token && !config.url.includes("https")) {
       config.headers["Authorization"] = `Bearer ${token}`
     }
 
