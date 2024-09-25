@@ -10,7 +10,9 @@ const axiosClient = axios.create({
 axiosClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("access_token")
+      console.log("bbbbbb: "+config.url)
     if (token && !config.url.includes("https")) {
+        console.log("aaaaaaa: "+config.url)
       config.headers["Authorization"] = `Bearer ${token}`
     }
 
