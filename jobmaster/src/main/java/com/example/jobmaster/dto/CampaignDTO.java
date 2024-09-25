@@ -18,4 +18,5 @@ public class CampaignDTO {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private String enterpriseId;
+    private String postId;
 }

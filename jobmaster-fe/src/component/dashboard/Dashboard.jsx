@@ -10,6 +10,8 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Avatar from "@mui/material/Avatar";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import HomeIcon from '@mui/icons-material/Home';
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
@@ -18,19 +20,21 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
 import logo from "../../assets/logo.png";
-import { Button } from "@mui/material";
+import {Button, Menu, MenuItem, Typography} from "@mui/material";
 import SettingsIcon from '@mui/icons-material/Settings';
+import WorkOutlinedIcon from '@mui/icons-material/WorkOutlined';
+import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 import { Outlet } from "react-router-dom";
-const drawerWidth = 240;
+import {useNavigate} from "react-router-dom";
+import DynamicFeedIcon from '@mui/icons-material/DynamicFeed';
 
+const drawerWidth = 240;
 const icons = [
-  InboxIcon,
-  MailIcon,
   SettingsIcon,
-  SettingsIcon
+  WorkOutlinedIcon,
+    LocalAtmIcon,
+  DynamicFeedIcon
 ];
  // Sử dụng state để lưu trữ chỉ số được chọn
 
@@ -117,6 +121,7 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function MiniDrawer() {
+  const navigate = useNavigate();
   const CustomIcon = ({ index }) => {
     const IconComponent = icons[index % icons.length];
     let isHighlighted = index===highlightedIndex
@@ -131,8 +136,29 @@ export default function MiniDrawer() {
   const [highlightedIndex, setHighlightedIndex] = useState(0);
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open2 = Boolean(anchorEl);
 
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
   const handleIndex =(index)=>{
+    if (index ===0){
+      navigate("/dashboard")
+    }
+    if (index ===1){
+      navigate("/dashboard/job")
+    }
+    if (index===2){
+      navigate("/dashboard/service")
+    }
+    if (index===3){
+      navigate("/dashboard/manage-post")
+    }
     setHighlightedIndex(index)
   }
   const handleDrawerOpen = () => {
@@ -176,12 +202,47 @@ export default function MiniDrawer() {
 
               <NotificationsIcon
                 className="cursor-pointer ml-5"
-                color="secondary"
+                color="primary"
               />
 
-              <Avatar aria-label="recipe" className="ml-5">
-                R
-              </Avatar>
+
+                <Avatar
+                    aria-label="recipe"
+                    className="ml-5 cursor-pointer"
+                    onClick={handleClick}
+                    style={{ backgroundColor: '#f50057', cursor: 'pointer' }}
+                >
+                  R
+                </Avatar>
+
+                {/* Menu Popup */}
+                <Menu
+                    anchorEl={anchorEl}
+                    open={open2}
+                    onClose={handleClose}
+                    onClick={handleClose}
+                >
+                  {/* Menu item 1 */}
+                  <MenuItem>
+                    <ListItemIcon>
+                      <HomeIcon fontSize="small" />
+                    </ListItemIcon>
+                    <Typography variant="inherit">Trang tin tuyển dụng</Typography>
+                  </MenuItem>
+
+                  {/* Menu item 2 */}
+                  <MenuItem onClick={()=>{
+                    localStorage.clear()
+                    navigate("/")
+                  }}>
+                    <ListItemIcon>
+                      <ExitToAppIcon fontSize="small" />
+                    </ListItemIcon>
+                    <Typography  variant="inherit">Đăng xuất</Typography>
+                  </MenuItem>
+                </Menu>
+
+
             </div>
           </div>
         </Toolbar>
@@ -198,8 +259,8 @@ export default function MiniDrawer() {
         </DrawerHeader>
         <Divider />
         <List>
-          {["Inbox", "Starred", "Cài đặt tài khoản ", "Drafts"].map((text, index) => (
-            <ListItem 
+          {["Cài đặt tài khoản ", "Chiến dịch tuyển dụng","Dịch vụ","Quản lí tin đăng"].map((text, index) => (
+            <ListItem
             key={text} disablePadding sx={{ display: "block" }}>
               <ListItemButton
                            onClick={()=>{
@@ -220,7 +281,7 @@ export default function MiniDrawer() {
                 ]}
               >
                 <ListItemIcon
-   
+
                   sx={[
                     {
                       minWidth: 0,

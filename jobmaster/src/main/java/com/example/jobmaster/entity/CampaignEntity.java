@@ -16,15 +16,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Setter
-public class CampaignEntity {
+public class CampaignEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String name;
-    private String field;
-    private String position;
     private Integer quantity;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private String enterpriseId;
+    private String postId;
 }

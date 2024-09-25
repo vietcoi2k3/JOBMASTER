@@ -3,6 +3,7 @@ package com.example.jobmaster.service;
 import com.example.jobmaster.dto.CampaignDTO;
 import com.example.jobmaster.dto.EnterpriseDTO;
 import com.example.jobmaster.dto.PostDTO;
+import com.example.jobmaster.dto.Response.PageResponse;
 import com.example.jobmaster.entity.CampaignEntity;
 import com.example.jobmaster.entity.EnterpriseEntity;
 import com.example.jobmaster.entity.FileEntity;
@@ -22,4 +23,7 @@ public interface IEnterpiseService {
     PostDTO addPost(PostDTO postDTO);
 
     EnterpriseDTO updateEnterprise(EnterpriseDTO enterpriseDTO,HttpServletRequest httpServletRequest);
+
+    PageResponse getListPost(int pageNumber, int pageSize, HttpServletRequest httpServletRequest, String search);
+    
 }

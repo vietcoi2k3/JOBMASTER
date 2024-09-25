@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import logo from "../../assets/logo.png";
+import logo2 from "../../assets/logo2.png";
 import Province from "../../api/Province"
 import Checkbox from "@mui/material/Checkbox";
 import Button from "@mui/material/Button";
@@ -17,9 +18,9 @@ import {
   MenuItem,
 } from "@mui/material";
 import AuthApi from "../../api/AuthApi";
+import { Link } from 'react-router-dom';
 
 const SignUp = () => {
-
   const navigate = useNavigate();
   const handleCloseNotification = () => {
     setNotification({
@@ -121,229 +122,226 @@ const SignUp = () => {
   }
 
   return (
-    <div>
-    {loading?(<CircularProgress className="justify-center"/>):
-    <div className="p-12">
-       
-       <div> 
+    <div className="overflow-hidden">
+            {loading ? (
+        <CircularProgress className="flex justify-center items-center" />
+      ) : (
+    <div className="flex flex-row-reverse">
+      <img src={logo2} alt="" className="h-screen w-1/3" />
 
-      <Notification
-        open={notification.open}
-        onClose={handleCloseNotification}
-        message={notification.message}
-      />
-    </div>
-      <img src={logo} alt="" width={200} />
-      <h2 className="text-primary font-black text-2xl">
-        Đăng kí tài khoản nhà tuyển dụng
-      </h2>
-      <div className="p-4">
-        <div className="w-full rounded border border-primary p-4">
-          <h3 className="text-primary font-bold">Quy định</h3>
-          <br />
-          <p>
-            để đảm bảo chất lượng dịch vụ,{" "}
-            <span className="text-error">
-              Jobmaster không cho phép tạo nhiều tài khoản khác nhau
-            </span>
-          </p>
-          <br />
-          <p>
-            Nếu phát hiện vi phạm, JobMaster sẽ ngừng cung cấp dịch vụ tới tất
-            cả các tài khoản trùng lặp hoặc chặn toàn bộ truy cập tới hệ thống
-            website của JobMaster. Đối với trường hợp khách hàng đã sử dụng hết
-            3 tin tuyển dụng miễn phí, JobMaster hỗ trợ kích hoạt đăng tin tuyển
-            dụng không giới hạn sau khi quý doanh nghiệp cung cấp thông tin giấy
-            phép kinh doanh.
-          </p>
+      <div className="overflow-auto scrollable-content p-12 h-screen">
+          <div> 
+            <Notification
+              open={notification.open}
+              onClose={handleCloseNotification}
+              message={notification.message}
+            />
+          </div>
+          <img src={logo} alt="" width={200} />
+          <h2 className="text-primary font-black text-2xl">
+            Đăng kí tài khoản nhà tuyển dụng
+          </h2>
+          <div className="p-4">
+            <div className="w-full rounded border border-primary p-4">
+              <h3 className="text-primary font-bold">Quy định</h3>
+              <br />
+              <p>
+                để đảm bảo chất lượng dịch vụ,{" "}
+                <span className="text-error">
+                  Jobmaster không cho phép tạo nhiều tài khoản khác nhau
+                </span>
+              </p>
+              <br />
+              <p>
+                Nếu phát hiện vi phạm, JobMaster sẽ ngừng cung cấp dịch vụ tới tất
+                cả các tài khoản trùng lặp hoặc chặn toàn bộ truy cập tới hệ thống
+                website của JobMaster. Đối với trường hợp khách hàng đã sử dụng hết
+                3 tin tuyển dụng miễn phí, JobMaster hỗ trợ kích hoạt đăng tin tuyển
+                dụng không giới hạn sau khi quý doanh nghiệp cung cấp thông tin giấy
+                phép kinh doanh.
+              </p>
+            </div>
+
+            <Snackbar
+              open={open}
+              autoHideDuration={6000}
+              onClose={() => setOpen(false)}
+              anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            >
+              <Alert onClose={() => setOpen(false)} severity="warning">
+                Bạn phải đồng ý với điều khoản sử dụng trước khi đăng nhập!
+              </Alert>
+            </Snackbar>
+            <Button
+              onClick={handleLogin}
+              className="w-full text-accent"
+              variant="contained"
+              sx={{marginTop:4}}
+              startIcon={<GoogleIcon />}
+            >
+              Đăng kí bằng Google
+            </Button>
+            <div className="flex items-center my-4">
+              <div className="flex-grow border-t border-gray-300"></div>
+              <span className="flex-shrink mx-4 text-gray-500">
+                Hoặc bằng email
+              </span>
+              <div className="flex-grow border-t border-gray-300"></div>
+            </div>
+            <TextField
+              fullWidth
+              label="Email đăng nhập"
+              variant="outlined"
+              sx={{
+                marginBottom: 4,
+                "& .MuiInputLabel-asterisk": {
+                  color: "red",
+                },
+              }}
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              error={!!errors.email}
+              required
+              helperText={errors.email}
+            />
+            <TextField
+              fullWidth
+              label="Mật khẩu"
+              type="password"
+              variant="outlined"
+              sx={{
+                marginBottom: 4,
+                "& .MuiInputLabel-asterisk": {
+                  color: "red",
+                },
+              }}
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              error={!!errors.password}
+              helperText={errors.password}
+              required
+            />
+
+            <h3 className="text-lg font-semibold mb-4">Thông tin nhà tuyển dụng</h3>
+
+            <div className="flex gap-4 mb-4">
+              <TextField
+                fullWidth
+                label="Họ và tên"
+                variant="outlined"
+                name="fullName"
+                value={formData.fullName}
+                onChange={handleChange}
+                error={!!errors.fullName}
+                helperText={errors.fullName}
+                sx={{
+                  "& .MuiInputLabel-asterisk": {
+                    color: "red",
+                  },
+                }}
+                required
+              />
+              <RadioGroup
+                row
+                name="gender"
+                value={formData.gender}
+                onChange={handleChange}
+              >
+                <FormControlLabel value="nam" control={<Radio />} label="Nam" />
+                <FormControlLabel value="nu" control={<Radio />} label="Nữ" />
+              </RadioGroup>
+            </div>
+
+            <TextField
+              fullWidth
+              label="Công ty"
+              variant="outlined"
+              sx={{
+                marginBottom: 4,
+                "& .MuiInputLabel-asterisk": {
+                  color: "red",
+                },
+              }}
+              name="companyName"
+              value={formData.companyName}
+              onChange={handleChange}
+              required
+              error={!!errors.companyName}
+              helperText={errors.companyName}
+            />
+
+            <div className="flex gap-4 mb-6">
+              <Select
+                fullWidth
+                displayEmpty
+                name="city"
+                value={formData.city}
+                error={!!errors.city}
+                onChange={handleChange}
+                onOpen={getProvince} // Gọi API khi click vào Select
+                renderValue={(selected) => selected || "Chọn tỉnh/thành phố"}
+              >
+                {listCity.map((e) => (
+                  <MenuItem onClick={() => setIdCity(e.province_id)} key={e.province_id} value={e.province_name}>
+                    {e.province_name}
+                  </MenuItem>
+                ))}
+              </Select>
+              <Select
+                fullWidth
+                displayEmpty
+                name="district"
+                value={formData.district}
+                onChange={handleChange}
+                onOpen={getDistrict}
+                error={!!errors.district}
+                renderValue={(selected) => selected || "Chọn quận/huyện"}
+              >
+                {listDistrict.map((e) => (
+                  <MenuItem key={e.district_id} value={e.district_name}>
+                    {e.district_name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </div>
+
+            <div>
+              <Checkbox
+                checked={isAgree}
+                onClick={() => setIsAgree(!isAgree)}
+              />
+              <p className="inline">
+                Tôi đã đọc và đồng ý với{" "}
+                <span className="text-primary">Điều khoản dịch vụ </span>và{" "}
+                <span className="text-primary">Điều khoản dịch </span> của
+                JobMaster.
+              </p>
+            </div>
+            <Button
+              type="submit"
+              variant="contained"
+              fullWidth
+              className="bg-blue-500 hover:bg-blue-600 mb-4"
+              onClick={handleSubmit}
+            >
+              Đăng ký
+            </Button>
+
+            <p className="text-center">
+              Đã có tài khoản?{" "}
+            <Link to="/">
+              <a className="text-primary">
+                Đăng nhập ngay
+              </a>
+            </Link>
+            </p>
+          </div>
         </div>
-
-        <Snackbar
-          open={open}
-          autoHideDuration={6000}
-          onClose={() => setOpen(false)}
-          anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        >
-          <Alert onClose={() => setOpen(false)} severity="warning">
-            Bạn phải đồng ý với điều khoản sử dụng trước khi đăng nhập!
-          </Alert>
-        </Snackbar>
-        <Button
-          onClick={handleLogin}
-          className="w-full text-accent"
-          variant="contained"
-          startIcon={<GoogleIcon />}
-        >
-          {" "}
-          Đăng kí bằng Google
-        </Button>
-        <div className="flex items-center my-4">
-          <div className="flex-grow border-t border-gray-300"></div>
-          <span className="flex-shrink mx-4 text-gray-500">
-            Hoặc bằng email
-          </span>
-          <div className="flex-grow border-t border-gray-300"></div>
-        </div>
-        {/* <form className="w-full mx-auto p-6 bg-white rounded-lg shadow-md" onSubmit={handleSubmit}> */}
-        <TextField
-          fullWidth
-          label="Email đăng nhập"
-          variant="outlined"
-          sx={{
-            marginBottom: 4,
-            "& .MuiInputLabel-asterisk": {
-              color: "red",
-            },
-          }}
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          error={!!errors.email}
-          required
-          helperText={errors.email}
-        />
-        <TextField
-          fullWidth
-          label="Mật khẩu"
-          type="password"
-          variant="outlined"
-          sx={{
-            marginBottom: 4,
-            "& .MuiInputLabel-asterisk": {
-              color: "red",
-            },
-          }}
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-          error={!!errors.password}
-          helperText={errors.password}
-          required
-        />
-
-        <h3 className="text-lg font-semibold mb-4">Thông tin nhà tuyển dụng</h3>
-
-        <div className="flex gap-4 mb-4">
-          <TextField
-            fullWidth
-            label="Họ và tên"
-            variant="outlined"
-            name="fullName"
-            value={formData.fullName}
-            onChange={handleChange}
-            error={!!errors.fullName}
-            helperText={errors.fullName}
-            sx={{
-              "& .MuiInputLabel-asterisk": {
-                color: "red",
-              },
-            }}
-            required
-          />
-          <RadioGroup
-            row
-            name="gender"
-            value={formData.gender}
-            onChange={handleChange}
-          >
-            <FormControlLabel value="nam" control={<Radio />} label="Nam" />
-            <FormControlLabel value="nu" control={<Radio />} label="Nữ" />
-          </RadioGroup>
-        </div>
-
-        <TextField
-          fullWidth
-          label="Công ty"
-          variant="outlined"
-          sx={{
-            marginBottom: 4,
-            "& .MuiInputLabel-asterisk": {
-              color: "red",
-            },
-          }}
-          name="companyName"
-          value={formData.companyName}
-          onChange={handleChange}
-          required
-          error={!!errors.companyName}
-          helperText={errors.companyName}
-        />
-
-        <div className="flex gap-4 mb-6">
-        <Select
-      fullWidth
-      displayEmpty
-      name="city"
-      value={formData.city}
-      error={!!errors.city}
-      onChange={handleChange}
-      // onClick={getProvince} 
-      onOpen={getProvince}// Gọi API khi click vào Select
-      renderValue={(selected) => {
-        return selected || "Chọn tỉnh/thành phố"}
-      }
-    >
-      {listCity.map((e) => (
-        <MenuItem onClick={()=>setIdCity(e.province_id)} key={e.province_id} value={e.province_name}>
-          {e.province_name}
-        </MenuItem>
-      ))}
-    </Select>
-          <Select
-            fullWidth
-            displayEmpty
-            name="district"
-            value={formData.district}
-            onChange={handleChange}
-            onOpen={getDistrict}
-            error={!!errors.district}
-            renderValue={(selected) => {
-              return selected ||"Chọn quận/huyện"
-            }}
-          >
-            {
-              listDistrict.map((e)=>{
-              return  <MenuItem  key={e.district_id} value={e.district_name}>
-                {e.district_name}
-              </MenuItem>
-              })
-            }
-          </Select>
-        </div>
-
-        <div>
-          <Checkbox
   
-            checked={isAgree}
-            onClick={() => setIsAgree(!isAgree)}
-          />
-          <p className="inline">
-            Tôi đã đọc và đồng ý với{" "}
-            <span className="text-primary">Điều khoản dịch vụ </span>và{" "}
-            <span className="text-primary">Điều khoản dịch </span> của
-            JobMaster.
-          </p>
-        </div>
-        <Button
-          type="submit"
-          variant="contained"
-          fullWidth
-          className="bg-blue-500 hover:bg-blue-600 mb-4"
-          onClick={handleSubmit}
-        >
-          Đăng ký
-        </Button>
-
-        <p className="text-center">
-          Đã có tài khoản?{" "}
-          <a href="#" className="text-blue-600 hover:underline">
-            Đăng nhập ngay
-          </a>
-        </p>
-        {/* </form> */}
-      </div>
-    </div>}
-    </div>
+    </div>    )}
+  </div>
   );
 };
 

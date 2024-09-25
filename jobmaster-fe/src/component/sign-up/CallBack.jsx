@@ -10,7 +10,7 @@ const CallBack = () => {
             if (authorizationCode) {
               const token = await AuthApi.getTokenGoogle(authorizationCode);
               const data  = await AuthApi.loginByGoogle(token)  
-              localStorage.setItem("access_token","Bearer "+data.token)
+              localStorage.setItem("access_token",data.token)
               window.location.href= "http://localhost:3000/dashboard"
             }}
 

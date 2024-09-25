@@ -5,6 +5,9 @@ import com.example.jobmaster.dto.EnterpriseDTO;
 import com.example.jobmaster.dto.PostDTO;
 import com.example.jobmaster.entity.FileEntity;
 import com.example.jobmaster.entity.UserEntity;
+import com.example.jobmaster.repository.FieldRepository;
+import com.example.jobmaster.repository.PositionRepository;
+import com.example.jobmaster.repository.PostRepository;
 import com.example.jobmaster.repository.UserRepository;
 import com.example.jobmaster.security.jwt.JWTUntil;
 import com.example.jobmaster.service.IEnterpiseService;
@@ -39,7 +42,16 @@ public class EnterpriseController {
     private UserRepository userRepository;
 
     @Autowired
+    private PostRepository postRepository;
+
+    @Autowired
     private IEnterpiseService iEnterpiseService;
+
+    @Autowired
+    private FieldRepository fieldRepository;
+
+    @Autowired
+    private PositionRepository positionRepository;
     @GetMapping(value = "/get-certificate")
     public ResponseEntity getCertificate(HttpServletRequest httpServletRequest) throws IOException {
         UserEntity user = userRepository.findByUsername(jwtUntil.getUsernameFromRequest(httpServletRequest));
@@ -93,4 +105,25 @@ public class EnterpriseController {
     public ResponseEntity updateInfoEnterprise(@RequestBody EnterpriseDTO enterpriseDTO,HttpServletRequest httpServletRequest){
         return ResponseEntity.ok(iEnterpiseService.updateEnterprise(enterpriseDTO,httpServletRequest));
     }
+
+    @GetMapping(value = "/get-list-post")
+    public ResponseEntity getListPost(
+            @RequestParam(defaultValue = DefautlConstants.PAGE_SIZE) int pageSize,
+            @RequestParam(defaultValue = DefautlConstants.PAGE_NO) int pageNumber,
+            @RequestParam(defaultValue = "") String search,
+            HttpServletRequest httpServletRequest
+    ){
+        return ResponseEntity.ok(iEnterpiseService.getListPost(pageNumber,pageSize,httpServletRequest,search));
+    }
+
+    @GetMapping(value = "/get-all-field")
+    public ResponseEntity getAllField(){
+        return ResponseEntity.ok(fieldRepository.findAll());
+    }
+
+    @GetMapping(value = "/get-all-position")
+    public ResponseEntity getAllPosition(){
+        return ResponseEntity.ok(positionRepository.findAll());
+    }
+
 }

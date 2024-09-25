@@ -2,7 +2,7 @@ import React from 'react';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 
-const Notification = ({ open, onClose, message }) => {
+const Notification = ({ open, onClose, message,type }) => {
   return (
     <Snackbar
       open={open}
@@ -14,7 +14,7 @@ const Notification = ({ open, onClose, message }) => {
         </button>
       }
     >
-      <Alert onClose={onClose} severity="error">
+      <Alert onClose={onClose} severity={type?type:"error"}>
         {message}
       </Alert>
     </Snackbar>

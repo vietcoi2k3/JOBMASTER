@@ -14,6 +14,7 @@ public class PostDTO {
     private String id;
     private String title;
     private String field;
+    private String position;
     private LocalDate deadline;
     private int quantity;
     private String city;

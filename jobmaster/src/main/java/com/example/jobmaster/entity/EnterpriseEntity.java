@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EnterpriseEntity {
+public class EnterpriseEntity extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Setter(AccessLevel.NONE)

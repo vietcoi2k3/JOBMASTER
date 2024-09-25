@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class FileEntity {
+public class FileEntity extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;

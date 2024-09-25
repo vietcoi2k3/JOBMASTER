@@ -1,7 +1,9 @@
 package com.example.jobmaster.service;
 
+import com.example.jobmaster.entity.FileEntity;
+
 import java.io.IOException;
 
 public interface IFileUploadService {
-    public String uploadFile( byte[] bytes) throws IOException;
+    public FileEntity uploadFile(byte[] bytes) throws IOException;
 }

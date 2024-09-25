@@ -5,6 +5,7 @@ import com.example.jobmaster.dto.Request.RegisterRequest;
 import com.example.jobmaster.entity.FileEntity;
 import com.example.jobmaster.entity.UserEntity;
 import com.example.jobmaster.service.IFileService;
+import com.example.jobmaster.service.IFileUploadService;
 import com.example.jobmaster.service.IUserService;
 import com.example.jobmaster.service.impl.UserServiceImpl;
 import jakarta.mail.MessagingException;
@@ -42,6 +43,10 @@ public class  AuthController {
     private IFileService iFileService;
 
 
+    @Autowired
+    private IFileUploadService iFileUploadService;
+
+
     @PostMapping(value = "/login-by-goolge")
     public ResponseEntity loginByGoogle(@RequestParam String token){
         return userService.loginByGoogle(token);
@@ -67,15 +72,16 @@ public class  AuthController {
         return  ResponseEntity.ok(userService.sendEmail(email));
     }
 
-
-
     @PostMapping("/upload")
-    public ResponseEntity<FileEntity> uploadFile(@RequestParam("file") MultipartFile file,HttpServletRequest httpServletRequest) {
-        return ResponseEntity.ok(iFileService.uploadFile(file,httpServletRequest));
+    public ResponseEntity<FileEntity> uploadFile(@RequestParam("file") MultipartFile file,HttpServletRequest httpServletRequest) throws IOException {
+        return ResponseEntity.ok(iFileUploadService.uploadFile(file.getBytes()));
     };
 
     @GetMapping(value = "/get-file")
     public ResponseEntity getFile(@RequestParam String fileId) throws IOException {
         return iFileService.getFile(fileId);
     };
+
+
+
 }

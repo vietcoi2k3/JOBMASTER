@@ -26,8 +26,8 @@ public class EnterpriseDTO {
     private String phoneNumber;
     private String emailCompany;
     private String linkWebSite;
-    private String businessCertificate;
     private String logo;
+    private String businessCertificate;
     private String scale;
     private String description;
     private String isActive;

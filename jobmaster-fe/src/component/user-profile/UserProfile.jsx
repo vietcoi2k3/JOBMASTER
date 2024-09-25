@@ -23,30 +23,7 @@ function UserProfile() {
   
   return (
     <div className="flex bg-accent w-full">
-      <div className="bg-subback w-1/4 px-4 py-4 min-h-full">
-        <div className="flex ">
-          <LockIcon />
-          <p className="leading-4 translate-x-1  py-1.5"> Đổi mật khẩu</p>
-        </div>
-        <div className="flex">
-          <PersonIcon />
-          <p className="leading-4 translate-x-1 py-1.5"> Thông tin cá nhân</p>
-        </div>
-        <div className="flex">
-          <ReceiptIcon />
-          <p className="leading-4 translate-x-1  py-1.5">
-            {" "}
-            Giấy đăng kí doanh nghiệp
-          </p>
-        </div>
-        <div className="flex">
-          <BusinessIcon />
-          <p className="leading-4 translate-x-1  py-1.5">
-            {" "}
-            Thông tin doanh nghiệp
-          </p>
-        </div>
-      </div>
+
       <div className="bg-white rounded-lg shadow-lg w-full mx-auto p-4 ">
         <h1>Cập nhật thông tin cá nhân</h1>
         <div className="flex items-center space-x-4 mb-6">

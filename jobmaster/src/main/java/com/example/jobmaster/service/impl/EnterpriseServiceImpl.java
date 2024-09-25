@@ -3,6 +3,8 @@ package com.example.jobmaster.service.impl;
 import com.example.jobmaster.dto.CampaignDTO;
 import com.example.jobmaster.dto.EnterpriseDTO;
 import com.example.jobmaster.dto.PostDTO;
+import com.example.jobmaster.dto.Response.PageResponse;
+import com.example.jobmaster.dto.Response.PostResponse;
 import com.example.jobmaster.entity.*;
 import com.example.jobmaster.repository.*;
 import com.example.jobmaster.security.jwt.JWTUntil;
@@ -14,6 +16,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class EnterpriseServiceImpl implements IEnterpiseService {
@@ -51,18 +56,11 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
         String username = jwtUntil.getUsernameFromRequest(httpServletRequest);
         UserEntity user = userRepository.findByUsername(username);
         fileRepository.setFileActiveIsFalse(user.getEnterpriseId());
-
-        FileEntity file = fileRepository.findById(fileEntity.getId()).get();
-        file.setType(TypeFileEnum.CERTIFICATE_BUSINESS.name());
-        file.setActive(true);
-        file.setEnterpriseId(user.getEnterpriseId());
-
-
-
         EnterpriseEntity enterpriseEntity = enterpriseRepository.findByUserId(user.getId());
+        enterpriseEntity.setBusinessCertificate(fileEntity.getUrl());
         enterpriseEntity.setIsActive(UserEnum.WAITING_ACTIVE.name());
         enterpriseRepository.save(enterpriseEntity);
-        return fileRepository.save(file);
+        return null;
     }
 
     @Override
@@ -96,8 +94,15 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
 
     @Override
     public PostDTO addPost(PostDTO postDTO) {
+        CampaignEntity campaignEntity = campaignRepository.findById(postDTO.getCampaignId()).get();
+
         PostEntity postEntity = mapper.map(postDTO,PostEntity.class);
-        return mapper.map(postRepository.save(postEntity),PostDTO.class);
+        postEntity.setStatus(PostEnum.AWAITING_APPROVAL.name());
+        PostDTO postDTO1 =mapper.map(postRepository.save(postEntity),PostDTO.class);
+
+        campaignEntity.setPostId(postDTO1.getId());
+        campaignRepository.save(campaignEntity);
+        return postDTO1;
     }
 
 
@@ -114,8 +119,40 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
         enterpriseEntity.setPhoneNumber(enterpriseDTO.getPhoneNumber());
         enterpriseEntity.setScale(enterpriseDTO.getScale());
         enterpriseEntity.setTax(enterpriseDTO.getTax());
+        enterpriseEntity.setLogo(enterpriseDTO.getLogo());
 
         enterpriseEntity = enterpriseRepository.save(enterpriseEntity);
         return mapper.map(enterpriseEntity,EnterpriseDTO.class);
     }
+
+    @Override
+    public PageResponse getListPost(int pageNumber, int pageSize, HttpServletRequest httpServletRequest, String search) {
+        pageNumber--;
+        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+        String username = jwtUntil.getUsernameFromRequest(httpServletRequest);
+        UserEntity user = userRepository.findByUsername(username);
+        List<String> campaignId = campaignRepository.getListIdCampaign(user.getEnterpriseId());
+
+        Page<PostEntity> postEntities =  postRepository.getListCampaign(search,campaignId,pageable);
+
+        List<PostResponse> postResponses = new ArrayList<>();
+        for (PostEntity x : postEntities.getContent()){
+            PostResponse postResponse = new PostResponse();
+            if (x.getCampaignId()==null){
+                continue;
+            }
+            CampaignEntity campaignEntity = campaignRepository.findById(x.getCampaignId()).get();
+            postResponse.setPosition(x.getPosition());
+            postResponse.setTitle(x.getTitle());
+            postResponse.setNameCam(campaignEntity.getName());
+            postResponse.setQuantityCv(5);
+            postResponses.add(postResponse);
+        }
+        PageResponse pageResponse = new PageResponse();
+        pageResponse.setData(postResponses);
+        pageResponse.setTotalPage(postEntities.getTotalPages());
+        return pageResponse;
+    }
+
+
 }

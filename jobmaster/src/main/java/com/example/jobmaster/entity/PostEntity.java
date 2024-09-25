@@ -15,13 +15,12 @@ import java.time.LocalDateTime;
 @Builder
 @Getter
 @Setter
-public class PostEntity {
+public class PostEntity extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Setter(AccessLevel.NONE)
     private String id;
     private String title;
-    private String field;
     private LocalDate deadline;
     private int quantity;
     private String city;
@@ -37,4 +36,8 @@ public class PostEntity {
     private String requiredSkill;
     private String skillShouldHave;
     private String campaignId;
+    private String status;
+    private String salaryRange;
+    private String position;
+    private String field;
 }

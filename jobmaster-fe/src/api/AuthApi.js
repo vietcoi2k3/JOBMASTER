@@ -24,6 +24,11 @@ const AuthApi = {
         return accessToken;
     },
 
+    sendEmail:(email)=>{
+      const url="auth/send-email"
+      return axiosClient.get(url+"?email="+email)
+    },
+
     loginByGoogle:(token)=>{
        const url = "auth/login-by-goolge"
        return axiosClient.post(url+"?token="+token)
@@ -37,7 +42,17 @@ const AuthApi = {
     confirmToken:(token)=>{
       const url ="auth/confirm"
       return axiosClient.get(url+"?token="+token)
+    },
+    login:(formData)=>{
+      const url ="auth/login"
+      return axiosClient.post(url,formData)
+    },
+
+    getFile:(id)=>{
+        const url ="auth/get-file"
+        return axiosClient.get(url+"?fileId="+id,{ responseType: 'blob' })
     }
+
 };
 
 export default AuthApi; 
