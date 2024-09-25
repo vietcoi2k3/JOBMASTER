@@ -58,6 +58,7 @@ public class SecurityConfig {
                     // Cho phép truy cập không xác thực cho Swagger UI  và tài liệu API
                     auth.requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll();
                     auth.requestMatchers("/enterprise/**").hasAuthority("ENTERPRISE");
+                    auth.requestMatchers("/admin/**").permitAll();
                     // Cho phép truy cập không xác thực cho đường dẫn /error
                     auth.requestMatchers("/error").permitAll();
                     // Yêu cầu xác thực cho tất cả các yêu cầu khác
