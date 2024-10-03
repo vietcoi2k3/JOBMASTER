@@ -4,12 +4,10 @@ import com.example.jobmaster.entity.FieldEntity;
 import com.example.jobmaster.entity.PositionEntity;
 import com.example.jobmaster.repository.FieldRepository;
 import com.example.jobmaster.repository.PositionRepository;
+import com.example.jobmaster.until.constants.DefautlConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping(value = "/admin")
 @RestController
@@ -29,4 +27,6 @@ public class AdminController {
     public ResponseEntity addField(@RequestBody FieldEntity fieldEntity){
        return ResponseEntity.ok(fieldRepository.save(fieldEntity));
     }
+
+
 }

@@ -4,26 +4,25 @@ import com.example.jobmaster.dto.Request.LoginRequest;
 import com.example.jobmaster.dto.Request.RegisterRequest;
 import com.example.jobmaster.entity.FileEntity;
 import com.example.jobmaster.entity.UserEntity;
+import com.example.jobmaster.repository.FieldRepository;
+import com.example.jobmaster.repository.PositionRepository;
+import com.example.jobmaster.repository.PostRepository;
 import com.example.jobmaster.service.IFileService;
 import com.example.jobmaster.service.IFileUploadService;
 import com.example.jobmaster.service.IUserService;
-import com.example.jobmaster.service.impl.UserServiceImpl;
+
+import com.example.jobmaster.service.impl.ConsumerImpl;
+import com.example.jobmaster.until.constants.DefautlConstants;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+
 
 /**
  * Class: AuthController
@@ -37,6 +36,12 @@ import java.nio.file.Paths;
 public class  AuthController {
 
     @Autowired
+    private FieldRepository fieldRepository;
+
+    @Autowired
+    private PositionRepository positionRepository;
+
+    @Autowired
     private IUserService userService;
 
     @Autowired
@@ -45,6 +50,12 @@ public class  AuthController {
 
     @Autowired
     private IFileUploadService iFileUploadService;
+
+    @Autowired
+    private ConsumerImpl consumer;
+
+    @Autowired
+    private PostRepository postRepository;
 
 
     @PostMapping(value = "/login-by-goolge")
@@ -82,6 +93,35 @@ public class  AuthController {
         return iFileService.getFile(fileId);
     };
 
+    @GetMapping(value = "/get-all-field")
+    public ResponseEntity getAllField(){
+        return ResponseEntity.ok(fieldRepository.findAll());
+    }
 
+    @GetMapping(value = "/get-all-position")
+    public ResponseEntity getAllPosition(){
+        return ResponseEntity.ok(positionRepository.findAll());
+    }
 
+    @RequestMapping(value = "/get-list-post",method = RequestMethod.GET)
+    public ResponseEntity getListPost(
+            @RequestParam(defaultValue = DefautlConstants.PAGE_SIZE) int pageSize,
+            @RequestParam(defaultValue = DefautlConstants.PAGE_NO) int pageNumber,
+            @RequestParam(defaultValue = "") String search,
+            @RequestParam(defaultValue = "") String address,
+            @RequestParam(defaultValue = "") String field,
+            @RequestParam(defaultValue = "") String packageName
+    ){
+        return ResponseEntity.ok(consumer.getListPost(pageNumber,pageSize,search,address,field));
+    }
+
+    @RequestMapping(value = "/get-detail-job")
+    public ResponseEntity getDetailJob(@RequestParam String postId){
+        return ResponseEntity.ok(postRepository.findById(postId).get());
+    }
+
+    @RequestMapping(value = "/get-detail-company",method = RequestMethod.GET)
+    public ResponseEntity getDetailCompany(@RequestParam String campaignId){
+        return ResponseEntity.ok(consumer.getDetailCompany(campaignId));
+    }
 }

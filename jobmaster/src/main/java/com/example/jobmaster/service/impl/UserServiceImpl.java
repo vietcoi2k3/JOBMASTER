@@ -5,10 +5,7 @@ import com.example.jobmaster.dto.Request.LoginRequest;
 import com.example.jobmaster.dto.Request.RegisterRequest;
 import com.example.jobmaster.dto.TokenDTO;
 import com.example.jobmaster.entity.*;
-import com.example.jobmaster.repository.EnterpriseRepository;
-import com.example.jobmaster.repository.RoleRepository;
-import com.example.jobmaster.repository.UserRepository;
-import com.example.jobmaster.repository.VerifyTokenRepository;
+import com.example.jobmaster.repository.*;
 import com.example.jobmaster.security.jwt.JWTUntil;
 import com.example.jobmaster.service.IUserService;
 import jakarta.mail.MessagingException;
@@ -65,6 +62,9 @@ public class UserServiceImpl implements IUserService {
     private RoleRepository roleRepository;
 
     @Autowired
+    private UserInfoRepository userInfoRepository;
+
+    @Autowired
     private JWTUntil jwtUntil;
 
     @Value("${app.url}")
@@ -99,6 +99,35 @@ public class UserServiceImpl implements IUserService {
     public TokenDTO registerEnterprise(RegisterRequest registerRequest) throws MessagingException {
         if (userRepository.existsByUsername(registerRequest.getEmail())){
            throw new RuntimeException("Tài khoản đã tồn tại");
+        }
+        if (registerRequest.isConsumer()){
+            RoleEntity roleEntity = roleRepository.findById(1)
+                    .orElseThrow(() -> new RuntimeException("Role not found"));
+            Set<RoleEntity> roleEntities = new HashSet<>(Arrays.asList(roleEntity));
+
+            UserEntity user = UserEntity.builder()
+                    .username(registerRequest.getEmail())
+                    .fullName(registerRequest.getFullName())
+                    .gender(registerRequest.getGender())
+                    .isActive(UserEnum.WAITING_ACTIVE.name())
+                    .password(passwordEncoder.encode(registerRequest.getPassword()))
+                    .roles(roleEntities)
+                    .build();
+
+            user = userRepository.save(user); // Lưu để lấy ID của user
+
+            UserInfoEntity userInfoEntity = new UserInfoEntity();
+            userInfoEntity.setUserId(user.getId());
+            userInfoEntity= userInfoRepository.save(userInfoEntity);
+
+            user = userRepository.findById(user.getId()).get();
+            user.setUserInfoId(userInfoEntity.getUserId());
+            userRepository.save(user);
+
+            return TokenDTO.builder()
+                    .userId(user.getId())
+                    .token(jwtUntil.generateToken(user))
+                    .build();
         }
 
         RoleEntity roleEntity = roleRepository.findById(1)

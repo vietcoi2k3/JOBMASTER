@@ -18,4 +18,11 @@ public class PostResponse {
     private String salaryRange;
     private int deadLine;
     private LocalDateTime modifiedAt;
+    private String enterpriseId;
+    private String logoCompany;
+    private String description;
+    private String interest;
+    private String required;
+    private String nameCompany;
+    private String scales;
 }

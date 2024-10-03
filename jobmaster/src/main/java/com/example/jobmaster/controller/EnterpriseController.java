@@ -14,6 +14,7 @@ import com.example.jobmaster.service.IEnterpiseService;
 import com.example.jobmaster.service.IFileService;
 import com.example.jobmaster.service.impl.EnterpriseServiceImpl;
 import com.example.jobmaster.until.constants.DefautlConstants;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,7 @@ import java.io.IOException;
 
 @RequestMapping(value = "/enterprise")
 @RestController
+@SecurityRequirement(name = "bearerAuth")
 public class EnterpriseController {
 
     @Autowired

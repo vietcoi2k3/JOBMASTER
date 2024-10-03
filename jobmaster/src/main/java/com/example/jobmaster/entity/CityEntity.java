@@ -10,15 +10,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class PositionEntity extends BaseEntity{
+public class CityEntity extends BaseEntity{
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-    private String name;
-    private String status;
-    private String fieldId;
+    private String province_id;
+    private String province_name;
+    private String province_type;
 }

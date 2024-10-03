@@ -32,6 +32,7 @@ public class UserEntity extends BaseEntity implements UserDetails {
     private String gender;
     private String isActive;
     private String enterpriseId;
+    private String userInfoId;
 
     /**
      * Tập hợp các vai trò của người dùng.

@@ -22,4 +22,5 @@ public class RegisterRequest {
     private String companyName;
     private String city;
     private String district;
+    private boolean isConsumer;
 }

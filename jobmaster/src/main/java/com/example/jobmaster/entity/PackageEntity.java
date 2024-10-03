@@ -9,16 +9,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PositionEntity extends BaseEntity{
+@Entity
+public class PackageEntity extends BaseEntity{
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String name;
-    private String status;
-    private String fieldId;
+    private long price;
 }
