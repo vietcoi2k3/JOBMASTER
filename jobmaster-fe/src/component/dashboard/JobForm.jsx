@@ -6,6 +6,7 @@ import Province from "../../api/Province";
 import Notification from "../notification/Notification";
 import EnterpriseApi from "../../api/EnterpriseApi";
 import {useLocation} from "react-router-dom";
+import ReactQuill from "react-quill";
 
 
 const JobForm = () => {
@@ -286,9 +287,9 @@ const JobForm = () => {
                             fullWidth
                             label="Khoảng lương"
                             name="salaryRange"
-                            value={data.salaryRange || "Thỏa thuận"}  // Giá trị mặc định là "Thỏa thuận"
+                            value={data.salaryRange}  // Giá trị mặc định là "Thỏa thuận"
                             onChange={handleChange}
-                            placeholder="Ví dụ: 10 triệu - 20 triệu"
+                            placeholder="Ví dụ: 10 - 20 triệu"
                         />
                     </Grid>
 
@@ -307,7 +308,7 @@ const JobForm = () => {
                         </TextField>
                     </Grid>
 
-                    <Grid item xs={12}>
+                    <Grid item xs={12} md={6}>
                         <TextField
                             fullWidth
                             value={data.timeWorking}
@@ -320,66 +321,30 @@ const JobForm = () => {
                     <Typography variant="h6" gutterBottom>
                         Thông tin chi tiết
                     </Typography>
+                    <ReactQuill
+                        theme="snow"
+                        placeholder="Mô tả công việc"
+                        style={{ width: '100%',marginTop:'15px' }}  // Đặt chiều rộng 100%
+                        value={data.description}
+                        onChange={(value) => handleChange({ target: { name: 'description', value } })}
+                    />
 
-                    <Grid item xs={12}>
-                        <TextField
-                            fullWidth
-                            label="Mô tả công việc"
-                            multiline
-                            value={data.description}
-                            onChange={handleChange}
-                            name="description"
-                            rows={4}
-                        />
-                    </Grid>
+                    <ReactQuill
+                        theme="snow"
+                        placeholder="Yêu cầu ứng viên"
+                        style={{ width: '100%',marginTop:'70px' }}  // Đặt chiều rộng 100%
+                        value={data.required}
+                        onChange={(value) => handleChange({ target: { name: 'required', value } })}
+                    />
 
-                    <Grid item xs={12}>
-                        <TextField
-                            fullWidth
-                            label="Yêu cầu ứng viên"
-                            multiline
-                            value={data.required}
-                            name="required"
-                            onChange={handleChange}
-                            rows={4}
-                        />
-                    </Grid>
+                    <ReactQuill
+                        theme="snow"
+                        placeholder="Quyền lợi ứng viên"
+                        style={{ width: '100%',marginTop:'70px' }}  // Đặt chiều rộng 100%
+                        value={data.interest}
+                        onChange={(value) => handleChange({ target: { name: 'interest', value } })}
+                    />
 
-                    <Grid item xs={12}>
-                        <TextField
-                            fullWidth
-                            label="Quyền lợi ứng viên"
-                            multiline
-                            value={data.interest}
-                            name="interest"
-                            onChange={handleChange}
-                            rows={4}
-                        />
-                    </Grid>
-
-                    <Grid item xs={12}>
-                        <TextField
-                            fullWidth
-                            label="Kỹ năng cần có"
-                            name="requiredSkill"
-                            multiline
-                            value={data.requiredSkill}
-                            onChange={handleChange}
-                            rows={4}
-                        />
-                    </Grid>
-
-                    <Grid item xs={12}>
-                        <TextField
-                            fullWidth
-                            label="Kỹ năng nên có"
-                            multiline
-                            value={data.skillShouldHave}
-                            onChange={handleChange}
-                            name="skillShouldHave"
-                            rows={4}
-                        />
-                    </Grid>
 
                     <Grid item xs={12} >
                         <Button variant="contained" color="primary" sx={{float:'right'}} onClick={handleSubmit}>

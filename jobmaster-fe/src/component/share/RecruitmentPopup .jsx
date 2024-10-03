@@ -107,17 +107,7 @@ const RecruitmentPopup = ({onSuccess}) => {
                                 />
                             </Grid>
 
-                            <Grid item xs={12}>
-                                <TextField
-                                    label="Số lượng"
-                                    type="number"
-                                    placeholder="Nhập số lượng ứng viên cần tuyển dụng"
-                                    fullWidth
-                                    required
-                                    name ="quantity"
-                                    onChange={handleChange}
-                                />
-                            </Grid>
+
                             <Grid item xs={6}>
                                 <DatePicker
                                     label="Thời gian bắt đầu"

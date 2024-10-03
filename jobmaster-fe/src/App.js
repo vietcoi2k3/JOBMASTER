@@ -1,5 +1,5 @@
 import './App.css';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route ,useLocation } from 'react-router-dom';
 import MiniDrawer from './component/dashboard/Dashboard';
 import UserProfile from './component/user-profile/UserProfile'
 import SignUp from './component/sign-up/SignUp'
