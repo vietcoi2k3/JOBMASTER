@@ -5,5 +5,5 @@ import com.example.jobmaster.entity.FileEntity;
 import java.io.IOException;
 
 public interface IFileUploadService {
-    public FileEntity uploadFile(byte[] bytes) throws IOException;
+    public FileEntity uploadFile(byte[] bytes,String fileType) throws IOException;
 }

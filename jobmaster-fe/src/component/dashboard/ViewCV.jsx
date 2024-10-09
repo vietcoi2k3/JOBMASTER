@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     Box,
     Paper,
@@ -16,24 +16,30 @@ import {
 import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import {useNavigate, useParams} from "react-router-dom";
+import EnterpriseApi from "../../api/EnterpriseApi";
 
 const ViewCV = () => {
-    const jobInfo = {
-        id: '#1693750',
-        title: 'Nhân viên kiểm thử',
-        position: 'Tester',
-        quantity: 1,
-        campaign: 'Tuyển dụng nhân viên tháng 5'
-    };
 
-    const candidates = [
-        {
-            name: 'Phạm Thị A',
-            email: 'A@gmail.com',
-            phone: '0333482008',
-            status: 'CV tiếp nhận'
-        }
-    ];
+    const navigate = useNavigate();
+    const id = useParams().id
+    const [jobInfo,setJobInfo] = useState({})
+    const [cv,setCv] = useState([])
+    const [totalPage ,setTotalPage]= useState(0)
+    const [pageIndex,setPageIndex] = useState(1)
+
+    useEffect(() => {
+        EnterpriseApi.getListCv(pageIndex,id).then((e)=>{
+            setCv(e.data)
+            setTotalPage(e.totalPage)
+        })
+    }, [pageIndex]);
+
+    useEffect(()=>{
+        EnterpriseApi.getDetailPost(id).then((e)=>{
+            setJobInfo(e)
+        })
+    },[])
 
     return (
         <Box sx={{ width: '100%', mb: 2 }}>
@@ -42,7 +48,7 @@ const ViewCV = () => {
                     Thông tin bài đăng
                 </Typography>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <Typography variant="body1">#{jobInfo.id}</Typography>
+
                     <Typography variant="body2" color="text.secondary">
                         Đăng bởi HR
                     </Typography>
@@ -51,7 +57,7 @@ const ViewCV = () => {
                     <Typography><strong>Tiêu đề tin đăng:</strong> {jobInfo.title}</Typography>
                     <Typography><strong>Vị trí:</strong> {jobInfo.position}</Typography>
                     <Typography><strong>Số lượng:</strong> {jobInfo.quantity}</Typography>
-                    <Typography><strong>Chiến dịch:</strong> {jobInfo.campaign}</Typography>
+                    <Typography><strong>Chiến dịch:</strong> {jobInfo.nameCam}</Typography>
                 </Box>
             </Paper>
 
@@ -67,10 +73,10 @@ const ViewCV = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {candidates.map((candidate) => (
-                            <TableRow key={candidate.name}>
+                        {cv.map((cv,index) => (
+                            <TableRow key={index}>
                                 <TableCell component="th" scope="row">
-                                    {candidate.name}
+                                    {cv.name}
                                     <Typography variant="body2" color="text.secondary">
                                         Chưa xem
                                     </Typography>
@@ -78,18 +84,18 @@ const ViewCV = () => {
                                 <TableCell>
                                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                                         <EmailIcon fontSize="small" sx={{ mr: 1 }} />
-                                        <Typography variant="body2">{candidate.email}</Typography>
+                                        <Typography variant="body2">{cv.email}</Typography>
                                     </Box>
                                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                         <PhoneIcon fontSize="small" sx={{ mr: 1 }} />
-                                        <Typography variant="body2">{candidate.phone}</Typography>
+                                        <Typography variant="body2">{cv.phoneNumber}</Typography>
                                     </Box>
                                 </TableCell>
                                 <TableCell>
-                                    <Chip label={candidate.status} color="default" />
+                                    <Chip label={cv.status} color="default" />
                                 </TableCell>
                                 <TableCell>
-                                    <Chip label="Xem Profile" color="primary" variant="outlined" clickable />
+                                    <Chip onClick={()=>{navigate("/dashboard/detail-cv/"+cv.id);return null}} label="Xem Profile" color="primary" variant="outlined" clickable />
                                 </TableCell>
                                 <TableCell>
                                     <IconButton>

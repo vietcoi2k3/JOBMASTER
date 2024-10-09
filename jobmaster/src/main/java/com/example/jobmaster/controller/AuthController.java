@@ -5,6 +5,7 @@ import com.example.jobmaster.dto.Request.RegisterRequest;
 import com.example.jobmaster.entity.FileEntity;
 import com.example.jobmaster.entity.UserEntity;
 import com.example.jobmaster.repository.FieldRepository;
+import com.example.jobmaster.repository.FileRepository;
 import com.example.jobmaster.repository.PositionRepository;
 import com.example.jobmaster.repository.PostRepository;
 import com.example.jobmaster.service.IFileService;
@@ -16,12 +17,21 @@ import com.example.jobmaster.until.constants.DefautlConstants;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.UUID;
 
 
 /**
@@ -84,9 +94,49 @@ public class  AuthController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<FileEntity> uploadFile(@RequestParam("file") MultipartFile file,HttpServletRequest httpServletRequest) throws IOException {
-        return ResponseEntity.ok(iFileUploadService.uploadFile(file.getBytes()));
-    };
+    public ResponseEntity<FileEntity> uploadFile(@RequestParam("file") MultipartFile file, HttpServletRequest httpServletRequest) throws IOException {
+        // Lấy content type của file để xác định loại tệp
+        String contentType = file.getContentType();
+        String fileType = "auto";  // Mặc định là "auto"
+
+        // Kiểm tra loại tệp
+        if (contentType != null && contentType.equalsIgnoreCase("application/pdf")) {
+            fileType = "pdf"; // Đặt fileType là pdf khi file là PDF
+        }
+
+        // Gọi đến service và truyền thêm fileType để xử lý
+        return ResponseEntity.ok(iFileUploadService.uploadFile(file.getBytes(), fileType));
+    }
+
+    private static final String UPLOAD_DIR = "D:/uploads";
+
+    @Autowired
+    private FileRepository fileRepository;
+
+    @PostMapping("/upload-pdf")
+    public ResponseEntity uploadFile(@RequestParam("file") MultipartFile file) {
+        try {
+            // Tạo thư mục nếu chưa tồn tại
+            File directory = new File(UPLOAD_DIR);
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+
+            // Tạo đường dẫn để lưu tệp
+            String filePath = UPLOAD_DIR + UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+            File destFile = new File(filePath);
+
+            // Lưu tệp
+            file.transferTo(destFile);
+            FileEntity fileEntity = new FileEntity();
+            fileEntity.setUrl(filePath);
+
+            // Trả về URL hoặc đường dẫn tệp
+            return ResponseEntity.ok(fileRepository.save(fileEntity));
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error uploading file: " + e.getMessage());
+        }
+    }
 
     @GetMapping(value = "/get-file")
     public ResponseEntity getFile(@RequestParam String fileId) throws IOException {
@@ -123,5 +173,24 @@ public class  AuthController {
     @RequestMapping(value = "/get-detail-company",method = RequestMethod.GET)
     public ResponseEntity getDetailCompany(@RequestParam String campaignId){
         return ResponseEntity.ok(consumer.getDetailCompany(campaignId));
+    }
+
+    @GetMapping("/download")
+    @ResponseBody
+    public ResponseEntity<Resource> downloadFile(@RequestParam String url) {
+        try {
+            Path filePath = Paths.get("").resolve(url).normalize();
+            Resource resource = new UrlResource(filePath.toUri());
+
+            if (resource.exists()) {
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                        .body(resource);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (MalformedURLException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

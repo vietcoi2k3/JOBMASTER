@@ -16,6 +16,7 @@ import ServiceList from "./component/dashboard/ServiceList";
 import InfoCompany from "./component/user-profile/InfoCompany";
 import ManagePost from "./component/dashboard/ManagePost";
 import ViewCV from "./component/dashboard/ViewCV";
+import CVLayout from "./component/CVLayout/CVLayout";
 
 function App() {
 
@@ -32,7 +33,8 @@ function App() {
           <Route path="job-form" element={<JobForm/>}/>
           <Route path="service" element={<ServiceList/>}/>
           <Route path="manage-post" element={<ManagePost/>}/>
-          <Route path="view-cv" element={<ViewCV/>}/>
+          <Route path="view-cv/:id" element={<ViewCV/>}/>
+          <Route path="detail-cv/:id" element={<CVLayout/>}/>
       </Route>
       <Route path="/sign-up" element={<SignUp />} />
         <Route path="/popup" element={<RecruitmentPopup />} />

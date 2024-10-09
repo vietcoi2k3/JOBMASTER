@@ -25,8 +25,35 @@ public class AdminController {
 
     @RequestMapping(value = "/add-field",method = RequestMethod.POST)
     public ResponseEntity addField(@RequestBody FieldEntity fieldEntity){
+        if (fieldRepository.existsByCode(fieldEntity.getCode())){
+            return ResponseEntity.badRequest().body("CODE EXITS");
+        }
        return ResponseEntity.ok(fieldRepository.save(fieldEntity));
     }
 
+    @RequestMapping(value = "/get-list-field",method = RequestMethod.GET)
+    public ResponseEntity getListField(
+            @RequestParam(required = false) String code,
+            @RequestParam(defaultValue = "") String name
+    ){
+        return ResponseEntity.ok(fieldRepository.findByCodeAndName(code,name));
+    };
 
+    @RequestMapping(value = "/get-list-position",method = RequestMethod.GET)
+    public ResponseEntity getListPosition(
+            @RequestParam(required = false) String code,
+            @RequestParam(defaultValue = "") String name
+    ){
+        return ResponseEntity.ok(positionRepository.findByCodeAndName(code,name));
+    };
+
+    @RequestMapping(value = "/delete-field/{id}",method = RequestMethod.DELETE)
+    public ResponseEntity deleteField(@PathVariable String id){fieldRepository.deleteById(id);
+        return ResponseEntity.ok("oke");
+    }
+
+    @RequestMapping(value = "/delete-position/{id}",method = RequestMethod.DELETE)
+    public ResponseEntity deletePosition(@PathVariable String id){positionRepository.deleteById(id);
+        return ResponseEntity.ok("oke");
+    }
 }

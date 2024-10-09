@@ -100,8 +100,8 @@ public class UserServiceImpl implements IUserService {
         if (userRepository.existsByUsername(registerRequest.getEmail())){
            throw new RuntimeException("Tài khoản đã tồn tại");
         }
-        if (registerRequest.isConsumer()){
-            RoleEntity roleEntity = roleRepository.findById(1)
+        if (registerRequest.getIsConsumer()){
+            RoleEntity roleEntity = roleRepository.findById(2)
                     .orElseThrow(() -> new RuntimeException("Role not found"));
             Set<RoleEntity> roleEntities = new HashSet<>(Arrays.asList(roleEntity));
 

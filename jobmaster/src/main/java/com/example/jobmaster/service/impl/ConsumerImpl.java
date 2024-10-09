@@ -43,11 +43,13 @@ public class ConsumerImpl implements IConsumerService {
         Pageable p = PageRequest.of(pageNumber,pageSize);
         Page<PostEntity> postEntities = postRepository.getListPost(search,address,field,p);
         List<PostResponse> listResult = new ArrayList<>();
+        System.out.println(listResult.size());
         for (PostEntity x: postEntities.getContent()
              ) {
             CampaignEntity campaignEntity = campaignRepository.findById(x.getCampaignId()).get();
             EnterpriseEntity enterprise = enterpriseRepository.findById(campaignEntity.getEnterpriseId()).get();
             PostResponse postResponse = new PostResponse();
+            postResponse.setId(x.getId());
             postResponse.setQuantityCv(x.getQuantity());
             postResponse.setTitle(x.getTitle());
             postResponse.setNameCam(x.getTitle());
@@ -70,9 +72,9 @@ public class ConsumerImpl implements IConsumerService {
     }
 
     @Override
-    public CompanyResponse getDetailCompany(String campaignId) {
-        CampaignEntity campaignEntity = campaignRepository.findById(campaignId).get();
-        EnterpriseEntity enterprise = enterpriseRepository.findById(campaignEntity.getEnterpriseId()).get();
+    public CompanyResponse getDetailCompany(String enterpriseId) {
+
+        EnterpriseEntity enterprise = enterpriseRepository.findById(enterpriseId).get();
         CompanyResponse companyResponse = mapper.map(enterprise,CompanyResponse.class);
 
         return companyResponse;

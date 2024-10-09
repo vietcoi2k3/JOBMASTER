@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 public class PostResponse {
+    private String id;
     private String title;
     private String position;
     private String nameCam;
@@ -25,4 +26,5 @@ public class PostResponse {
     private String required;
     private String nameCompany;
     private String scales;
+    private int quantity;
 }

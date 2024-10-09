@@ -3,6 +3,7 @@ package com.example.jobmaster.service.impl;
 import com.example.jobmaster.dto.CampaignDTO;
 import com.example.jobmaster.dto.EnterpriseDTO;
 import com.example.jobmaster.dto.PostDTO;
+import com.example.jobmaster.dto.Response.CVResponse;
 import com.example.jobmaster.dto.Response.PageResponse;
 import com.example.jobmaster.dto.Response.PostResponse;
 import com.example.jobmaster.entity.*;
@@ -15,7 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +32,9 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private CVRepository cvRepository;
 
     @Autowired
     private EnterpriseRepository enterpriseRepository;
@@ -145,13 +152,59 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
             postResponse.setPosition(x.getPosition());
             postResponse.setTitle(x.getTitle());
             postResponse.setNameCam(campaignEntity.getName());
-            postResponse.setQuantityCv(5);
+            postResponse.setQuantityCv(cvRepository.countByPostId(x.getId()));
+            postResponse.setId(x.getId());
             postResponses.add(postResponse);
+
         }
         PageResponse pageResponse = new PageResponse();
         pageResponse.setData(postResponses);
         pageResponse.setTotalPage(postEntities.getTotalPages());
         return pageResponse;
+    }
+
+    @Override
+    public PostResponse getDetailPost(String id) {
+         PostEntity postEntity = postRepository.findById(id).get();
+         CampaignEntity campaignEntity = campaignRepository.findById(postEntity.getCampaignId()).get();
+         PostResponse postResponse = PostResponse.builder()
+                 .id(postEntity.getId())
+                 .title(postEntity.getTitle())
+                 .position(postEntity.getPosition())
+                 .quantity(postEntity.getQuantity())
+                 .nameCam(campaignEntity.getName())
+                 .build();
+         return postResponse;
+    }
+
+    @Override
+    public PageResponse getListCv(int pageNumber, int pageSize, String postId) {
+        pageNumber--;
+        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+        Page<CVEntity> cvEntityPage = cvRepository.getListCv(postId,pageable);
+
+        return PageResponse.<CVEntity>builder()
+                .totalPage(cvEntityPage.getTotalPages())
+                .data(cvEntityPage.getContent())
+                .build();
+    }
+
+    @Override
+    public CVResponse getDetailCv(String id) {
+        CVEntity cvEntity = cvRepository.findById(id).get();
+        CVResponse cvResponse = mapper.map(cvEntity,CVResponse.class);
+        FileEntity fileEntity = fileRepository.findById(cvResponse.getFileId()).get();
+        cvResponse.setUrl(fileEntity.getUrl());
+        return cvResponse;
+    }
+
+    @Override
+    public CVEntity updateStatus(CVEntity cvEntity) {
+        CVEntity cv = cvRepository.findById(cvEntity.getId()).get();
+        cv.setNote(cvEntity.getNote());
+        cv.setStatus(cvEntity.getStatus());
+
+        return     cvRepository.save(cv);
     }
 
 

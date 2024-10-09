@@ -19,5 +19,6 @@ public class CompanyResponse {
     private String linkWebSite;
     private String description;
     private String scales;
+    private String logo;
     private List<PostResponse> postResponses;
 }

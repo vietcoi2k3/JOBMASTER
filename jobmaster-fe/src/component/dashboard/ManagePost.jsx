@@ -15,13 +15,6 @@ import { Edit, Visibility } from '@mui/icons-material';
 import {useNavigate} from "react-router-dom";
 import EnterpriseApi from "../../api/EnterpriseApi";
 
-const jobPosts = [
-    { id: "#1693750", campaign: "Tuyển dụng tháng 5", position: "Tester", viewCount: 5, status: "Dừng hiển thị", isVisible: true },
-    { id: "#1693749", campaign: "Tuyển dụng tháng 4", position: "Business Analyst", viewCount: 4, status: "Dừng hiển thị", isVisible: true },
-    { id: "#1693748", campaign: "Tuyển dụng tháng 4", position: "Business Analyst", viewCount: 2, status: "Dừng hiển thị", isVisible: true },
-    { id: "#1693740", campaign: "Tuyển dụng tháng 4", position: "Business Analyst", viewCount: 6, status: "Dừng hiển thị", isVisible: false },
-];
-
 export default function ManagePost() {
 
     const [post,setPost] = useState([])
@@ -81,9 +74,9 @@ export default function ManagePost() {
                                 </TableCell>
                                 <TableCell>
                                     <Button variant="outlined" color="primary" onClick={()=>[
-                                        navigate("/dashboard/view-cv")
+                                        navigate(`/dashboard/view-cv/${post.id}`)
                                     ]}>
-                                        Xem {post.viewCount} CV
+                                        Xem CV ({post.quantityCv})
                                     </Button>
                                 </TableCell>
                                 <TableCell>

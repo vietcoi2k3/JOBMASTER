@@ -20,5 +20,6 @@ public class PositionEntity extends BaseEntity{
     private String id;
     private String name;
     private String status;
+    private String code;
     private String fieldId;
 }

@@ -3,6 +3,7 @@ package com.example.jobmaster.controller;
 import com.example.jobmaster.dto.CampaignDTO;
 import com.example.jobmaster.dto.EnterpriseDTO;
 import com.example.jobmaster.dto.PostDTO;
+import com.example.jobmaster.entity.CVEntity;
 import com.example.jobmaster.entity.FileEntity;
 import com.example.jobmaster.entity.UserEntity;
 import com.example.jobmaster.repository.FieldRepository;
@@ -17,10 +18,18 @@ import com.example.jobmaster.until.constants.DefautlConstants;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+
 
 /**
  * Class: EnterpriseController
@@ -54,6 +63,7 @@ public class EnterpriseController {
 
     @Autowired
     private PositionRepository positionRepository;
+//    private final String UPLOAD_DIR = "C:/uploads/";
     @GetMapping(value = "/get-certificate")
     public ResponseEntity getCertificate(HttpServletRequest httpServletRequest) throws IOException {
         UserEntity user = userRepository.findByUsername(jwtUntil.getUsernameFromRequest(httpServletRequest));
@@ -127,5 +137,31 @@ public class EnterpriseController {
     public ResponseEntity getAllPosition(){
         return ResponseEntity.ok(positionRepository.findAll());
     }
+
+    @GetMapping(value = "/get-post-detail/{id}")
+    public ResponseEntity getDetailPost(@PathVariable String id){
+        return ResponseEntity.ok(iEnterpiseService.getDetailPost(id));
+    }
+
+    @GetMapping(value = "/get-list-cv")
+    public ResponseEntity getListCv(
+            @RequestParam(defaultValue = DefautlConstants.PAGE_SIZE) int pageSize,
+            @RequestParam(defaultValue = DefautlConstants.PAGE_NO) int pageNumber,
+            @RequestParam(defaultValue = "") String postId
+    ){
+        return ResponseEntity.ok(iEnterpiseService.getListCv(pageNumber,pageSize,postId));
+    }
+
+    @RequestMapping(value = "/get-detail-cv/{id}",method = RequestMethod.GET)
+    public ResponseEntity getDetailCv(@PathVariable String id){
+        return ResponseEntity.ok(iEnterpiseService.getDetailCv(id));
+    }
+
+    @RequestMapping(value = "/update-status-cv",method = RequestMethod.PUT)
+    public ResponseEntity updateStatusCv(@RequestBody CVEntity cvEntity){
+        return ResponseEntity.ok(iEnterpiseService.updateStatus(cvEntity));
+    }
+
+    // API để tải file
 
 }

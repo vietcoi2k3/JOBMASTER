@@ -66,6 +66,28 @@ const EnterpriseApi =  {
         getAllPosition(){
             const url ="/enterprise/get-all-position"
             return axiosClient.get(url)
+        },
+
+        getDetailPost(id){
+            const url = "/enterprise/get-post-detail/"
+            return axiosClient.get(url+id)
+        },
+
+        getListCv(pageNumber,postId){
+            const url = "/enterprise/get-list-cv";
+            return axiosClient.get(url + "?pageNumber=" + pageNumber + "&postId=" + postId);
+
+        },
+
+        getDetailCv(id){
+            const url = "/enterprise/get-detail-cv/"
+            return axiosClient.get(url+id)
+        },
+
+
+        updateStatus(data){
+            const url = "/enterprise/update-status-cv"
+            return axiosClient.put(url,data)
         }
 
 

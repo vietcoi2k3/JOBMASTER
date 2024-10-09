@@ -1,6 +1,5 @@
 package com.example.jobmaster.repository;
 
-import com.example.jobmaster.entity.CampaignEntity;
 import com.example.jobmaster.entity.PostEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
