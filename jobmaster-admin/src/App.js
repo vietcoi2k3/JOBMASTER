@@ -25,7 +25,6 @@ function App() {
                     <Routes>
                         <Route path="/account" element={<AccountTable />} />
                         <Route path="/setting/*" element={<TabSetting />} />
-                        <Route path="/setting2/*" element={<TabSetting />} />
                     </Routes>
             </Box>
 

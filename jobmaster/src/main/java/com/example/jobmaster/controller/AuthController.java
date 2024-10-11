@@ -108,7 +108,7 @@ public class  AuthController {
         return ResponseEntity.ok(iFileUploadService.uploadFile(file.getBytes(), fileType));
     }
 
-    private static final String UPLOAD_DIR = "D:/uploads";
+    private static final String UPLOAD_DIR = "uploads/";
 
     @Autowired
     private FileRepository fileRepository;
