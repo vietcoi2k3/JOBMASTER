@@ -108,33 +108,38 @@ public class  AuthController {
         return ResponseEntity.ok(iFileUploadService.uploadFile(file.getBytes(), fileType));
     }
 
-    private static final String UPLOAD_DIR = "uploads/";
+    private static final String UPLOAD_DIR = "uploads" + File.separator;
 
     @Autowired
     private FileRepository fileRepository;
 
     @PostMapping("/upload-pdf")
-    public ResponseEntity uploadFile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
         try {
             // Tạo thư mục nếu chưa tồn tại
             File directory = new File(UPLOAD_DIR);
             if (!directory.exists()) {
-                directory.mkdirs();
+                directory.mkdirs(); // Tạo thư mục
             }
 
-            // Tạo đường dẫn để lưu tệp
-            String filePath = UPLOAD_DIR + UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+            // Tạo tên tệp duy nhất và đường dẫn lưu trữ
+            String uniqueFileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+            String filePath = UPLOAD_DIR + uniqueFileName;
             File destFile = new File(filePath);
 
-            // Lưu tệp
+            // Lưu tệp vào đường dẫn
             file.transferTo(destFile);
-            FileEntity fileEntity = new FileEntity();
-            fileEntity.setUrl(filePath);
 
-            // Trả về URL hoặc đường dẫn tệp
+            // Tạo đối tượng FileEntity để lưu thông tin tệp vào cơ sở dữ liệu
+            FileEntity fileEntity = new FileEntity();
+            fileEntity.setUrl(filePath); // Đường dẫn của tệp lưu trên server
+
+            // Lưu thông tin tệp vào cơ sở dữ liệu và trả về thông tin đã lưu
             return ResponseEntity.ok(fileRepository.save(fileEntity));
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error uploading file: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred: " + e.getMessage());
         }
     }
 
