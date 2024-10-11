@@ -47,7 +47,7 @@ const CVLayout = () => {
                     <div style={{ width: '100%', height: '100%' }}>
                         {
                             isLoading||<Viewer
-                                fileUrl={"http://localhost:8080/auth/download?url="+cvEntity.url}
+                                fileUrl={"http://159.223.69.16:8080/auth/download?url="+cvEntity.url}
                                 defaultScale={1.5}
                                 plugins={[]}
                             />
