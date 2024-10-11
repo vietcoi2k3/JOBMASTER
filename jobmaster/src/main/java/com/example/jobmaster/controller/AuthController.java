@@ -108,7 +108,7 @@ public class  AuthController {
         return ResponseEntity.ok(iFileUploadService.uploadFile(file.getBytes(), fileType));
     }
 
-    private static final String UPLOAD_DIR = "uploads" + File.separator;
+    private static final String UPLOAD_DIR = "/uploads" + File.separator; // Đường dẫn sẽ trỏ đến thư mục đã mount
 
     @Autowired
     private FileRepository fileRepository;
@@ -116,10 +116,10 @@ public class  AuthController {
     @PostMapping("/upload-pdf")
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
         try {
-            // Tạo thư mục nếu chưa tồn tại
+            // Tạo thư mục nếu chưa tồn tại (nhưng thư mục đã được mount nên không cần thiết)
             File directory = new File(UPLOAD_DIR);
             if (!directory.exists()) {
-                directory.mkdirs(); // Tạo thư mục
+                directory.mkdirs(); // Tạo thư mục nếu cần
             }
 
             // Tạo tên tệp duy nhất và đường dẫn lưu trữ
@@ -142,6 +142,7 @@ public class  AuthController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred: " + e.getMessage());
         }
     }
+
 
     @GetMapping(value = "/get-file")
     public ResponseEntity getFile(@RequestParam String fileId) throws IOException {

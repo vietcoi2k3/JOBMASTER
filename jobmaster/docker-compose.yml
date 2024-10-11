@@ -11,7 +11,7 @@ services:
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=Quocviet2003@
     volumes:
-      - /path/on/host/uploads:/uploads   # Mount thư mục uploads từ máy chủ vào container
+      - ./uploads:/uploads  # Mount thư mục uploads từ máy chủ vào container
 
   db:
     image: mysql:8.0
