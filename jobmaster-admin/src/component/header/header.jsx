@@ -43,7 +43,9 @@ const Header = () => {
                     <Tab label="Thiết lập" onClick={()=>{
                         navigate("/setting")
                     }} />
-                    <Tab label="Tài khoản" />
+                    <Tab label="Tài khoản" onClick={()=>{
+                        navigate("/account")
+                    }} />
                 </Tabs>
 
                 {/* Notification Icon */}

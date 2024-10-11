@@ -23,7 +23,7 @@ function App() {
                 padding: 2,
             }}>
                     <Routes>
-                        <Route path="/account" element={<AccountTable />} />
+                        <Route path="/account/*" element={<AccountTable />} />
                         <Route path="/setting/*" element={<TabSetting />} />
                     </Routes>
             </Box>
