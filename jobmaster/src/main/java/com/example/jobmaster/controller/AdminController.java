@@ -4,6 +4,7 @@ import com.example.jobmaster.entity.FieldEntity;
 import com.example.jobmaster.entity.PositionEntity;
 import com.example.jobmaster.repository.FieldRepository;
 import com.example.jobmaster.repository.PositionRepository;
+import com.example.jobmaster.service.IAdminService;
 import com.example.jobmaster.until.constants.DefautlConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,9 @@ public class AdminController {
 
     @Autowired
     private PositionRepository positionRepository;
+
+    @Autowired
+    private IAdminService iAdminService;
 
     @Autowired
     private FieldRepository fieldRepository;
@@ -52,8 +56,24 @@ public class AdminController {
         return ResponseEntity.ok("oke");
     }
 
-    @RequestMapping(value = "/delete-position/{id}",method = RequestMethod.DELETE)
+    @RequestMapping(value = "/delete-position/{id}",method = RequestMethod.GET)
     public ResponseEntity deletePosition(@PathVariable String id){positionRepository.deleteById(id);
         return ResponseEntity.ok("oke");
+    }
+
+    @RequestMapping(value = "/get-list-account-candidate",method = RequestMethod.GET)
+    public ResponseEntity getListAccountCandidate(
+            @RequestParam(defaultValue = DefautlConstants.PAGE_SIZE) int pageSize,
+            @RequestParam(defaultValue = DefautlConstants.PAGE_NO) int pageNumber
+    ){
+        return ResponseEntity.ok(iAdminService.getListCandidate(pageSize,pageNumber));
+    }
+
+    @RequestMapping(value = "/get-list-account-admin",method = RequestMethod.DELETE)
+    public ResponseEntity getListAccountAdmin(
+            @RequestParam(defaultValue = DefautlConstants.PAGE_SIZE) int pageSize,
+            @RequestParam(defaultValue = DefautlConstants.PAGE_NO) int pageNumber
+    ){
+        return ResponseEntity.ok(iAdminService.getListAdmin(pageSize,pageNumber));
     }
 }

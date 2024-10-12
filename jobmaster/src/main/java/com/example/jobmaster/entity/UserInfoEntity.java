@@ -15,5 +15,6 @@ public class UserInfoEntity extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String userId;
+    private String fullName;
 
 }

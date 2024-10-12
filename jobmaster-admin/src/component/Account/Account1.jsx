@@ -27,28 +27,28 @@ import {useNavigate} from "react-router-dom";
 function Account1() {
     const navigate = useNavigate()
     const [tabIndex, setTabIndex] = useState(0); // State for active tab
-    const [code,setCode] = useState(null)
-    const [name,setName] = useState(null)
-    const [field,setField] = useState([])
+    const [pageNumber,setPageNumber] = useState(1)
+    const [candidate,setCandidate] = useState([])
     const [open, setOpen] = useState(false);
+
 
     const handleClickOpen = () => {
         setOpen(true);
     };
 
-    const handleDelete=(id)=>{
-        AdminApi.deleteField(id).then((e)=>{
-            AdminApi.getListField(code,name).then((e)=>{
-                setField(e)
-            })
-        })
-
-    }
+    // const handleDelete=(id)=>{
+    //     AdminApi.deleteField(id).then((e)=>{
+    //         AdminApi.getListAccountCandidate(code,name).then((e)=>{
+    //             setCandidate(e)
+    //         })
+    //     })
+    //
+    // }
 
     const handleClose = () => {
         setOpen(false);
-        AdminApi.getListField(code,name).then((e)=>{
-            setField(e)
+        AdminApi.getListAccountCandidate(pageNumber).then((e)=>{
+            setCandidate(e)
         })
     };
     const handleTabChange = (event, newValue) => {
@@ -56,10 +56,10 @@ function Account1() {
     };
 
     useEffect(()=>{
-        AdminApi.getListField(code,name).then((e)=>{
-            setField(e)
+        AdminApi.getListAccountCandidate(pageNumber).then((e)=>{
+            setCandidate(e)
         })
-    },[])
+    },[pageNumber])
 
     return (
         <Box sx={{ width: '100%' }}>
@@ -84,28 +84,28 @@ function Account1() {
                     <TableHead>
                         <TableRow>
                             <TableCell>STT</TableCell>
-                            <TableCell>code</TableCell>
-                            <TableCell>Tên lĩnh vực</TableCell>
+                            <TableCell>Email</TableCell>
+                            <TableCell>Tên</TableCell>
                             <TableCell>Trạng thái</TableCell>
                             <TableCell>Thao tác</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {field.map((field, index) => (
-                            <TableRow key={field.id}>
-                                <TableCell>{index + 1}</TableCell>
-                                <TableCell>{field.code}</TableCell>
-                                <TableCell>{field.name}</TableCell>
-                                <TableCell style={{ color: field.status === 'ACTIVE' ? 'green' : 'red' }}>
-                                    {field.status}
+                        {candidate.map((candidate, index) => (
+                            <TableRow key={candidate.id}>
+                                <TableCell>{((pageNumber-1)*10)+index + 1}</TableCell>
+                                <TableCell>{candidate.code}</TableCell>
+                                <TableCell>{candidate.name}</TableCell>
+                                <TableCell style={{ color: candidate.status === 'ACTIVE' ? 'green' : 'yellow' }}>
+                                    {candidate.status}
                                 </TableCell>
                                 <TableCell>
                                     <IconButton aria-label="view" color="primary">
                                         <VisibilityIcon />
                                     </IconButton>
-                                    <IconButton aria-label="delete" color="primary" onClick = {()=>{handleDelete(field.id)}}>
-                                        <DeleteIcon />
-                                    </IconButton>
+                                    {/*<IconButton aria-label="delete" color="primary" onClick = {()=>{handleDelete(field.id)}}>*/}
+                                    {/*    <DeleteIcon />*/}
+                                    {/*</IconButton>*/}
                                 </TableCell>
                             </TableRow>
                         ))}

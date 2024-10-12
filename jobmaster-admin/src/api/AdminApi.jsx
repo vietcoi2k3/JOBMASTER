@@ -19,6 +19,24 @@ const AdminApi =  {
         });
     },
 
+    getListAccountCandidate(pageNumber) {
+        const url = "/admin/get-list-account-candidate";
+        return axiosClient.get(url, {
+            params: {
+                pageNumber: pageNumber
+            },
+        });
+    },
+
+    getListAccountAdmin(pageNumber) {
+        const url = "/admin/get-list-account-admin";
+        return axiosClient.get(url, {
+            params: {
+                pageNumber: pageNumber,
+            },
+        });
+    },
+
     addField(data){
         const url = "/admin/add-field"
         return axiosClient.post(url,data)

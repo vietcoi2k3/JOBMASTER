@@ -45,11 +45,11 @@ function AccountTable() {
                 sx={{ bgcolor: 'white', borderBottom: 1, borderColor: 'divider' }} // Đặt màu nền trắng cho Tabs
             >
                 <Tab
-                    label="Lĩnh Vực"
+                    label="Ứng Viên"
 
                 />
                 <Tab
-                    label="Vị trí"
+                    label="Nhà tuyền dụng"
 
                 />
             </Tabs>

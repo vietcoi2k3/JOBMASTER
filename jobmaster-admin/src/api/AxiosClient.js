@@ -3,7 +3,7 @@ import { STATIC_HOST_PRODUCT } from "../enviroment";
 import { STATIC_HOST_LOCAL } from "../enviroment";
 // Tạo một instance của axios với baseURL
 const axiosClient = axios.create({
-  baseURL: `${STATIC_HOST_PRODUCT}`,
+  baseURL: `${STATIC_HOST_LOCAL}`,
 })
 // Thêm một interceptor cho request
 axiosClient.interceptors.request.use(
