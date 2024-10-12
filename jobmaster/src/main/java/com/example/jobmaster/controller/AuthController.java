@@ -4,10 +4,7 @@ import com.example.jobmaster.dto.Request.LoginRequest;
 import com.example.jobmaster.dto.Request.RegisterRequest;
 import com.example.jobmaster.entity.FileEntity;
 import com.example.jobmaster.entity.UserEntity;
-import com.example.jobmaster.repository.FieldRepository;
-import com.example.jobmaster.repository.FileRepository;
-import com.example.jobmaster.repository.PositionRepository;
-import com.example.jobmaster.repository.PostRepository;
+import com.example.jobmaster.repository.*;
 import com.example.jobmaster.service.IFileService;
 import com.example.jobmaster.service.IFileUploadService;
 import com.example.jobmaster.service.IUserService;
@@ -56,6 +53,8 @@ public class  AuthController {
 
     @Autowired
     private IFileService iFileService;
+    @Autowired
+    private CityRepository cityRepository;
 
 
     @Autowired
@@ -147,6 +146,11 @@ public class  AuthController {
     @GetMapping(value = "/get-file")
     public ResponseEntity getFile(@RequestParam String fileId) throws IOException {
         return iFileService.getFile(fileId);
+    };
+
+    @GetMapping(value = "/get-all-city")
+    public ResponseEntity getAllCity() throws IOException {
+        return ResponseEntity.ok(cityRepository.findAll());
     };
 
     @GetMapping(value = "/get-all-field")

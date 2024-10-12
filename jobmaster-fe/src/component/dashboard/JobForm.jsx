@@ -102,8 +102,7 @@ const JobForm = () => {
         })
     }
     const getProvince = () => {
-
-        return Province.getProvince().then(response => setListCity(response.results));
+        return Province.getProvince().then(response => setListCity(response));
     };
     return (
         <Box sx={{ padding: 2 }}>
@@ -208,11 +207,14 @@ const JobForm = () => {
                             select
                             name="city"
                             value={data.city}
-                            onChange={handleChange}
-                            onClick={getProvince} // Gọi API khi click vào Select
+                            onChange={(event) => {
+                                handleChange(event);  // Xử lý logic thay đổi giá trị
+                             // Gọi API khi có thay đổi
+                            }}
+                            onClick={()=>getProvince()}
                         >
                             {listCity.map((e) => (
-                                <MenuItem  key={e.province_id} value={e.province_name} >
+                                <MenuItem key={e.province_id} value={e.province_name}>
                                     {e.province_name}
                                 </MenuItem>
                             ))}

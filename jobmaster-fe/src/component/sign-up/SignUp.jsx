@@ -46,7 +46,7 @@ const SignUp = () => {
   const [idCity,setIdCity] = useState("01")
   const getProvince = () => {
 
-    return Province.getProvince().then(response => setListCity(response.results));
+    return Province.getProvince().then(response => setListCity(response));
   };
   const getDistrict = () => {
      Province.getDistrictByProvince(idCity).then(response => setListDistrict(response.results));

@@ -3,7 +3,7 @@ import axiosClient from './AxiosClient';
 
 const Province =  {
     getProvince() {
-        const url= `https://vapi.vnappmob.com/api/province`;
+        const url= `/auth/get-all-city`;
         return axiosClient.get(url, {
 
         });
