@@ -1,9 +1,6 @@
 package com.example.jobmaster.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -29,11 +26,16 @@ public class PostEntity extends BaseEntity{
     private String level;
     private String experience;
     private String timeWorking;
+    @Column(columnDefinition = "longtext")
     private String description;
+    @Column(columnDefinition = "longtext")
     private String required;
+    @Column(columnDefinition = "longtext")
     private String interest;
     private String gender;
+    @Column(columnDefinition = "longtext")
     private String requiredSkill;
+    @Column(columnDefinition = "longtext")
     private String skillShouldHave;
     private String campaignId;
     private String status;

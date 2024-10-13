@@ -3,12 +3,14 @@ import './App.css';
 
 import {BrowserRouter as Router, Routes, Route, useLocation} from 'react-router-dom';
 import Header from "./component/header/header";
-import {Home} from "@mui/icons-material";
+
 import {Box} from "@mui/material";
 import AccountTable from "./component/Account/AccountTable";
-import SettingTable from "./component/Setting/Setting";
-import SettingTable2 from "./component/Setting/Setting2";
+
 import TabSetting from "./component/Setting/Tab";
+import ManageCertificate from "./component/MangeCertificate/ManageCertificate";
+
+import Campaign from "./component/post/Post";
 
 function App() {
   return (
@@ -25,6 +27,8 @@ function App() {
                     <Routes>
                         <Route path="/account/*" element={<AccountTable />} />
                         <Route path="/setting/*" element={<TabSetting />} />
+                        <Route path="/manage-certificate" element={<ManageCertificate />} />
+                        <Route path="/manage-campaign" element={<Campaign />} />
                     </Routes>
             </Box>
 

@@ -22,5 +22,11 @@ public class RegisterRequest {
     private String companyName;
     private String city;
     private String district;
-    private Boolean isConsumer;
+
+    @Builder.Default
+    private Boolean isConsumer = false; // Gán giá trị mặc định
+
+    {
+        isConsumer = false;
+    }
 }

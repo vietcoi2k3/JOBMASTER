@@ -69,11 +69,27 @@ public class AdminController {
         return ResponseEntity.ok(iAdminService.getListCandidate(pageSize,pageNumber));
     }
 
-    @RequestMapping(value = "/get-list-account-admin",method = RequestMethod.DELETE)
+    @RequestMapping(value = "/get-list-account-admin",method = RequestMethod.GET)
     public ResponseEntity getListAccountAdmin(
             @RequestParam(defaultValue = DefautlConstants.PAGE_SIZE) int pageSize,
             @RequestParam(defaultValue = DefautlConstants.PAGE_NO) int pageNumber
     ){
         return ResponseEntity.ok(iAdminService.getListAdmin(pageSize,pageNumber));
+    }
+    @RequestMapping(value = "/get-list-certificate",method = RequestMethod.GET)
+    public ResponseEntity getListCertificate(
+            @RequestParam(defaultValue = DefautlConstants.PAGE_SIZE) int pageSize,
+            @RequestParam(defaultValue = DefautlConstants.PAGE_NO) int pageNumber
+    ){
+        return ResponseEntity.ok(iAdminService.getListCertificate(pageSize,pageNumber));
+    }
+
+    @RequestMapping(value = "/get-list-campaign",method = RequestMethod.GET)
+    public ResponseEntity getListCampaign(
+            @RequestParam(defaultValue = DefautlConstants.PAGE_SIZE) int pageSize,
+            @RequestParam(defaultValue = DefautlConstants.PAGE_NO) int pageNumber,
+                  @RequestParam(defaultValue = "") String search
+    ){
+        return ResponseEntity.ok(iAdminService.getListCampaign(pageSize,pageNumber,search));
     }
 }

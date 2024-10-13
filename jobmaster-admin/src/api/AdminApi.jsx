@@ -37,6 +37,24 @@ const AdminApi =  {
         });
     },
 
+    getListCertificate(pageNumber) {
+        const url = "/admin/get-list-certificate";
+        return axiosClient.get(url, {
+            params: {
+                pageNumber: pageNumber,
+            },
+        });
+    },
+
+    getListCampaign(pageNumber) {
+        const url = "/admin/get-list-campaign";
+        return axiosClient.get(url, {
+            params: {
+                pageNumber: pageNumber,
+            },
+        });
+    },
+
     addField(data){
         const url = "/admin/add-field"
         return axiosClient.post(url,data)

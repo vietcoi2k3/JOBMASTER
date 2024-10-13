@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Table,
     TableBody,
@@ -8,110 +8,131 @@ import {
     TableRow,
     Paper,
     IconButton,
-    Tabs,
-    Tab,
     Box,
     TextField,
-    Button
+    Button,
+    Pagination
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import Pagination from '@mui/material/Pagination';
 import AddIcon from '@mui/icons-material/Add';
 import AdminApi from "../../api/AdminApi";
 import CreateFieldPopup from "./CreateFieldPopup";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-
-// Component for the table
 function Account1() {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const [tabIndex, setTabIndex] = useState(0); // State for active tab
-    const [pageNumber,setPageNumber] = useState(1)
-    const [candidate,setCandidate] = useState([])
+    const [pageNumber, setPageNumber] = useState(1); // Current page number
+    const [candidate, setCandidate] = useState([]);
+    const [totalPages, setTotalPages] = useState(1); // Total pages for pagination
     const [open, setOpen] = useState(false);
 
+    const getStatusInfo = (status) => {
+        switch (status) {
+            case 'ACTIVE':
+                return { color: 'green', text: 'Đang hoạt động' };
+            case 'WATTING_ACTIVE':
+                return { color: 'goldenrod', text: 'Chờ kích hoạt' };
+            case 'INACTIVE':
+                return { color: 'red', text: 'Không hoạt động' };
+            default:
+                return { color: 'black', text: 'Không xác định' };
+        }
+    };
 
     const handleClickOpen = () => {
         setOpen(true);
     };
 
-    // const handleDelete=(id)=>{
-    //     AdminApi.deleteField(id).then((e)=>{
-    //         AdminApi.getListAccountCandidate(code,name).then((e)=>{
-    //             setCandidate(e)
-    //         })
-    //     })
-    //
-    // }
-
     const handleClose = () => {
         setOpen(false);
-        AdminApi.getListAccountCandidate(pageNumber).then((e)=>{
-            setCandidate(e)
-        })
-    };
-    const handleTabChange = (event, newValue) => {
-        setTabIndex(newValue);
+        fetchCandidates(); // Refresh data after closing popup
     };
 
-    useEffect(()=>{
-        AdminApi.getListAccountCandidate(pageNumber).then((e)=>{
-            setCandidate(e)
-        })
-    },[pageNumber])
+    const fetchCandidates = async () => {
+        const response = await AdminApi.getListAccountCandidate(pageNumber);
+        setCandidate(response.data); // Update the candidate list
+        setTotalPages(response.totalPages); // Update total pages for pagination
+    };
+
+    useEffect(() => {
+        fetchCandidates(); // Fetch candidates when page number changes
+    }, [pageNumber]);
+
+    const handlePageChange = (event, value) => {
+        setPageNumber(value); // Update page number when user interacts with pagination
+    };
 
     return (
         <Box sx={{ width: '100%' }}>
             <Box sx={{ bgcolor: '#ffffff', padding: 1 }}>
-
-
-                {/* Search fields */}
-                <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
-                    <Box sx={{display: 'flex', gap: 2}}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <Box sx={{ display: 'flex', gap: 2 }}>
                         <TextField label="Tên lĩnh vực" variant="outlined" size="small" />
-                        <TextField label="mã lĩnh vực" variant="outlined" size="small" />
+                        <TextField label="Mã lĩnh vực" variant="outlined" size="small" />
                     </Box>
-                    <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={handleClickOpen}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        startIcon={<AddIcon />}
+                        onClick={handleClickOpen}
+                    >
                         Thêm mới
                     </Button>
                 </Box>
             </Box>
 
-            {/* Table section */}
-            <TableContainer component={Paper} sx={{ marginTop: 2 ,maxHeight: 400}}>
+            <TableContainer component={Paper} sx={{ marginTop: 2, maxHeight: 400 }}>
                 <Table>
                     <TableHead>
                         <TableRow>
                             <TableCell>STT</TableCell>
-                            <TableCell>Email</TableCell>
+                            <TableCell>Tài khoản</TableCell>
                             <TableCell>Tên</TableCell>
                             <TableCell>Trạng thái</TableCell>
                             <TableCell>Thao tác</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {candidate.map((candidate, index) => (
-                            <TableRow key={candidate.id}>
-                                <TableCell>{((pageNumber-1)*10)+index + 1}</TableCell>
-                                <TableCell>{candidate.code}</TableCell>
-                                <TableCell>{candidate.name}</TableCell>
-                                <TableCell style={{ color: candidate.status === 'ACTIVE' ? 'green' : 'yellow' }}>
-                                    {candidate.status}
-                                </TableCell>
-                                <TableCell>
-                                    <IconButton aria-label="view" color="primary">
-                                        <VisibilityIcon />
-                                    </IconButton>
-                                    {/*<IconButton aria-label="delete" color="primary" onClick = {()=>{handleDelete(field.id)}}>*/}
-                                    {/*    <DeleteIcon />*/}
-                                    {/*</IconButton>*/}
-                                </TableCell>
-                            </TableRow>
-                        ))}
+                        {candidate.map((item, index) => {
+                            const { color, text } = getStatusInfo(item.status);
+                            return (
+                                <TableRow key={item.id}>
+                                    <TableCell>{((pageNumber - 1) * 10) + index + 1}</TableCell>
+                                    <TableCell>{item.username}</TableCell>
+                                    <TableCell>{item.fullname}</TableCell>
+                                    <TableCell style={{ color }}>{text}</TableCell>
+                                    <TableCell>
+                                        <IconButton aria-label="view" color="primary">
+                                            <VisibilityIcon />
+                                        </IconButton>
+                                        {/* Uncomment if delete functionality is needed */}
+                                        {/* <IconButton
+                                            aria-label="delete"
+                                            color="primary"
+                                            onClick={() => handleDelete(item.id)}
+                                        >
+                                            <DeleteIcon />
+                                        </IconButton> */}
+                                    </TableCell>
+                                </TableRow>
+                            );
+                        })}
                     </TableBody>
                 </Table>
             </TableContainer>
+
+            {/* Pagination */}
+            <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
+                <Pagination
+                    count={totalPages}
+                    page={pageNumber}
+                    onChange={handlePageChange}
+                    color="primary"
+                />
+            </Box>
+
             <CreateFieldPopup open={open} onClose={handleClose} />
         </Box>
     );

@@ -19,4 +19,7 @@ public interface CampaignRepository extends JpaRepository<CampaignEntity,String>
     @Query("SELECT c.id FROM CampaignEntity c WHERE c.enterpriseId=:enterpriseId and c.id IS NOT NULL")
     List<String> getListIdCampaign(@Param("enterpriseId") String enterpriseId);
 
+    @Query("SELECT c FROM CampaignEntity c WHERE c.name  LIKE %:search% ")
+    Page<CampaignEntity> getListCampaignAdmin(@Param("search") String search, Pageable pageable);
+
 }
