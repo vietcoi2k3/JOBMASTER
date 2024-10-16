@@ -11,6 +11,8 @@ import TabSetting from "./component/Setting/Tab";
 import ManageCertificate from "./component/MangeCertificate/ManageCertificate";
 
 import Campaign from "./component/post/Post";
+import Post from "./component/post/Post";
+import ServiceList from "./component/Service/ServiceList";
 
 function App() {
   return (
@@ -29,6 +31,8 @@ function App() {
                         <Route path="/setting/*" element={<TabSetting />} />
                         <Route path="/manage-certificate" element={<ManageCertificate />} />
                         <Route path="/manage-campaign" element={<Campaign />} />
+                        <Route path="/post" element={<Post />} />
+                        <Route path="/service" element={<ServiceList />} />
                     </Routes>
             </Box>
 

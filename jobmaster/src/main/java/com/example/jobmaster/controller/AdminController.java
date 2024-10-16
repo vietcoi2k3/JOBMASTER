@@ -2,6 +2,7 @@ package com.example.jobmaster.controller;
 
 import com.example.jobmaster.entity.FieldEntity;
 import com.example.jobmaster.entity.PositionEntity;
+import com.example.jobmaster.enumration.Time;
 import com.example.jobmaster.repository.FieldRepository;
 import com.example.jobmaster.repository.PositionRepository;
 import com.example.jobmaster.service.IAdminService;
@@ -92,4 +93,9 @@ public class AdminController {
     ){
         return ResponseEntity.ok(iAdminService.getListCampaign(pageSize,pageNumber,search));
     }
+    @RequestMapping(value = "/get-list-package-admin",method = RequestMethod.GET)
+    public ResponseEntity getListPackageAdmin(@RequestParam Time time){
+        return ResponseEntity.ok(iAdminService.getListPackageAdmin(time));
+    }
+
 }

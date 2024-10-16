@@ -16,10 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +47,12 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
 
     @Autowired
     private ModelMapper mapper;
+
+    @Autowired
+    private PackageCampaignRepository packageCampaignRepository;
+
+    @Autowired
+    private PackageRepository packageRepository;
     @Override
     public EnterpriseEntity getEnterpriseByHttpRequest(HttpServletRequest httpServletRequest) {
         String username = jwtUntil.getUsernameFromRequest(httpServletRequest);
@@ -204,7 +207,35 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
         cv.setNote(cvEntity.getNote());
         cv.setStatus(cvEntity.getStatus());
 
-        return     cvRepository.save(cv);
+        return  cvRepository.save(cv);
+    }
+    @Override
+    public List<PackageEntity> getListPackage(String campaignId) {
+        List<String> packageId = packageCampaignRepository.getListIdPackage(campaignId);
+        List<PackageEntity> packageEntities = packageRepository.findAll();
+        for (String a: packageId
+             ) {
+            packageEntities.removeIf(x -> x.getId().equals(a));
+        }
+        return packageEntities;
+    }
+
+    @Override
+    public String activatePackage(String packageId, String campaignId, HttpServletRequest httpServletRequest) {
+        PackageEntity packageEntity = packageRepository.findById(packageId).get();
+        UserEntity user = userRepository.findByUsername(jwtUntil.getUsernameFromRequest(httpServletRequest));
+        if (user.getBalance().compareTo(packageEntity.getPrice())<0){
+            throw new IllegalArgumentException("MONEY NOT ENOUGH");
+        }
+        user.setBalance(user.getBalance().subtract(packageEntity.getPrice()));
+        userRepository.save(user);
+
+        PackageCampaign packageCampaign = new PackageCampaign();
+        packageCampaign.setPackageId(packageId);
+        packageCampaign.setCampaignId(campaignId);
+
+        packageCampaignRepository.save(packageCampaign);
+        return "SUCCESS";
     }
 
 

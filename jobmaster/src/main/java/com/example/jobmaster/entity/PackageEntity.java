@@ -1,13 +1,12 @@
 package com.example.jobmaster.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.math.BigDecimal;
 
 @Getter
 @Setter
@@ -20,5 +19,9 @@ public class PackageEntity extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String name;
-    private long price;
+    private BigDecimal price;
+    @Enumerated(EnumType.STRING)
+    private TypeService typeService;
+    @Column(columnDefinition = "text")
+    private String description;
 }

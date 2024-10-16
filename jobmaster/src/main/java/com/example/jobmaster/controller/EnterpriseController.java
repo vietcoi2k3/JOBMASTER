@@ -162,6 +162,13 @@ public class EnterpriseController {
         return ResponseEntity.ok(iEnterpiseService.updateStatus(cvEntity));
     }
 
-    // API để tải file
+    @RequestMapping(value = "/get-list-package/{campaignId}",method = RequestMethod.GET)
+    public ResponseEntity getListPackage(@PathVariable String campaignId){
+        return ResponseEntity.ok(iEnterpiseService.getListPackage(campaignId));
+    }
 
+    @RequestMapping(value = "/activate-package")
+    public ResponseEntity activatePackage(@RequestParam String packageId,@RequestParam String campaignId,HttpServletRequest httpServletRequest){
+        return ResponseEntity.ok(iEnterpiseService.activatePackage(packageId,campaignId,httpServletRequest));
+    }
 }

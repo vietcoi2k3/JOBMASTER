@@ -55,6 +55,24 @@ const AdminApi =  {
         });
     },
 
+    getListPost(pageNumber) {
+        const url = "/admin/get-list-campaign";
+        return axiosClient.get(url, {
+            params: {
+                pageNumber: pageNumber,
+            },
+        });
+    },
+
+    getListPackage(time){
+        const url = "/admin/get-list-package-admin"
+        return axiosClient.get(url, {
+            params: {
+                time: time,
+            },
+        });
+    },
+
     addField(data){
         const url = "/admin/add-field"
         return axiosClient.post(url,data)

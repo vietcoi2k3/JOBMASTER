@@ -6,12 +6,11 @@ import com.example.jobmaster.dto.PostDTO;
 import com.example.jobmaster.dto.Response.CVResponse;
 import com.example.jobmaster.dto.Response.PageResponse;
 import com.example.jobmaster.dto.Response.PostResponse;
-import com.example.jobmaster.entity.CVEntity;
-import com.example.jobmaster.entity.CampaignEntity;
-import com.example.jobmaster.entity.EnterpriseEntity;
-import com.example.jobmaster.entity.FileEntity;
+import com.example.jobmaster.entity.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 public interface IEnterpiseService {
     EnterpriseEntity getEnterpriseByHttpRequest(HttpServletRequest httpServletRequest);
@@ -40,4 +39,8 @@ public interface IEnterpiseService {
     CVResponse getDetailCv(String id);
 
     CVEntity updateStatus(CVEntity cvEntity);
+
+    List<PackageEntity> getListPackage(String id);
+
+    String activatePackage(String packageId,String campaignId,HttpServletRequest httpServletRequest);
 }

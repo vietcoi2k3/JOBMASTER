@@ -51,6 +51,11 @@ const AuthApi = {
     getFile:(id)=>{
         const url ="auth/get-file"
         return axiosClient.get(url+"?fileId="+id,{ responseType: 'blob' })
+    },
+
+    payment:(amount)=>{
+        const url ="auth/payment/vn-pay?amount="
+        return axiosClient.get(url+amount)
     }
 
 };

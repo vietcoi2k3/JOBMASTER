@@ -1,15 +1,15 @@
 package com.example.jobmaster.service.impl;
 
 import com.example.jobmaster.dto.Response.EnterpriseResponse;
+import com.example.jobmaster.dto.Response.PackageResponse;
 import com.example.jobmaster.dto.Response.PageResponse;
 import com.example.jobmaster.dto.Response.UserInfoResponse;
 import com.example.jobmaster.entity.CampaignEntity;
 import com.example.jobmaster.entity.EnterpriseEntity;
 import com.example.jobmaster.entity.FieldEntity;
-import com.example.jobmaster.repository.CampaignRepository;
-import com.example.jobmaster.repository.EnterpriseRepository;
-import com.example.jobmaster.repository.UserInfoRepository;
-import com.example.jobmaster.repository.UserRepository;
+import com.example.jobmaster.entity.PackageEntity;
+import com.example.jobmaster.enumration.Time;
+import com.example.jobmaster.repository.*;
 import com.example.jobmaster.service.IAdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,6 +17,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -33,6 +37,9 @@ public class AdminServiceImpl implements IAdminService {
 
     @Autowired
     private CampaignRepository campaignRepository;
+
+    @Autowired
+    private PackageRepository packageRepository;
 
     @Override
     public List<FieldEntity> getListField(String code, String name) {
@@ -78,4 +85,50 @@ public class AdminServiceImpl implements IAdminService {
                 .data(page.getContent())
                 .build();
     }
+
+    @Override
+    public List<PackageResponse> getListPackageAdmin( Time time) {
+        // Khởi tạo thời gian bắt đầu và kết thúc
+        LocalDateTime startDate;
+        LocalDateTime endDate = LocalDateTime.now(); // Thời điểm hiện tại
+
+        // Xử lý các khoảng thời gian dựa trên tham số 'time'
+        if (time.equals(Time.DAY)) {
+            startDate = endDate.truncatedTo(ChronoUnit.DAYS); // Đầu ngày hiện tại
+        } else if (time.equals(Time.MONTH)) {
+            startDate = endDate.withDayOfMonth(1).truncatedTo(ChronoUnit.DAYS); // Đầu tháng
+        } else if (time.equals(Time.YEAR)) {
+            startDate = endDate.withDayOfYear(1).truncatedTo(ChronoUnit.DAYS); // Đầu năm
+        } else {
+            throw new IllegalArgumentException("Invalid time parameter"); // Xử lý lỗi nếu tham số không hợp lệ
+        }
+
+        // Lấy danh sách các package
+        List<PackageEntity> packageEntities = packageRepository.findAll();
+        List<PackageResponse> packageResponses = new ArrayList<>();
+
+        // Lặp qua từng package và tạo response
+        for (PackageEntity x : packageEntities) {
+            PackageResponse packageResponse = new PackageResponse();
+            packageResponse.setNamePackage(x.getName());
+
+            // Gọi hàm repository để tính tổng giá trị của package
+            BigDecimal totalPrice = packageRepository.totalValueOfPackage(
+                    startDate, endDate, x.getId()
+            );
+            if (totalPrice == null) {
+                totalPrice = BigDecimal.ZERO;
+            } 
+
+            packageResponse.setPrice(totalPrice);
+            packageResponses.add(packageResponse);
+        }
+
+        // Trả về kết quả (đoạn này cần được sửa theo mục đích trả về của bạn)
+
+        return packageResponses;
+    }
+
+
+
 }
