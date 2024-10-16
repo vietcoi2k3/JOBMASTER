@@ -44,7 +44,7 @@ public class PaymentService {
         String vnp_CreateDate = formatter.format(cld.getTime());
 
         vnpParamsMap.put("vnp_CreateDate", vnp_CreateDate);
-        cld.add(Calendar.MINUTE, 300);
+        cld.add(Calendar.MINUTE, 60*12);
         String vnp_ExpireDate = formatter.format(cld.getTime());
         //Add Params of 2.1.0 Version
         vnpParamsMap.put("vnp_ExpireDate", vnp_ExpireDate);
