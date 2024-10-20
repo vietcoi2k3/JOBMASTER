@@ -88,6 +88,21 @@ const EnterpriseApi =  {
         updateStatus(data){
             const url = "/enterprise/update-status-cv"
             return axiosClient.put(url,data)
+        },
+
+        getHistory(){
+            const url = "/enterprise/get-money-history"
+            return axiosClient.get(url)
+        },
+
+        getListService(id){
+            const url = "/enterprise/get-package-by-campaign/"
+            return axiosClient.get(url+id)
+        },
+
+        activateService(data){
+            const url = "/enterprise/activate-package"
+            return axiosClient.post(url,data)
         }
 
 

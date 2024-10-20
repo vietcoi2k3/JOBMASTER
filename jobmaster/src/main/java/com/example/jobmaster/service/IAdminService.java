@@ -17,6 +17,9 @@ public interface IAdminService {
     PageResponse<CampaignEntity> getListCampaign(int pageSize, int pageNumber, String search);
 
    List<PackageResponse> getListPackageAdmin( Time time);
+   PageResponse<PostEntity> getListPost(int pageSize,int pageNumber);
 
+   PostEntity getDetailPost(String id);
 
+    PostEntity updateStatusPost(String id,PostEnum status);
 }

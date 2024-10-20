@@ -56,7 +56,7 @@ const AdminApi =  {
     },
 
     getListPost(pageNumber) {
-        const url = "/admin/get-list-campaign";
+        const url = "/admin/get-list-post";
         return axiosClient.get(url, {
             params: {
                 pageNumber: pageNumber,
@@ -101,6 +101,21 @@ const AdminApi =  {
     deletePosition(id){
         const url = "/admin/delete-position/";
         return axiosClient.delete(url+id)
+    },
+
+    getDetailPost(id){
+        const url = "/admin/get-detail-post/";
+        return axiosClient.get(url+id)
+    },
+
+    updateStatusPost(status,id){
+        const url = "/admin/update-status";
+        return axiosClient.get(url, {
+            params: {
+                status: status,
+                id: id,
+            },
+        });
     }
 
 }

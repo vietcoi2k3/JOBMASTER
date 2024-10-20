@@ -56,6 +56,11 @@ const AuthApi = {
     payment:(amount)=>{
         const url ="auth/payment/vn-pay?amount="
         return axiosClient.get(url+amount)
+    },
+
+    saveMoney:(request)=>{
+       const url = "auth/payment/vn-return"
+        return axiosClient.get(url+request)
     }
 
 };

@@ -22,4 +22,5 @@ public interface CampaignRepository extends JpaRepository<CampaignEntity,String>
     @Query("SELECT c FROM CampaignEntity c WHERE c.name  LIKE %:search% ")
     Page<CampaignEntity> getListCampaignAdmin(@Param("search") String search, Pageable pageable);
 
+
 }

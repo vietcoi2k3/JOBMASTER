@@ -5,6 +5,7 @@ import ReceiptIcon from "@mui/icons-material/Receipt";
 import PersonIcon from "@mui/icons-material/Person";
 import BusinessIcon from "@mui/icons-material/Business";
 import WorkOutlinedIcon from '@mui/icons-material/WorkOutlined';
+import HistoryIcon from '@mui/icons-material/History';
 const SideBarProfile = () => {
     const [selected, setSelected] =React.useState(null);
     const navigate = useNavigate();
@@ -21,6 +22,9 @@ const SideBarProfile = () => {
         }
         if (index===4){
             navigate("/dashboard/profile/info-company")
+        }
+        if (index===5){
+            navigate("/dashboard/profile/history")
         }
         setSelected(index);
     };
@@ -68,6 +72,16 @@ const SideBarProfile = () => {
                 >
                     <BusinessIcon />
                     <p className="leading-4 translate-x-1 py-1.5">Thông tin doanh nghiệp</p>
+                </div>
+                {/* Mục Thông tin doanh nghiệp */}
+                <div
+                    className={`flex cursor-pointer ${
+                        selected === 5 ? 'bg-accent' : ''
+                    } p-2 rounded-md`}
+                    onClick={() => handleSelect(5)}
+                >
+                    <HistoryIcon />
+                    <p className="leading-4 translate-x-1 py-1.5">Lịch sử giao dịch</p>
                 </div>
 
 

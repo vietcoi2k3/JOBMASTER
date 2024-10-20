@@ -1,29 +1,45 @@
 import * as React from "react";
-import { useState } from "react";
+import  { useState } from 'react';
 import { styled, useTheme } from "@mui/material/styles";
-import {
-  Box, AppBar as MuiAppBar, CssBaseline, Toolbar, Avatar, Button,
-  IconButton, List, Divider, ListItem, ListItemButton, ListItemIcon,
-  ListItemText, Menu, MenuItem, Typography, Dialog, DialogActions,
-  DialogContent, DialogTitle, TextField
-} from "@mui/material";
+import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
+import MuiAppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import List from "@mui/material/List";
+import CssBaseline from "@mui/material/CssBaseline";
+import Avatar from "@mui/material/Avatar";
+import Divider from "@mui/material/Divider";
+import IconButton from "@mui/material/IconButton";
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import HomeIcon from '@mui/icons-material/Home';
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import ExitToAppIcon from "@mui/icons-material/ExitToApp";
-import HomeIcon from "@mui/icons-material/Home";
-import SettingsIcon from "@mui/icons-material/Settings";
-import WorkOutlinedIcon from "@mui/icons-material/WorkOutlined";
-import LocalAtmIcon from "@mui/icons-material/LocalAtm";
-import DynamicFeedIcon from "@mui/icons-material/DynamicFeed";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
 import logo from "../../assets/logo.png";
-import { useNavigate, Outlet } from "react-router-dom";
-import AuthApi from "../../api/AuthApi";
+import {Button, Menu, MenuItem, Typography} from "@mui/material";
+import SettingsIcon from '@mui/icons-material/Settings';
+import WorkOutlinedIcon from '@mui/icons-material/WorkOutlined';
+import LocalAtmIcon from '@mui/icons-material/LocalAtm';
+import { Outlet } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
+import DynamicFeedIcon from '@mui/icons-material/DynamicFeed';
 
 const drawerWidth = 240;
-const icons = [SettingsIcon, WorkOutlinedIcon, LocalAtmIcon, DynamicFeedIcon];
+const icons = [
+  SettingsIcon,
+  WorkOutlinedIcon,
+  LocalAtmIcon,
+  DynamicFeedIcon
+];
+// Sử dụng state để lưu trữ chỉ số được chọn
+
+
+
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
@@ -48,13 +64,17 @@ const closedMixin = (theme) => ({
 
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
+  // backgroundColor:'#fff',
   alignItems: "center",
   justifyContent: "flex-end",
   padding: theme.spacing(0, 1),
+  // necessary for content to be below app bar
   ...theme.mixins.toolbar,
 }));
 
-const AppBar = styled(MuiAppBar)(({ theme, open }) => ({
+const AppBar = styled(MuiAppBar, {
+  shouldForwardProp: (prop) => prop !== "open",
+})(({ theme, open }) => ({
   zIndex: theme.zIndex.drawer + 1,
   transition: theme.transitions.create(["width", "margin"], {
     easing: theme.transitions.easing.sharp,
@@ -70,41 +90,72 @@ const AppBar = styled(MuiAppBar)(({ theme, open }) => ({
   }),
 }));
 
-const Drawer = styled(MuiDrawer)(({ theme, open }) => ({
+const Drawer = styled(MuiDrawer, {
+  shouldForwardProp: (prop) => prop !== "open",
+})(({ theme }) => ({
   width: drawerWidth,
   flexShrink: 0,
   whiteSpace: "nowrap",
   boxSizing: "border-box",
-  ...(open && {
-    ...openedMixin(theme),
-    "& .MuiDrawer-paper": openedMixin(theme),
-  }),
-  ...(!open && {
-    ...closedMixin(theme),
-    "& .MuiDrawer-paper": closedMixin(theme),
-  }),
+  variants: [
+    {
+      props: ({ open }) => open,
+      style: {
+        ...openedMixin(theme),
+        "& .MuiDrawer-paper": openedMixin(theme),
+      },
+    },
+    {
+      props: ({ open }) => !open,
+      style: {
+        ...closedMixin(theme),
+        "& .MuiDrawer-paper": closedMixin(theme),
+      },
+    },
+  ],
 }));
 
 export default function MiniDrawer() {
   const navigate = useNavigate();
+  const CustomIcon = ({ index }) => {
+    const IconComponent = icons[index % icons.length];
+    let isHighlighted = index===highlightedIndex
+    return (
+        <IconComponent
+            sx={{
+              color: isHighlighted ? '#2D7CF1' : 'gray', // Màu xanh cho icon được chọn, màu xám cho icon không được chọn
+            }}
+        />
+    );
+  };
+  const [highlightedIndex, setHighlightedIndex] = useState(0);
   const theme = useTheme();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [amount, setAmount] = useState("");
+  const open2 = Boolean(anchorEl);
 
-  const icons = [SettingsIcon, WorkOutlinedIcon, LocalAtmIcon, DynamicFeedIcon];
-
-  const openMenu = Boolean(anchorEl);
-
-  const handleMenuClick = (event) => {
+  const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleMenuClose = () => {
+  const handleClose = () => {
     setAnchorEl(null);
   };
-
+  const handleIndex =(index)=>{
+    if (index ===0){
+      navigate("/dashboard")
+    }
+    if (index ===1){
+      navigate("/dashboard/job")
+    }
+    if (index===2){
+      navigate("/dashboard/service")
+    }
+    if (index===3){
+      navigate("/dashboard/manage-post")
+    }
+    setHighlightedIndex(index)
+  }
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -113,37 +164,8 @@ export default function MiniDrawer() {
     setOpen(false);
   };
 
-  const handleDialogOpen = () => {
-    setDialogOpen(true);
-  };
-
-  const handleDialogClose = () => {
-    setDialogOpen(false);
-  };
-
-  const handleSubmitPrice = () => {
-    // Xóa dấu chấm và chữ 'VND', sau đó chuyển về kiểu number
-    const numericAmount = Number(amount.replace(/\./g, '').replace(' VND', ''));
-
-    if (isNaN(numericAmount)) {
-      console.error("Số tiền không hợp lệ");
-      return;
-    }
-
-    AuthApi.payment(numericAmount).then((e) => {
-      console.log(e);
-    }).catch((error) => {
-      console.error("Lỗi khi thanh toán:", error);
-    });
-  };
-
-  const handleAmountChange = (event) => {
-    const value = event.target.value.replace(/\D/g, ""); // Chỉ cho phép số
-    setAmount(new Intl.NumberFormat("vi-VN").format(value)); // Định dạng VND
-  };
-
   return (
-      <Box sx={{ display: "flex", backgroundColor: "#E5E5E5", padding: "100px" }}>
+      <Box sx={{ display: "flex" ,backgroundColor:'#E5E5E5',padding:'100px'}}>
         <CssBaseline />
         <AppBar position="fixed" open={open}>
           <Toolbar className="bg-accent">
@@ -152,102 +174,145 @@ export default function MiniDrawer() {
                 aria-label="open drawer"
                 onClick={handleDrawerOpen}
                 edge="start"
-                sx={{ marginRight: 5, ...(open && { display: "none" }) }}
+                sx={[
+                  {
+                    marginRight: 5,
+                  },
+                  open && { display: "none" },
+                ]}
             >
               <MenuIcon />
             </IconButton>
             <div className="flex items-center justify-between w-full">
-              <img src={logo} alt="Logo" width={210} />
+              <img src={logo} alt="" width={210} />
               <div className="flex items-center">
                 <Button
                     size="small"
+                    className="h-1/2"
                     variant="contained"
                     color="primary"
-                    onClick={handleDialogOpen} // Mở popup khi nhấn "Nạp tiền"
                 >
                   Nạp tiền
                 </Button>
-                <NotificationsIcon className="cursor-pointer ml-5" color="primary" />
+
+                <NotificationsIcon
+                    className="cursor-pointer ml-5"
+                    color="primary"
+                />
+
+
                 <Avatar
+                    aria-label="recipe"
                     className="ml-5 cursor-pointer"
-                    onClick={handleMenuClick}
-                    style={{ backgroundColor: "#f50057", cursor: "pointer" }}
+                    onClick={handleClick}
+                    style={{ backgroundColor: '#f50057', cursor: 'pointer' }}
                 >
                   R
                 </Avatar>
-                <Menu anchorEl={anchorEl} open={openMenu} onClose={handleMenuClose}>
+
+                {/* Menu Popup */}
+                <Menu
+                    anchorEl={anchorEl}
+                    open={open2}
+                    onClose={handleClose}
+                    onClick={handleClose}
+                >
+                  {/* Menu item 1 */}
                   <MenuItem>
                     <ListItemIcon>
                       <HomeIcon fontSize="small" />
                     </ListItemIcon>
                     <Typography variant="inherit">Trang tin tuyển dụng</Typography>
                   </MenuItem>
-                  <MenuItem
-                      onClick={() => {
-                        localStorage.clear();
-                        navigate("/");
-                      }}
-                  >
+
+                  {/* Menu item 2 */}
+                  <MenuItem onClick={()=>{
+                    localStorage.clear()
+                    navigate("/")
+                  }}>
                     <ListItemIcon>
                       <ExitToAppIcon fontSize="small" />
                     </ListItemIcon>
-                    <Typography variant="inherit">Đăng xuất</Typography>
+                    <Typography  variant="inherit">Đăng xuất</Typography>
                   </MenuItem>
                 </Menu>
+
+
               </div>
             </div>
           </Toolbar>
         </AppBar>
-
         <Drawer variant="permanent" open={open}>
           <DrawerHeader>
             <IconButton onClick={handleDrawerClose}>
-              {theme.direction === "rtl" ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+              {theme.direction === "rtl" ? (
+                  <ChevronRightIcon />
+              ) : (
+                  <ChevronLeftIcon />
+              )}
             </IconButton>
           </DrawerHeader>
           <Divider />
           <List>
-            {["Cài đặt tài khoản", "Chiến dịch tuyển dụng", "Dịch vụ", "Quản lý tin đăng"].map(
-                (text, index) => (
-                    <ListItem key={text} disablePadding sx={{ display: "block" }}>
-                      <ListItemButton
-                          sx={{ minHeight: 48, px: 2.5 }}
-                          onClick={() => navigate(`/dashboard/${text.toLowerCase().replace(" ", "-")}`)}
-                      >
-                        <ListItemIcon>
-                          {React.createElement(icons[index % icons.length])}
-                        </ListItemIcon>
-                        <ListItemText primary={text} />
-                      </ListItemButton>
-                    </ListItem>
-                )
-            )}
+            {["Cài đặt tài khoản ", "Chiến dịch tuyển dụng","Dịch vụ","Quản lí tin đăng"].map((text, index) => (
+                <ListItem
+                    key={text} disablePadding sx={{ display: "block" }}>
+                  <ListItemButton
+                      onClick={()=>{
+                        handleIndex(index)
+                      }}
+                      sx={[
+                        {
+                          minHeight: 48,
+                          px: 2.5,
+                        },
+                        open
+                            ? {
+                              justifyContent: "initial",
+                            }
+                            : {
+                              justifyContent: "center",
+                            },
+                      ]}
+                  >
+                    <ListItemIcon
+
+                        sx={[
+                          {
+                            minWidth: 0,
+                            justifyContent: "center",
+                          },
+                          open
+                              ? {
+                                mr: 3,
+                              }
+                              : {
+                                mr: "auto",
+                              },
+                        ]}
+                    >
+                      <CustomIcon index={index} />
+                    </ListItemIcon>
+                    <ListItemText
+                        primary={text}
+                        sx={[
+                          open
+                              ? {
+                                opacity: 1,
+                              }
+                              : {
+                                opacity: 0,
+                              },
+                        ]}
+                    />
+                  </ListItemButton>
+                </ListItem>
+            ))}
           </List>
+          <Divider />
         </Drawer>
 
-        {/* Popup Dialog Nhập Tiền */}
-        <Dialog open={dialogOpen} onClose={handleDialogClose}>
-          <DialogTitle>Nạp tiền</DialogTitle>
-          <DialogContent>
-            <TextField
-                label="Số tiền"
-                value={amount}
-                onChange={handleAmountChange}
-                fullWidth
-                margin="dense"
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleDialogClose} color="secondary">
-              Hủy
-            </Button>
-            <Button onClick={handleSubmitPrice} color="primary">
-              Nạp
-            </Button>
-          </DialogActions>
-        </Dialog>
-
-        <Outlet />
+        <Outlet/>
       </Box>
   );
 }

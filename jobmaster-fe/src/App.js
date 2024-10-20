@@ -17,6 +17,8 @@ import InfoCompany from "./component/user-profile/InfoCompany";
 import ManagePost from "./component/dashboard/ManagePost";
 import ViewCV from "./component/dashboard/ViewCV";
 import CVLayout from "./component/CVLayout/CVLayout";
+import History from "./component/user-profile/History";
+import PaymentSuccess from "./component/user-profile/PaymentSuccess";
 
 function App() {
 
@@ -28,6 +30,7 @@ function App() {
               <Route path="certificate" element={<CertificateBusiness />} />
               <Route path="user-profile" element={<UserProfile />} />
               <Route path="info-company" element={<InfoCompany />} />
+              <Route path="history" element={<History />} />
           </Route>
           <Route path="job" element={<Job/>}/>
           <Route path="job-form" element={<JobForm/>}/>
@@ -41,6 +44,7 @@ function App() {
       <Route path="/callback" element={<Callback />} />
       <Route path="/verify" element={<VerifyEmail/>}/>
       <Route path="/verify-email" element={<EmailVerification/>}/>
+        <Route path="/payment-success" element={<PaymentSuccess/>}/>
       <Route path="/" element={<LoginComponent/>}/>
     </Routes>
   );

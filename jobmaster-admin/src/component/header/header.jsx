@@ -37,8 +37,11 @@ const Header = () => {
 
                 {/* Tabs */}
                 <Tabs value={value} onChange={handleTabChange} textColor="primary" indicatorColor="primary">
-                    <Tab label="Tin đăng"onClick={()=>{
+                    <Tab label="Tin đăng" onClick={()=>{
                         navigate("/post")
+                    }}  />
+                    <Tab label="Chiến dịch" onClick={()=>{
+                        navigate("/manage-campaign")
                     }}  />
                     <Tab label="Dịch vụ" />
                     <Tab label="Phê duyệt" onClick={()=>{

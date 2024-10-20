@@ -14,6 +14,8 @@ import {
 import { Edit, Visibility } from '@mui/icons-material';
 import {useNavigate} from "react-router-dom";
 import EnterpriseApi from "../../api/EnterpriseApi";
+import EuroIcon from '@mui/icons-material/Euro';
+
 
 export default function ManagePost() {
 

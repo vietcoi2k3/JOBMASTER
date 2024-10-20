@@ -3,7 +3,9 @@ package com.example.jobmaster.service.impl;
 import com.example.jobmaster.dto.CampaignDTO;
 import com.example.jobmaster.dto.EnterpriseDTO;
 import com.example.jobmaster.dto.PostDTO;
+import com.example.jobmaster.dto.Request.ActivatePackageRequest;
 import com.example.jobmaster.dto.Response.CVResponse;
+import com.example.jobmaster.dto.Response.HistoryResponse;
 import com.example.jobmaster.dto.Response.PageResponse;
 import com.example.jobmaster.dto.Response.PostResponse;
 import com.example.jobmaster.entity.*;
@@ -17,7 +19,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +30,9 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
 
     @Autowired
     private JWTUntil jwtUntil;
+
+    @Autowired
+    private HistoryPaymentRepository historyPaymentRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -221,21 +228,48 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
     }
 
     @Override
-    public String activatePackage(String packageId, String campaignId, HttpServletRequest httpServletRequest) {
-        PackageEntity packageEntity = packageRepository.findById(packageId).get();
+    @Transactional
+    public String activatePackage(ActivatePackageRequest activatePackageRequest, HttpServletRequest httpServletRequest) {
         UserEntity user = userRepository.findByUsername(jwtUntil.getUsernameFromRequest(httpServletRequest));
-        if (user.getBalance().compareTo(packageEntity.getPrice())<0){
+        if (user.getBalance().compareTo(activatePackageRequest.getPrice())<0){
             throw new IllegalArgumentException("MONEY NOT ENOUGH");
         }
-        user.setBalance(user.getBalance().subtract(packageEntity.getPrice()));
+        for (String x: activatePackageRequest.getPackageId()
+             ) {
+
+
+            PackageCampaign packageCampaign = new PackageCampaign();
+            packageCampaign.setPackageId(x);
+            packageCampaign.setCampaignId(activatePackageRequest.getCampaignId());
+
+            packageCampaignRepository.save(packageCampaign);
+        }
+        user.setBalance(user.getBalance().subtract(activatePackageRequest.getPrice()));
         userRepository.save(user);
 
-        PackageCampaign packageCampaign = new PackageCampaign();
-        packageCampaign.setPackageId(packageId);
-        packageCampaign.setCampaignId(campaignId);
-
-        packageCampaignRepository.save(packageCampaign);
+        HistoryMoney historyMoney = new HistoryMoney();
+        historyMoney.setBalanceAfter(user.getBalance());
+        historyMoney.setAddMoney(false);
+        historyMoney.setAmount(activatePackageRequest.getPrice());
+        historyMoney.setUserId(user.getId());
+        historyPaymentRepository.save(historyMoney);
         return "SUCCESS";
+    }
+
+    @Override
+    public HistoryResponse getHistoryMoney(HttpServletRequest httpServletRequest) {
+        UserEntity user = userRepository.findByUsername(jwtUntil.getUsernameFromRequest(httpServletRequest));
+        List<HistoryMoney> historyMoneyList = historyPaymentRepository.findAllByUserIdOrderByCreatedAtDesc(user.getId());
+        return HistoryResponse.builder()
+                .historyMoneyList(historyMoneyList)
+                .totalMoney(user.getBalance())
+                .build();
+    }
+
+    @Override
+    public List<PackageEntity> getListPackageByCampaign(String id) {
+        List<PackageEntity> packageEntities = packageRepository.getPackageByCampaign(id);
+        return packageEntities;
     }
 
 

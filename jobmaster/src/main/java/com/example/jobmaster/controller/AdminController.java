@@ -2,6 +2,7 @@ package com.example.jobmaster.controller;
 
 import com.example.jobmaster.entity.FieldEntity;
 import com.example.jobmaster.entity.PositionEntity;
+import com.example.jobmaster.entity.PostEnum;
 import com.example.jobmaster.enumration.Time;
 import com.example.jobmaster.repository.FieldRepository;
 import com.example.jobmaster.repository.PositionRepository;
@@ -93,9 +94,29 @@ public class AdminController {
     ){
         return ResponseEntity.ok(iAdminService.getListCampaign(pageSize,pageNumber,search));
     }
+
+    @RequestMapping(value = "/get-list-post",method = RequestMethod.GET)
+    public ResponseEntity getListPost(
+            @RequestParam(defaultValue = DefautlConstants.PAGE_SIZE) int pageSize,
+            @RequestParam(defaultValue = DefautlConstants.PAGE_NO) int pageNumber
+    ){
+        return ResponseEntity.ok(iAdminService.getListPost(pageNumber,pageSize));
+    }
+
+    @RequestMapping(value = "/get-detail-post/{id}",method = RequestMethod.GET)
+    public ResponseEntity getDetailPost(
+  @PathVariable String id
+    ){
+        return ResponseEntity.ok(iAdminService.getDetailPost(id));
+    }
     @RequestMapping(value = "/get-list-package-admin",method = RequestMethod.GET)
     public ResponseEntity getListPackageAdmin(@RequestParam Time time){
         return ResponseEntity.ok(iAdminService.getListPackageAdmin(time));
     }
 
+    @RequestMapping(value = "/update-status")
+    public ResponseEntity updateStatusPost(@RequestParam PostEnum status,
+    @RequestParam String id){
+        return ResponseEntity.ok(iAdminService.updateStatusPost(id,status));
+    }
 }

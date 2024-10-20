@@ -24,4 +24,6 @@ public class HistoryMoney extends BaseEntity{
     private BigDecimal amount;
     private String userId;
     private String descriptions;
+    private boolean isAddMoney;
+    private BigDecimal balanceAfter;
 }

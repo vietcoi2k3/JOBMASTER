@@ -1,14 +1,17 @@
 package com.example.jobmaster.entity;
 
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
 
 @MappedSuperclass
+@EntityListeners(AuditingEntityListener.class) // Kích hoạt Auditing
 public abstract class BaseEntity {
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)

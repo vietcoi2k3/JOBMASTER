@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Repository
 public interface PackageRepository extends JpaRepository<PackageEntity,String> {
@@ -21,4 +22,9 @@ public interface PackageRepository extends JpaRepository<PackageEntity,String> {
     BigDecimal totalValueOfPackage(@Param("startDate") LocalDateTime startDate,
                                    @Param("endDate") LocalDateTime endDate,
                                    @Param("packageId") String packageId);
+
+    @Query(value = "SELECT p FROM PackageEntity p " +
+            "WHERE p.id NOT IN (" +
+            "SELECT pc.packageId FROM PackageCampaign pc WHERE pc.campaignId = :idCam)")
+    List<PackageEntity> getPackageByCampaign(@Param("idCam")String idCam);
 }

@@ -4,10 +4,7 @@ import com.example.jobmaster.dto.Response.EnterpriseResponse;
 import com.example.jobmaster.dto.Response.PackageResponse;
 import com.example.jobmaster.dto.Response.PageResponse;
 import com.example.jobmaster.dto.Response.UserInfoResponse;
-import com.example.jobmaster.entity.CampaignEntity;
-import com.example.jobmaster.entity.EnterpriseEntity;
-import com.example.jobmaster.entity.FieldEntity;
-import com.example.jobmaster.entity.PackageEntity;
+import com.example.jobmaster.entity.*;
 import com.example.jobmaster.enumration.Time;
 import com.example.jobmaster.repository.*;
 import com.example.jobmaster.service.IAdminService;
@@ -37,6 +34,9 @@ public class AdminServiceImpl implements IAdminService {
 
     @Autowired
     private CampaignRepository campaignRepository;
+
+    @Autowired
+    private PostRepository postRepository;
 
     @Autowired
     private PackageRepository packageRepository;
@@ -83,6 +83,7 @@ public class AdminServiceImpl implements IAdminService {
         Page<CampaignEntity> page = campaignRepository.getListCampaignAdmin(search,pageable);
         return PageResponse.<CampaignEntity>builder()
                 .data(page.getContent())
+                .totalPage(page.getTotalPages())
                 .build();
     }
 
@@ -129,6 +130,26 @@ public class AdminServiceImpl implements IAdminService {
         return packageResponses;
     }
 
+    @Override
+    public PageResponse<PostEntity> getListPost(int pageNumber,int pageSize) {
+        pageNumber--;
+        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+        Page<PostEntity> page = postRepository.getListPostAdmin(pageable);
+        return PageResponse.<PostEntity>builder()
+                .data(page.getContent())
+                .totalPage(page.getTotalPages())
+                .build();
+    }
 
+    @Override
+    public PostEntity getDetailPost(String id) {
+        return postRepository.findById(id).get();
+    }
 
+    @Override
+    public PostEntity updateStatusPost(String id, PostEnum status) {
+        PostEntity postEntity = postRepository.findById(id).get();
+        postEntity.setStatus(status.name());
+        return postRepository.save(postEntity);
+    }
 }

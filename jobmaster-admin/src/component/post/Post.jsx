@@ -30,11 +30,11 @@ function Campaign() {
 
     const getStatusInfo = (status) => {
         switch (status) {
-            case 'ACTIVE':
+            case 'APPROVED':
                 return { color: 'green', text: 'Đang hoạt động' };
-            case 'WAITING_ACTIVE':
+            case 'AWAITING_APPROVAL':
                 return { color: 'goldenrod', text: 'Chờ kích hoạt' };
-            case 'INACTIVE':
+            case 'NOT_APPROVED':
                 return { color: 'red', text: 'Không hoạt động' };
             default:
                 return { color: 'black', text: 'Không xác định' };
@@ -51,7 +51,7 @@ function Campaign() {
     };
 
     const fetch = async () => {
-        const response = await AdminApi.getListCampaign(pageNumber);
+        const response = await AdminApi.getListPost(pageNumber);
         setCandidate(response.data); // Update the candidate list
         setTotalPages(response.totalPages); // Update total pages for pagination
     };
@@ -63,6 +63,8 @@ function Campaign() {
     const handlePageChange = (event, value) => {
         setPageNumber(value); // Update page number when user interacts with pagination
     };
+
+    const navigate = useNavigate()
 
     return (
         <Box sx={{ width: '100%' }}>
@@ -96,7 +98,7 @@ function Campaign() {
                     </TableHead>
                     <TableBody>
                         {candidate.map((item, index) => {
-                            const { color, text } = getStatusInfo(item.isActive);
+                            const { color, text } = getStatusInfo(item.status );
                             return (
                                 <TableRow key={item.id}>
                                     <TableCell>{((pageNumber - 1) * 10) + index + 1}</TableCell>
@@ -104,7 +106,7 @@ function Campaign() {
                                     <TableCell>{item.city}</TableCell>
                                     <TableCell style={{ color }}>{text}</TableCell>
                                     <TableCell>
-                                        <IconButton aria-label="view" color="primary">
+                                        <IconButton aria-label="view" color="primary" onClick ={()=> navigate("/detail-post/"+item.id)}>
                                             <VisibilityIcon />
                                         </IconButton>
                                         {/* Uncomment if delete functionality is needed */}

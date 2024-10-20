@@ -3,6 +3,7 @@ package com.example.jobmaster.controller;
 import com.example.jobmaster.dto.CampaignDTO;
 import com.example.jobmaster.dto.EnterpriseDTO;
 import com.example.jobmaster.dto.PostDTO;
+import com.example.jobmaster.dto.Request.ActivatePackageRequest;
 import com.example.jobmaster.entity.CVEntity;
 import com.example.jobmaster.entity.FileEntity;
 import com.example.jobmaster.entity.UserEntity;
@@ -25,6 +26,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -167,8 +169,18 @@ public class EnterpriseController {
         return ResponseEntity.ok(iEnterpiseService.getListPackage(campaignId));
     }
 
-    @RequestMapping(value = "/activate-package")
-    public ResponseEntity activatePackage(@RequestParam String packageId,@RequestParam String campaignId,HttpServletRequest httpServletRequest){
-        return ResponseEntity.ok(iEnterpiseService.activatePackage(packageId,campaignId,httpServletRequest));
+    @RequestMapping(value = "/activate-package",method = RequestMethod.POST)
+    public ResponseEntity activatePackage(@RequestBody ActivatePackageRequest activatePackageRequest, HttpServletRequest httpServletRequest){
+        return ResponseEntity.ok(iEnterpiseService.activatePackage(activatePackageRequest,httpServletRequest));
+    }
+
+    @RequestMapping(value = "/get-money-history")
+    public ResponseEntity getMoneyHistory(HttpServletRequest httpServletRequest){
+        return ResponseEntity.ok(iEnterpiseService.getHistoryMoney(httpServletRequest));
+    }
+
+    @RequestMapping(value = "/get-package-by-campaign/{id}")
+    public ResponseEntity getListPackageByCampaign(@PathVariable String id){
+        return ResponseEntity.ok(iEnterpiseService.getListPackageByCampaign(id));
     }
 }

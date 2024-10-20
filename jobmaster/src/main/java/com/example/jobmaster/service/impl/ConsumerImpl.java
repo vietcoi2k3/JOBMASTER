@@ -5,9 +5,11 @@ import com.example.jobmaster.dto.Response.PageResponse;
 import com.example.jobmaster.dto.Response.PostResponse;
 import com.example.jobmaster.entity.CampaignEntity;
 import com.example.jobmaster.entity.EnterpriseEntity;
+import com.example.jobmaster.entity.PackageCampaign;
 import com.example.jobmaster.entity.PostEntity;
 import com.example.jobmaster.repository.CampaignRepository;
 import com.example.jobmaster.repository.EnterpriseRepository;
+import com.example.jobmaster.repository.PackageCampaignRepository;
 import com.example.jobmaster.repository.PostRepository;
 import com.example.jobmaster.service.IConsumerService;
 import org.apache.catalina.mapper.Mapper;
@@ -36,6 +38,9 @@ public class ConsumerImpl implements IConsumerService {
     private EnterpriseRepository enterpriseRepository;
 
     @Autowired
+    private PackageCampaignRepository packageCampaignRepository;
+
+    @Autowired
     private ModelMapper mapper;
     @Override
     public PageResponse<PostResponse> getListPost(int pageNumber,int pageSize ,String search, String address, String field) {
@@ -62,6 +67,7 @@ public class ConsumerImpl implements IConsumerService {
             postResponse.setEnterpriseId(enterprise.getId());
             postResponse.setNameCompany(enterprise.getCompanyName());
             postResponse.setScales(enterprise.getScale());
+            postResponse.setLabel(packageCampaignRepository.existsByCampaignIdAndPackageId(campaignEntity.getId(),"TA01 "));
             listResult.add(postResponse);
         }
 

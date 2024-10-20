@@ -13,11 +13,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Map;
-import java.util.TimeZone;
+import java.util.*;
+
+import static com.example.jobmaster.until.constants.VNPayUtil.hmacSHA512;
 
 @Service
 @RequiredArgsConstructor
@@ -39,52 +42,81 @@ public class PaymentService {
         vnpParamsMap.put("vnp_IpAddr", VNPayUtil.getIpAddress(request));
 
         Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
-
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
         String vnp_CreateDate = formatter.format(cld.getTime());
-
         vnpParamsMap.put("vnp_CreateDate", vnp_CreateDate);
+
         cld.add(Calendar.MINUTE, 60*12);
         String vnp_ExpireDate = formatter.format(cld.getTime());
-        //Add Params of 2.1.0 Version
         vnpParamsMap.put("vnp_ExpireDate", vnp_ExpireDate);
-        //build query url
-        String queryUrl = VNPayUtil.getPaymentURL(vnpParamsMap, true);
-        String hashData = VNPayUtil.getPaymentURL(vnpParamsMap, false);
-        String vnpSecureHash = VNPayUtil.hmacSHA512(vnPayConfig.getSecretKey(), hashData);
-        queryUrl += "&vnp_SecureHash=" + vnpSecureHash;
-        String paymentUrl = vnPayConfig.getVnp_PayUrl() + "?" + queryUrl;
+
+        String queryUrl = createQueryUrl(vnpParamsMap);
+        String vnpSecureHash = hmacSHA512(vnPayConfig.getSecretKey(), queryUrl);
+        String paymentUrl = vnPayConfig.getVnp_PayUrl() + "?" + queryUrl + "&vnp_SecureHash=" + vnpSecureHash;
+
         return PaymentDTO.builder()
                 .code("ok")
                 .message("success")
                 .paymentUrl(paymentUrl).build();
     }
 
-
     public String savePayment(HttpServletRequest httpServletRequest) {
-        // Tạo một đối tượng HistoryPaymentEntity mới để lưu thông tin thanh toán
         HistoryMoney historyPaymentEntity = new HistoryMoney();
-
-        // Tìm tài khoản của người dùng dựa trên thông tin được trích xuất từ JWT trong request
         UserEntity accountEntity = userRepository.findByUsername(jwtUntil.getUsernameFromRequest(httpServletRequest));
 
-        // Cập nhật số tiền trong tài khoản của người dùng sau khi thanh toán
+        String receivedHash = httpServletRequest.getParameter("vnp_SecureHash");
+        Map<String, String> fields = new TreeMap<>();
+        for (Map.Entry<String, String[]> entry : httpServletRequest.getParameterMap().entrySet()) {
+            if (!"vnp_SecureHash".equals(entry.getKey())) {
+                fields.put(entry.getKey(), entry.getValue()[0]);
+            }
+        }
+
+        String queryUrl = createQueryUrl(fields);
+        String calculatedHash = hmacSHA512(vnPayConfig.getSecretKey(), queryUrl);
+
+        if (!calculatedHash.equals(receivedHash)) {
+            return "INVALID_HASH";
+        }
+
         long vnpAmount = Long.parseLong(httpServletRequest.getParameter("vnp_Amount")) / 100;
         BigDecimal amountToAdd = BigDecimal.valueOf(vnpAmount);
         BigDecimal updatedBalance = accountEntity.getBalance().add(amountToAdd);
 
         accountEntity.setBalance(updatedBalance);
+        userRepository.save(accountEntity);
 
-        // Đặt ID của tài khoản cho đối tượng lịch sử thanh toán
         historyPaymentEntity.setUserId(accountEntity.getId());
-
-        // Đặt mô tả của thanh toán từ thông tin trích xuất từ request
         historyPaymentEntity.setDescriptions(httpServletRequest.getParameter("vnp_OrderInfo"));
-
-        // Đặt tổng số tiền thanh toán từ thông tin trích xuất từ request
-        historyPaymentEntity.setAmount( BigDecimal.valueOf(Long.parseLong(httpServletRequest.getParameter("vnp_Amount"))));
+        historyPaymentEntity.setAmount(BigDecimal.valueOf(Long.parseLong(httpServletRequest.getParameter("vnp_Amount"))/100));
+        historyPaymentEntity.setAddMoney(true);
+        historyPaymentEntity.setBalanceAfter(updatedBalance);
         historyPaymentRepository.save(historyPaymentEntity);
-        // Lưu thông tin thanh toán vào cơ sở dữ liệu và trả về đối tượng đã lưu
+
         return "SUCCESS";
+    }
+
+    private String createQueryUrl(Map<String, String> params) {
+        List<String> fieldNames = new ArrayList<>(params.keySet());
+        Collections.sort(fieldNames);
+        StringBuilder hashData = new StringBuilder();
+        Iterator<String> itr = fieldNames.iterator();
+        while (itr.hasNext()) {
+            String fieldName = itr.next();
+            String fieldValue = params.get(fieldName);
+            if ((fieldValue != null) && (fieldValue.length() > 0)) {
+                hashData.append(fieldName);
+                hashData.append('=');
+                try {
+                    hashData.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                if (itr.hasNext()) {
+                    hashData.append('&');
+                }
+            }
+        }
+        return hashData.toString();
     }
 }

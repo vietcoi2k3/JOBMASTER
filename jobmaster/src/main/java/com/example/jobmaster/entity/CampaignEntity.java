@@ -26,4 +26,5 @@ public class CampaignEntity extends BaseEntity {
     private LocalDateTime endDate;
     private String enterpriseId;
     private String postId;
+    private boolean isActive;
 }

@@ -13,6 +13,7 @@ import ManageCertificate from "./component/MangeCertificate/ManageCertificate";
 import Campaign from "./component/post/Post";
 import Post from "./component/post/Post";
 import ServiceList from "./component/Service/ServiceList";
+import JobInfoView from "./component/post/DetailPost";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
                         <Route path="/manage-certificate" element={<ManageCertificate />} />
                         <Route path="/manage-campaign" element={<Campaign />} />
                         <Route path="/post" element={<Post />} />
+                        <Route path="/detail-post/:id" element={<JobInfoView />} />
                         <Route path="/service" element={<ServiceList />} />
                     </Routes>
             </Box>
