@@ -11,22 +11,23 @@ import {
     Box,
     TextField,
     Button,
-    Pagination
+    Pagination,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import AddIcon from '@mui/icons-material/Add';
 import AdminApi from "../../api/AdminApi";
-// import CreateFieldPopup from "./CreateFieldPopup";
-import { useNavigate } from "react-router-dom";
 
 function ManageCertificate() {
-    // const navigate = useNavigate();
-    const [tabIndex, setTabIndex] = useState(0); // State for active tab
-    const [pageNumber, setPageNumber] = useState(1); // Current page number
+    const [pageNumber, setPageNumber] = useState(1);
     const [candidate, setCandidate] = useState([]);
-    const [totalPages, setTotalPages] = useState(1); // Total pages for pagination
+    const [totalPages, setTotalPages] = useState(1);
     const [open, setOpen] = useState(false);
+    const [selectedItem, setSelectedItem] = useState(null); // Lưu thông tin giấy phép được chọn
 
     const getStatusInfo = (status) => {
         switch (status) {
@@ -41,27 +42,28 @@ function ManageCertificate() {
         }
     };
 
-    const handleClickOpen = () => {
+    const handleClickOpen = (item) => {
+        setSelectedItem(item); // Lưu thông tin của item được bấm
         setOpen(true);
     };
 
     const handleClose = () => {
         setOpen(false);
-        fetch(); // Refresh data after closing popup
+        setSelectedItem(null);
     };
 
     const fetch = async () => {
         const response = await AdminApi.getListCertificate(pageNumber);
-        setCandidate(response.data); // Update the candidate list
-        setTotalPages(response.totalPages); // Update total pages for pagination
+        setCandidate(response.data);
+        setTotalPages(response.totalPages);
     };
 
     useEffect(() => {
-        fetch(); // Fetch candidates when page number changes
+        fetch();
     }, [pageNumber]);
 
     const handlePageChange = (event, value) => {
-        setPageNumber(value); // Update page number when user interacts with pagination
+        setPageNumber(value);
     };
 
     return (
@@ -76,7 +78,6 @@ function ManageCertificate() {
                         variant="contained"
                         color="primary"
                         startIcon={<AddIcon />}
-                        onClick={handleClickOpen}
                     >
                         Thêm mới
                     </Button>
@@ -104,17 +105,13 @@ function ManageCertificate() {
                                     <TableCell>{item.city}</TableCell>
                                     <TableCell style={{ color }}>{text}</TableCell>
                                     <TableCell>
-                                        <IconButton aria-label="view" color="primary">
+                                        <IconButton
+                                            aria-label="view"
+                                            color="primary"
+                                            onClick={() => handleClickOpen(item)}
+                                        >
                                             <VisibilityIcon />
                                         </IconButton>
-                                        {/* Uncomment if delete functionality is needed */}
-                                        {/* <IconButton
-                                            aria-label="delete"
-                                            color="primary"
-                                            onClick={() => handleDelete(item.id)}
-                                        >
-                                            <DeleteIcon />
-                                        </IconButton> */}
                                     </TableCell>
                                 </TableRow>
                             );
@@ -123,7 +120,6 @@ function ManageCertificate() {
                 </Table>
             </TableContainer>
 
-            {/* Pagination */}
             <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
                 <Pagination
                     count={totalPages}
@@ -133,7 +129,38 @@ function ManageCertificate() {
                 />
             </Box>
 
-            {/*<CreateFieldPopup open={open} onClose={handleClose} />*/}
+            {/* Popup hiển thị thông tin giấy phép */}
+            <Dialog open={open} onClose={handleClose}>
+                <DialogTitle>Thông tin giấy phép</DialogTitle>
+                <DialogContent>
+                    {selectedItem && (
+                        <Box>
+                            <img
+                                src={selectedItem.businessCertificate}
+                                alt="Giấy phép"
+                                style={{ width: '100%', height: 'auto', marginBottom: 10 }}
+                            />
+                            <p><strong>Tên công ty:</strong> {selectedItem.companyName}</p>
+                            <p><strong>Địa chỉ:</strong> {selectedItem.city}</p>
+                        </Box>
+                    )}
+                </DialogContent>
+                <DialogActions>
+                    <Button color="success" onClick={() => AdminApi.updateStatusEnterprise("ACTIVE",selectedItem.id).then((e)=>{
+                        fetch();
+                        setOpen(false)
+                    })}>
+                        Phê duyệt
+                    </Button>
+                    <Button color="error" onClick={() => AdminApi.updateStatusEnterprise("INACTIVE",selectedItem.id).then((e)=>{
+                        fetch();
+                        setOpen(false)
+                    })}>
+                        Không phê duyệt
+                    </Button>
+                    <Button onClick={handleClose}>Đóng</Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 }

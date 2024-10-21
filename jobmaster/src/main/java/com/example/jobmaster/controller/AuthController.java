@@ -5,6 +5,7 @@ import com.example.jobmaster.dto.Request.RegisterRequest;
 import com.example.jobmaster.entity.FileEntity;
 import com.example.jobmaster.entity.UserEntity;
 import com.example.jobmaster.repository.*;
+import com.example.jobmaster.service.IAdminService;
 import com.example.jobmaster.service.IFileService;
 import com.example.jobmaster.service.IFileUploadService;
 import com.example.jobmaster.service.IUserService;
@@ -65,6 +66,9 @@ public class  AuthController {
 
     @Autowired
     private PostRepository postRepository;
+
+    @Autowired
+    private IAdminService iAdminService;
 
 
     @PostMapping(value = "/login-by-goolge")
@@ -204,5 +208,12 @@ public class  AuthController {
         }
     }
 
+    @RequestMapping(value = "/get-list-company",method = RequestMethod.GET)
+    ResponseEntity getListCompany(
+            @RequestParam(defaultValue = DefautlConstants.PAGE_SIZE) int pageSize,
+            @RequestParam(defaultValue = DefautlConstants.PAGE_NO) int pageNumber
+    ){
+        return ResponseEntity.ok(iAdminService.getListAdmin(pageSize,pageNumber));
+    }
 
 }

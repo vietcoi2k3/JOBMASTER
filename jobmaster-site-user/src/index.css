@@ -16,3 +16,10 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+/* slick-carousel styles */
+.slick-slide {
+  padding: 10px;
+}
+.slick-prev:before, .slick-next:before {
+  color: black;
+}

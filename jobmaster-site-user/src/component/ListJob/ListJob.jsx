@@ -15,18 +15,37 @@ const JobList = ({ jobs, onSelectJob }) => (
     <Grid container spacing={1} direction="column">
         {jobs.map((job) => (
             <Grid item key={job.index}>
-                <Card variant="outlined" sx={{ padding: '8px 12px', cursor: 'pointer', minHeight: '100px' }}>
-                    <CardContent style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px' }}>
-                        <div>
-                            <Chip
-                                label={"Hot"}
-                                color={job.urgency === 'Hot' ? 'error' : 'error'}
-                                size="small"
-                                sx={{ marginBottom: '4px', fontSize: '12px', height: '20px' }}
+                <Card
+                    variant="outlined"
+                    sx={{ padding: '8px 12px', cursor: 'pointer', minHeight: '100px' }}
+                >
+                    <CardContent
+                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px' }}
+                    >
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                            {/* Thêm logo công ty */}
+                            <img
+                                src={job.logoCompany}
+                                alt={`${job.nameCompany} logo`}
+                                style={{ width: '40px', height: '40px', objectFit: 'cover', marginRight: '12px', borderRadius: '8px' }}
                             />
-                            <Typography variant="subtitle2" fontWeight="bold">{job.title}</Typography>
-                            <Typography variant="body2">{job.companyName} - {job.address}</Typography>
-                            <Typography variant="caption" color="textSecondary">Mức lương: {job.salaryRange}</Typography>
+                            <div>
+                                <Chip
+                                    label={"Hot"}
+                                    color={job.urgency === 'Hot' ? 'error' : 'error'}
+                                    size="small"
+                                    sx={{ marginBottom: '4px', fontSize: '12px', height: '20px' }}
+                                />
+                                <Typography variant="subtitle2" fontWeight="bold">
+                                    {job.title}
+                                </Typography>
+                                <Typography variant="body2">
+                                    {job.nameCompany} - {job.address}
+                                </Typography>
+                                <Typography variant="caption" color="textSecondary">
+                                    Mức lương: {job.salaryRange}
+                                </Typography>
+                            </div>
                         </div>
                         <IconButton size="small" onClick={() => onSelectJob(job)}>
                             <ArrowForwardIosIcon fontSize="small" />
@@ -36,6 +55,7 @@ const JobList = ({ jobs, onSelectJob }) => (
             </Grid>
         ))}
     </Grid>
+
 );
 
 const JobDetails = ({ job }) => {

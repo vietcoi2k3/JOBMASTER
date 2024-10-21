@@ -119,4 +119,9 @@ public class AdminController {
     @RequestParam String id){
         return ResponseEntity.ok(iAdminService.updateStatusPost(id,status));
     }
+
+    @RequestMapping(value = "/update-status-enterprise")
+    public ResponseEntity getListPackageByCampaign(@RequestParam String status,@RequestParam String id){
+        return ResponseEntity.ok(iAdminService.updateStatusEnterprise(status,id));
+    }
 }

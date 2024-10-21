@@ -22,4 +22,8 @@ public interface IAdminService {
    PostEntity getDetailPost(String id);
 
     PostEntity updateStatusPost(String id,PostEnum status);
+
+    EnterpriseEntity updateStatusEnterprise(String status, String id);
+
+    PageResponse<EnterpriseEntity> getListEnterprise(int pageNumber,int pageSize);
 }

@@ -1,30 +1,62 @@
 import React from 'react';
-import { Box, Card, CardContent, Typography } from '@mui/material';
-import './CompanySlider.css'; // Tạo file CSS cho phần trượt
-import companyDefault from '../../assets/companyDefautl.png'
+import Slider from 'react-slick';
+import { Card, CardContent, Typography, Box } from '@mui/material';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
-// Dữ liệu công ty mẫu
 const companies = [
-    { id: 1, name: 'Công ty cổ phần CMC', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/CMC_Corporation_logo.png/768px-CMC_Corporation_logo.png' },
-    { id: 2, name: 'Công ty cổ phần FIT', logo: 'https://fitgroup.com.vn/wp-content/uploads/2019/09/logo-fit-1.png' },
-    { id: 3, name: 'Công ty cổ phần hợp nhất quốc tế', logo: 'https://example.com/logo2.png' },
-    { id: 4, name: 'Công ty cổ phần FIT', logo: 'https://fitgroup.com.vn/wp-content/uploads/2019/09/logo-fit-1.png' },
-    { id: 5, name: 'Công ty cổ phần CMC', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/CMC_Corporation_logo.png/768px-CMC_Corporation_logo.png' }
+    { name: 'BSS Group', location: 'Hà Nội', logo: '/images/bss-logo.png' },
+    { name: 'Lac Viet Corp', location: 'Hồ Chí Minh', logo: '/images/lacviet-logo.png' },
+    { name: 'FPT Software', location: 'Đà Nẵng', logo: '/images/fpt-logo.png' },
+    { name: 'Viettel Group', location: 'Hà Nội', logo: '/images/viettel-logo.png' },
+    { name: 'TMA Solutions', location: 'Hồ Chí Minh', logo: '/images/tma-logo.png' },
+    { name: 'BSS Group', location: 'Hà Nội', logo: '/images/bss-logo.png' },
+    { name: 'Lac Viet Corp', location: 'Hồ Chí Minh', logo: '/images/lacviet-logo.png' },
+    { name: 'FPT Software', location: 'Đà Nẵng', logo: '/images/fpt-logo.png' },
+    { name: 'Viettel Group', location: 'Hà Nội', logo: '/images/viettel-logo.png' },
+    { name: 'TMA Solutions', location: 'Hồ Chí Minh', logo: '/images/tma-logo.png' }
 ];
 
 const CompanySlider = () => {
+    const settings = {
+        dots: true, // Hiển thị các dấu chấm phân trang
+        infinite: true, // Vòng lặp vô tận
+        speed: 500, // Tốc độ chuyển trang (ms)
+        slidesToShow: 4, // Số lượng slide hiển thị cùng lúc
+        slidesToScroll: 4, // Số lượng slide cuộn mỗi lần
+        responsive: [
+            {
+                breakpoint: 960, // Dưới kích thước này, hiển thị 2 slide
+                settings: {
+                    slidesToShow: 2,
+                },
+            },
+            {
+                breakpoint: 600, // Dưới kích thước này, hiển thị 1 slide
+                settings: {
+                    slidesToShow: 1,
+                },
+            },
+        ],
+    };
+
     return (
-        <Box sx={{ width: '100%', overflowX: 'scroll', whiteSpace: 'nowrap', padding: '0' }}>
-            <Box className="slider-container">
-                {companies.map((company) => (
-                    <Card key={company.id} className="company-card">
-                        <CardContent sx={{ textAlign: 'center',padding:0 }}>
-                            <img src={companyDefault} alt={company.name}  />
+        <Box sx={{ mt: 2 }}>
+            <Slider {...settings}>
+                {companies.map((company, index) => (
+                    <Card key={index} sx={{ padding: 2 }}>
+                        <CardContent>
+                            <img
+                                src={company.logo}
+                                alt={company.name}
+                                style={{ width: '100%', height: '100px', objectFit: 'contain' }}
+                            />
                             <Typography variant="h6">{company.name}</Typography>
+                            <Typography color="text.secondary">{company.location}</Typography>
                         </CardContent>
                     </Card>
                 ))}
-            </Box>
+            </Slider>
         </Box>
     );
 };

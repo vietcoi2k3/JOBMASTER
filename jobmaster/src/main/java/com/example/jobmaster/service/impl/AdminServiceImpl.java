@@ -7,6 +7,7 @@ import com.example.jobmaster.dto.Response.UserInfoResponse;
 import com.example.jobmaster.entity.*;
 import com.example.jobmaster.enumration.Time;
 import com.example.jobmaster.repository.*;
+import com.example.jobmaster.security.jwt.JWTUntil;
 import com.example.jobmaster.service.IAdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -40,6 +41,9 @@ public class AdminServiceImpl implements IAdminService {
 
     @Autowired
     private PackageRepository packageRepository;
+
+    @Autowired
+    private JWTUntil jwtUntil;
 
     @Override
     public List<FieldEntity> getListField(String code, String name) {
@@ -151,5 +155,23 @@ public class AdminServiceImpl implements IAdminService {
         PostEntity postEntity = postRepository.findById(id).get();
         postEntity.setStatus(status.name());
         return postRepository.save(postEntity);
+    }
+
+    @Override
+    public EnterpriseEntity updateStatusEnterprise(String status, String id) {
+        EnterpriseEntity enterprise = enterpriseRepository.findById(id).get();
+        enterprise.setIsActive(status);
+        return enterpriseRepository.save(enterprise);
+    }
+
+    @Override
+    public PageResponse<EnterpriseEntity> getListEnterprise(int pageNumber,int pageSize) {
+        pageNumber--;
+        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+        Page<EnterpriseEntity> page = enterpriseRepository.getListCompany(pageable);
+        return PageResponse.<EnterpriseEntity>builder()
+                .totalPage(page.getTotalPages())
+                .data(page.getContent())
+                .build();
     }
 }

@@ -116,6 +116,16 @@ const AdminApi =  {
                 id: id,
             },
         });
+    },
+
+    updateStatusEnterprise(status,id){
+        const url = "/admin/update-status-enterprise";
+        return axiosClient.get(url, {
+            params: {
+                status: status,
+                id: id,
+            },
+        });
     }
 
 }

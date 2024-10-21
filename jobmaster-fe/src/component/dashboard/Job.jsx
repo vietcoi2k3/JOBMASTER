@@ -116,7 +116,11 @@ const Job = () => {
                                     </IconButton>
                                     <Switch checked={true} />
                                     <IconButton>
-                                        <EventNoteIcon />
+                                        <EventNoteIcon onClick = {
+                                            ()=>{
+                                            navigate("/dashboard/job-form")
+                                        }
+                                        } />
                                     </IconButton>
                                 </TableCell>
                             </TableRow>

@@ -28,4 +28,8 @@ public interface EnterpriseRepository extends JpaRepository<EnterpriseEntity,Str
     @Query("SELECT c " +
             "FROM EnterpriseEntity c")
     Page<EnterpriseEntity> getListCertificate(Pageable pageable);
+
+    @Query("SELECT c " +
+            "FROM EnterpriseEntity c WHERE c.isActive = 'ACTIVE'")
+    Page<EnterpriseEntity> getListCompany(Pageable pageable);
 }
