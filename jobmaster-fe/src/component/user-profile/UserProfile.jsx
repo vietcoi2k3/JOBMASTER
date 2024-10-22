@@ -1,9 +1,9 @@
 import * as React from "react";
-
 import LockIcon from "@mui/icons-material/Lock";
 import PersonIcon from "@mui/icons-material/Person";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import BusinessIcon from "@mui/icons-material/Business";
+import Notification from "../notification/Notification";
 import {
   TextField,
   Button,
@@ -12,15 +12,63 @@ import {
   InputLabel,
   FormControl,
 } from "@mui/material";
+import userApi from "../../api/UserApi";
 
 function UserProfile() {
-  const [gender, setGender] = React.useState("Nữ");
-
-  const handleGenderChange = (event) => {
-    setGender(event.target.value);
-  };
+  const [userInfo, setUserInfo] = React.useState({
+    id:'',
+    username: '',
+    fullName: '',
+    gender: '',
+  });
+  const [notification, setNotification] = React.useState({
+    open: false,
+    message: '',
+    type: 'success'
+  });
+  React.useEffect(() => {
+    userApi.getUserByToken()
+      .then((res) => {
+        setUserInfo(res)
+      })
+      .catch((error) => {
+        setNotification({
+          open: true,
+          message: error,
+          type: 'error'
+        });
+      })
+  }, []);
 
   
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUserInfo({
+        ...userInfo,
+        [name]: value, // Cập nhật trường tương ứng trong userInfo
+    });
+};
+  const handleSubmit = (e) => {
+    e.preventDefault(); // Ngăn chặn hành động mặc định của form
+    userApi.updateUser(userInfo.id,userInfo)
+    .then((res)=>{
+      setUserInfo(res);
+      setNotification({
+        open: true,
+        message: 'User information updated successfully!',
+        type: 'success',
+      });
+    })
+    .catch((error)=>{
+      setNotification({
+        open: false,
+        message: error,
+        type: 'error',
+      });
+    })
+    
+  };
+
   return (
     <div className="flex bg-accent w-full">
 
@@ -33,7 +81,7 @@ function UserProfile() {
             className="w-16 h-16 rounded-full object-cover"
           />
           <div>
-            <p>Email: phuong@gmail.com</p>
+            <p>Email: {userInfo.username}</p>
           </div>
         </div>
 
@@ -42,7 +90,9 @@ function UserProfile() {
             fullWidth
             label="Họ và tên"
             variant="outlined"
-            value="Phạm Phương"
+            value={userInfo.fullName}
+            name="fullName"
+            onChange={handleChange}
             className="bg-white"
           />
         </div>
@@ -62,9 +112,10 @@ function UserProfile() {
             <InputLabel id="gender-label">Giới tính</InputLabel>
             <Select
               labelId="gender-label"
-              value={gender}
+              value={userInfo.gender}
               label="Giới tính"
-              onChange={handleGenderChange}
+              onChange={handleChange}
+              name = "gender"
               className="bg-white"
             >
               <MenuItem value="Nam">Nam</MenuItem>
@@ -74,9 +125,16 @@ function UserProfile() {
           </FormControl>
         </div>
 
-        <Button variant="contained" color="primary" sx={{marginLeft:'80%',marginBottom:20}}>
+        <Button onClick={handleSubmit} variant="contained" color="primary" sx={{ marginLeft: '80%', marginBottom: 20 }}>
           Cập nhật
         </Button>
+
+        <Notification 
+                open={notification.open} 
+                onClose={() => setNotification({ ...notification, open: false })} 
+                message={notification.message} 
+                type={notification.type} 
+            />
       </div>
     </div>
   );

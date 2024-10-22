@@ -8,6 +8,7 @@ const Notification = ({ open, onClose, message,type }) => {
       open={open}
       autoHideDuration={6000}
       onClose={onClose}
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} // Đặt thông báo ở góc dưới bên phải
       action={
         <button onClick={onClose} style={{ color: 'white' }}>
           Close

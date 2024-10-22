@@ -4,14 +4,13 @@ import com.example.jobmaster.dto.CampaignDTO;
 import com.example.jobmaster.dto.EnterpriseDTO;
 import com.example.jobmaster.dto.PostDTO;
 import com.example.jobmaster.dto.Request.ActivatePackageRequest;
-import com.example.jobmaster.dto.Response.CVResponse;
-import com.example.jobmaster.dto.Response.HistoryResponse;
-import com.example.jobmaster.dto.Response.PageResponse;
-import com.example.jobmaster.dto.Response.PostResponse;
+import com.example.jobmaster.dto.Response.*;
 import com.example.jobmaster.entity.*;
+import com.example.jobmaster.exception.NotFoundException;
 import com.example.jobmaster.repository.*;
 import com.example.jobmaster.security.jwt.JWTUntil;
 import com.example.jobmaster.service.IEnterpiseService;
+import com.example.jobmaster.until.constants.ExceptionMessage;
 import jakarta.servlet.http.HttpServletRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,7 +99,7 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
     }
 
     @Override
-    public Page<CampaignEntity> getListCampaign(String search, int pageSize, int pageNumber,HttpServletRequest httpServletRequest) {
+    public Page<CampaignResponse> getListCampaign(String search, int pageSize, int pageNumber, HttpServletRequest httpServletRequest) {
         pageNumber--;
         Pageable pageable = PageRequest.of(pageNumber,pageSize);
         String username = jwtUntil.getUsernameFromRequest(httpServletRequest);
@@ -270,5 +269,19 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
         return packageEntities;
     }
 
+    @Override
+    public void updateStatusCampaign(String id) {
+        CampaignEntity campaignEntity = campaignRepository.findById(id)
+                .orElseThrow(()->new NotFoundException(ExceptionMessage.CAMPAIGN_NOT_FOUND));
+        campaignEntity.setActive(!campaignEntity.isActive());
+        campaignRepository.save(campaignEntity);
+    }
 
+    @Override
+    public void updateCampaign(String id, CampaignDTO campaignDTO) {
+        CampaignEntity campaignEntity = campaignRepository.findById(id)
+                .orElseThrow(()->new NotFoundException(ExceptionMessage.CAMPAIGN_NOT_FOUND));
+        campaignEntity.setName(campaignDTO.getName());
+        campaignRepository.save(campaignEntity);
+    }
 }

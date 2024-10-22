@@ -2,6 +2,7 @@ import './App.css';
 import { Routes, Route ,useLocation } from 'react-router-dom';
 import MiniDrawer from './component/dashboard/Dashboard';
 import UserProfile from './component/user-profile/UserProfile'
+import ChangePassword from './component/user-profile/ChangePassword'
 import SignUp from './component/sign-up/SignUp'
 import Callback from './component/sign-up/CallBack'
 import VerifyEmail from './component/sign-up/VerifyEmail';
@@ -27,13 +28,14 @@ function App() {
       <Route path="/dashboard" element={<MiniDrawer />}>
           <Route index element={<SideBarProfile />} />
           <Route path="profile" element={<SideBarProfile />}>
+              <Route path='change-password' element={<ChangePassword/>}/>
               <Route path="certificate" element={<CertificateBusiness />} />
               <Route path="user-profile" element={<UserProfile />} />
               <Route path="info-company" element={<InfoCompany />} />
               <Route path="history" element={<History />} />
           </Route>
           <Route path="job" element={<Job/>}/>
-          <Route path="job-form" element={<JobForm/>}/>
+          <Route path="job-form/:id" element={<JobForm/>}/>
           <Route path="service" element={<ServiceList/>}/>
           <Route path="manage-post" element={<ManagePost/>}/>
           <Route path="view-cv/:id" element={<ViewCV/>}/>

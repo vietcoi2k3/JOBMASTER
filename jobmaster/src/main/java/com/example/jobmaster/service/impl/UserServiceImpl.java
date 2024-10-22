@@ -1,13 +1,17 @@
 package com.example.jobmaster.service.impl;
 
 import com.example.jobmaster.dto.GoogleUserInfoDTO;
+import com.example.jobmaster.dto.Request.ChangePasswordRequest;
 import com.example.jobmaster.dto.Request.LoginRequest;
 import com.example.jobmaster.dto.Request.RegisterRequest;
 import com.example.jobmaster.dto.TokenDTO;
+import com.example.jobmaster.dto.UserDTO;
 import com.example.jobmaster.entity.*;
+import com.example.jobmaster.exception.NotFoundException;
 import com.example.jobmaster.repository.*;
 import com.example.jobmaster.security.jwt.JWTUntil;
 import com.example.jobmaster.service.IUserService;
+import com.example.jobmaster.until.constants.ExceptionMessage;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.transaction.Transactional;
@@ -69,6 +73,7 @@ public class UserServiceImpl implements IUserService {
 
     @Value("${app.url}")
     private String baseUrl;
+
     @Override
     public ResponseEntity loginByGoogle(String token) {
         RestTemplate restTemplate = new RestTemplate();
@@ -81,11 +86,10 @@ public class UserServiceImpl implements IUserService {
 
         GoogleUserInfoDTO response = restTemplate.exchange(url, HttpMethod.GET, entity, GoogleUserInfoDTO.class).getBody();
 
-        if (userRepository.existsByUsername(response.getEmail())||userRepository.existsByGoogleId(response.getSub())){
+        if (userRepository.existsByUsername(response.getEmail()) || userRepository.existsByGoogleId(response.getSub())) {
             UserEntity user = userRepository.findByUsername(response.getEmail());
             return ResponseEntity.ok(this.loginByGoogle(user));
-        }
-        else {
+        } else {
             UserEntity userEntity = new UserEntity();
             userEntity.setGoogleId(response.getSub());
             userEntity.setUsername(response.getEmail());
@@ -97,10 +101,10 @@ public class UserServiceImpl implements IUserService {
     @Override
     @Transactional
     public TokenDTO registerEnterprise(RegisterRequest registerRequest) throws MessagingException {
-        if (userRepository.existsByUsername(registerRequest.getEmail())){
-           throw new RuntimeException("Tài khoản đã tồn tại");
+        if (userRepository.existsByUsername(registerRequest.getEmail())) {
+            throw new RuntimeException("Tài khoản đã tồn tại");
         }
-        if (registerRequest.getIsConsumer()){
+        if (registerRequest.getIsConsumer()) {
             RoleEntity roleEntity = roleRepository.findById(2)
                     .orElseThrow(() -> new RuntimeException("Role not found"));
             Set<RoleEntity> roleEntities = new HashSet<>(Arrays.asList(roleEntity));
@@ -118,7 +122,7 @@ public class UserServiceImpl implements IUserService {
 
             UserInfoEntity userInfoEntity = new UserInfoEntity();
             userInfoEntity.setUserId(user.getId());
-            userInfoEntity= userInfoRepository.save(userInfoEntity);
+            userInfoEntity = userInfoRepository.save(userInfoEntity);
 
             user = userRepository.findById(user.getId()).get();
             user.setUserInfoId(userInfoEntity.getUserId());
@@ -176,7 +180,7 @@ public class UserServiceImpl implements IUserService {
         VerifyTokenEntity token = new VerifyTokenEntity(user);
         // Gửi email xác thực
         String recipientName = user.getFullName();
-        String confirmationLink = baseUrl +"verify?token=" + token.getToken();
+        String confirmationLink = baseUrl + "verify?token=" + token.getToken();
         String emailContent = buildEmailContent(recipientName, confirmationLink);
 
         this.sendEmail(user.getUsername(), "Xác thực email", emailContent);
@@ -186,15 +190,15 @@ public class UserServiceImpl implements IUserService {
     @Override
     public TokenDTO login(LoginRequest loginRequest) {
         UserEntity user = userRepository.findByUsername(loginRequest.getEmail());
-        if (user==null){
-            throw new RuntimeException("Tài khoản không tồn tại");
+        if (user == null) {
+            throw new IllegalArgumentException("Tài khoản không tồn tại");
         }
-        if (user.getIsActive().equals(UserEnum.WAITING_ACTIVE.name()  )){
+        if (user.getIsActive().equals(UserEnum.WAITING_ACTIVE.name())) {
             System.out.println();
-            throw new RuntimeException("Tài khoản chưa xác thực");
+            throw new IllegalArgumentException("Tài khoản chưa xác thực");
         }
-        if (!passwordEncoder.matches(loginRequest.getPassword(),user.getPassword())){
-                throw new RuntimeException("Mật khẩu không khớp");
+        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("Mật khẩu không khớp");
         }
         return TokenDTO.builder()
                 .userId(user.getId())
@@ -216,6 +220,7 @@ public class UserServiceImpl implements IUserService {
         tokenRepository.delete(verificationToken);  // Xóa token sau khi xác thực thành công
         return "Email verified successfully!";
     }
+
     public void sendEmail(String to, String subject, String content) throws MessagingException {
         MimeMessage mimeMessage = emailService.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
@@ -258,7 +263,7 @@ public class UserServiceImpl implements IUserService {
                 "</html>";
     }
 
-    private  TokenDTO loginByGoogle(UserEntity userEntity){
+    private TokenDTO loginByGoogle(UserEntity userEntity) {
         String token = jwtUntil.generateToken(userEntity);
         return TokenDTO.builder()
                 .userId(userEntity.getId())
@@ -266,12 +271,11 @@ public class UserServiceImpl implements IUserService {
                 .build();
     }
 
-    private TokenDTO registerByGoogle(UserEntity userEntity){
+    private TokenDTO registerByGoogle(UserEntity userEntity) {
         RoleEntity roleEntity = roleRepository.findById(1)
                 .orElseThrow(() -> new RuntimeException("Role not found"));
 
         Set<RoleEntity> roleEntities = new HashSet<>(Arrays.asList(roleEntity));
-        userEntity.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
         userEntity.setRoles(roleEntities);
         UserEntity user = userRepository.save(userEntity);
 
@@ -279,12 +283,58 @@ public class UserServiceImpl implements IUserService {
                 .builder()
                 .userId(user.getId())
                 .build();
-        enterpriseEntity= enterpriseRepository.save(enterpriseEntity);
+        enterpriseEntity = enterpriseRepository.save(enterpriseEntity);
         user.setEnterpriseId(enterpriseEntity.getId());
         user = userRepository.save(user);
         return TokenDTO.builder()
                 .userId(user.getId())
                 .token(jwtUntil.generateToken(user))
                 .build();
+    }
+
+    @Override
+    public UserDTO getUserByToken(String token) {
+        String username = jwtUntil.getUsernameFromToken(token.substring(7));
+        UserEntity userEntity = userRepository.findByUsername(username);
+        if (userEntity == null) {
+            throw new NotFoundException(ExceptionMessage.USER_NOT_FOUND);
+        }
+        return UserDTO.builder()
+                .id(userEntity.getId())
+                .username(userEntity.getUsername())
+                .gender(userEntity.getGender())
+                .fullName(userEntity.getFullName())
+                .build();
+    }
+
+    @Override
+    public UserDTO updateUser(String id, UserDTO userDTO) {
+        UserEntity userEntity = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(ExceptionMessage.USER_NOT_FOUND));
+        userEntity.setGender(userDTO.getGender());
+        userEntity.setFullName(userDTO.getFullName());
+        if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()) {
+            userEntity.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        }
+        userRepository.save(userEntity);
+        return userDTO;
+    }
+
+    @Override
+    public void updatePassword(String token, ChangePasswordRequest changePasswordRequest) {
+        String username = jwtUntil.getUsernameFromToken(token.substring(7));
+        UserEntity userEntity = userRepository.findByUsername(username);
+        if (userEntity == null) {
+            throw new NotFoundException(ExceptionMessage.USER_NOT_FOUND);
+        }
+        if (userEntity.getGoogleId() != null && userEntity.getPassword() == null) {
+            userEntity.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
+        } else {
+            if (changePasswordRequest.getOldPassword() == null || !passwordEncoder.matches(changePasswordRequest.getOldPassword(), userEntity.getPassword())) {
+                throw new IllegalArgumentException(ExceptionMessage.PASSWORD_INVALID);
+            }
+            userEntity.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
+        }
+        userRepository.save(userEntity);
     }
 }

@@ -5,11 +5,12 @@ import {
 import Province from "../../api/Province";
 import Notification from "../notification/Notification";
 import EnterpriseApi from "../../api/EnterpriseApi";
-import {useLocation} from "react-router-dom";
+import {useLocation, useParams} from "react-router-dom";
 import ReactQuill from "react-quill";
 
 
 const JobForm = () => {
+    const campaignId = useParams().id;
     const [listCity,setListCity] = useState([])
     const [loading, setLoading] = useState(false);
     const [notification, setNotification] = useState({ open: false, message: '',type:'' });
