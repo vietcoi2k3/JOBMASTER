@@ -93,6 +93,23 @@ public class EnterpriseController {
         return ResponseEntity.ok(iEnterpiseService.addCampaign(campaignDTO,httpServletRequest));
     }
 
+    @PutMapping("/update-status-campaign/{id}")
+    public ResponseEntity updateStatusCampaign(
+            @PathVariable(value = "id") String id
+    ){
+        iEnterpiseService.updateStatusCampaign(id);
+        return ResponseEntity.ok().body("SUCCESSFULLY");
+    }
+
+    @PutMapping("/update-campaign/{id}")
+    public ResponseEntity updateCampaign(
+            @PathVariable(value = "id") String id,
+            @RequestBody CampaignDTO campaignDTO
+    ){
+        iEnterpiseService.updateCampaign(id,campaignDTO);
+        return ResponseEntity.ok().body("SUCCESSFULLY");
+    }
+
     @GetMapping(value = "/get-list-campaign")
     public ResponseEntity getListCampaign(
             @RequestParam(defaultValue = DefautlConstants.PAGE_SIZE) int pageSize,

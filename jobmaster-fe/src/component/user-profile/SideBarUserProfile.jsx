@@ -12,7 +12,7 @@ const SideBarProfile = () => {
     // Hàm để cập nhật mục được chọn
     const handleSelect = (index) => {
         if (index===1){
-
+            navigate("/dashboard/profile/change-password")
         }
         if (index===2){
             navigate("/dashboard/profile/user-profile")

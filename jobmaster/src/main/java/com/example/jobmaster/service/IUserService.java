@@ -1,8 +1,10 @@
 package com.example.jobmaster.service;
 
+import com.example.jobmaster.dto.Request.ChangePasswordRequest;
 import com.example.jobmaster.dto.Request.LoginRequest;
 import com.example.jobmaster.dto.Request.RegisterRequest;
 import com.example.jobmaster.dto.TokenDTO;
+import com.example.jobmaster.dto.UserDTO;
 import jakarta.mail.MessagingException;
 import org.springframework.http.ResponseEntity;
 
@@ -25,5 +27,9 @@ public interface IUserService {
 
     public TokenDTO login(LoginRequest loginRequest);
 
+    public UserDTO getUserByToken(String token);
+    public UserDTO updateUser(String id, UserDTO userDTO);
+
+    public void updatePassword(String token, ChangePasswordRequest changePasswordRequest);
 
 }
