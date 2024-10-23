@@ -3,15 +3,11 @@ package com.example.jobmaster.service.impl;
 import com.example.jobmaster.dto.Response.CompanyResponse;
 import com.example.jobmaster.dto.Response.PageResponse;
 import com.example.jobmaster.dto.Response.PostResponse;
-import com.example.jobmaster.entity.CampaignEntity;
-import com.example.jobmaster.entity.EnterpriseEntity;
-import com.example.jobmaster.entity.PackageCampaign;
-import com.example.jobmaster.entity.PostEntity;
-import com.example.jobmaster.repository.CampaignRepository;
-import com.example.jobmaster.repository.EnterpriseRepository;
-import com.example.jobmaster.repository.PackageCampaignRepository;
-import com.example.jobmaster.repository.PostRepository;
+import com.example.jobmaster.entity.*;
+import com.example.jobmaster.repository.*;
+import com.example.jobmaster.security.jwt.JWTUntil;
 import com.example.jobmaster.service.IConsumerService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.catalina.mapper.Mapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +38,15 @@ public class ConsumerImpl implements IConsumerService {
 
     @Autowired
     private ModelMapper mapper;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private JWTUntil jwtUntil;
+
+    @Autowired
+    private CriteriaRepository criteriaRepository;
     @Override
     public PageResponse<PostResponse> getListPost(int pageNumber,int pageSize ,String search, String address, String field) {
         pageNumber--;
@@ -84,5 +89,12 @@ public class ConsumerImpl implements IConsumerService {
         CompanyResponse companyResponse = mapper.map(enterprise,CompanyResponse.class);
 
         return companyResponse;
+    }
+
+    @Override
+    public CriteriaEntity addCriteriaEntity(CriteriaEntity criteriaEntity, HttpServletRequest httpServletRequest) {
+        UserEntity user = userRepository.findByUsername(jwtUntil.getUsernameFromRequest(httpServletRequest));
+        criteriaEntity.setUserId(user.getId());
+        return criteriaRepository.save(criteriaEntity);
     }
 }

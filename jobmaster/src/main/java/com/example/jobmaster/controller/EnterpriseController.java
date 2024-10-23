@@ -120,6 +120,14 @@ public class EnterpriseController {
         return ResponseEntity.ok(iEnterpiseService.getListCampaign(search,pageSize,pageNumber,httpServletRequest));
     }
 
+    @GetMapping(value = "/get-list-campaign-post")
+    public ResponseEntity getListCampaignForPost(
+
+            HttpServletRequest httpServletRequest
+    ){
+        return ResponseEntity.ok(iEnterpiseService.getAllCampaign(httpServletRequest));
+    }
+
     @PostMapping(value = "/add-new-post")
     public ResponseEntity addPost(
             @RequestBody PostDTO postDTO

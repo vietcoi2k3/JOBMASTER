@@ -187,12 +187,13 @@ export default function MiniDrawer() {
               <img src={logo} alt="" width={210} />
               <div className="flex items-center">
                 <Button
+                    onClick={() => { navigate("/dashboard/job-form/null") }}
                     size="small"
                     className="h-1/2"
                     variant="contained"
                     color="primary"
                 >
-                  Nạp tiền
+                  Đăng tuyển
                 </Button>
 
                 <NotificationsIcon

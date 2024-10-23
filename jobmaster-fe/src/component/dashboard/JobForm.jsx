@@ -52,7 +52,7 @@ const JobForm = () => {
 
 
     useEffect(()=>{
-        EnterpriseApi.getListCampaign(pageNumber).then((e)=>setListCampaign(e.content))
+        EnterpriseApi.getAllCampaign().then((e)=>setListCampaign(e))
     },[pageNumber])
     const handleSubmit = ()=>{
         setLoading(true)

@@ -6,6 +6,7 @@ import com.example.jobmaster.dto.Response.PageResponse;
 import com.example.jobmaster.dto.Response.UserInfoResponse;
 import com.example.jobmaster.entity.*;
 import com.example.jobmaster.enumration.Time;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;
 
@@ -28,4 +29,6 @@ public interface IAdminService {
     List<EnterpriseEntity> getListEnterprise(int pageNumber, int pageSize);
 
     PageResponse<EnterpriseResponse> getListCompany(int pageSize, int pageNumber);
+
+
 }

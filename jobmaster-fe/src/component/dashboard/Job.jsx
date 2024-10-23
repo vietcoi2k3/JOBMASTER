@@ -191,7 +191,7 @@ const Job = () => {
                     checked={campaign.isActive}
                     onChange={(event) => handleToggle(campaign)} />
                     <IconButton>
-                        <EventNoteIcon onClick={() => { navigate("/dashboard/job-form") }} />
+                        <EventNoteIcon onClick={() => { navigate("/dashboard/job-form/"+campaign.id) }} />
                     </IconButton>
                 </TableCell>
             </TableRow>

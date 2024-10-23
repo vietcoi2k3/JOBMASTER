@@ -38,7 +38,7 @@ const EnterpriseApi = {
     }
     ,
 
-    getListCampaign(search, pageNumber) {
+    getListCampaign(search, pageNumber,pageSize) {
         const url = "/enterprise/get-list-campaign"
         const params = new URLSearchParams();
         if (search) {
@@ -47,7 +47,15 @@ const EnterpriseApi = {
         if (pageNumber) {
             params.append('pageNumber', pageNumber);
         }
+        if (pageSize) {
+            params.append('pageSize', pageSize);
+        }
         return axiosClient.get(url + "?" + params.toString());
+    },
+
+    getAllCampaign(){
+        const url = "/enterprise/get-list-campaign-post"
+        return axiosClient.get(url);
     },
 
     addPost(data) {

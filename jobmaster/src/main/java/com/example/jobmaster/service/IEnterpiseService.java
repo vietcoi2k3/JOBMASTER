@@ -49,4 +49,6 @@ public interface IEnterpiseService {
 
     void updateStatusCampaign(String id);
     void updateCampaign(String id,CampaignDTO campaignDTO);
+
+    List<CampaignResponse> getAllCampaign(HttpServletRequest httpServletRequest);
 }

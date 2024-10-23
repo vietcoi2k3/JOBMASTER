@@ -42,5 +42,27 @@ public interface CampaignRepository extends JpaRepository<CampaignEntity,String>
     @Query("SELECT c FROM CampaignEntity c WHERE c.name  LIKE %:search% ")
     Page<CampaignEntity> getListCampaignAdmin(@Param("search") String search, Pageable pageable);
 
+    @Query(value = """ 
+        SELECT c.id AS id, 
+               c.name AS name, 
+               c.quantity AS quantity, 
+               c.start_date AS startDate,
+               c.end_date AS endDate, 
+               c.is_active AS isActive, 
+               p.position AS position,
+               p.id AS postId,
+               p.status AS postStatus,
+               p.title AS titlePost,
+               count(cv.id) as cvQuantity
+        FROM campaign_entity c 
+        LEFT JOIN post_entity p ON p.id = c.post_id
+        LEFT JOIN cventity cv ON p.id = cv.post_id
+        WHERE
+         c.enterprise_id = :enterpriseId
+        AND c.post_id IS NULL
+        group by c.id, p.id
+        """, nativeQuery = true)
+    List<CampaignResponse> getListCampaignForPost(@Param("enterpriseId") String enterpriseId);
+
 
 }

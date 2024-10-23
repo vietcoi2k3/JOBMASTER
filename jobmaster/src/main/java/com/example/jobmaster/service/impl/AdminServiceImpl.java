@@ -9,6 +9,7 @@ import com.example.jobmaster.enumration.Time;
 import com.example.jobmaster.repository.*;
 import com.example.jobmaster.security.jwt.JWTUntil;
 import com.example.jobmaster.service.IAdminService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +27,9 @@ public class AdminServiceImpl implements IAdminService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private CriteriaRepository criteriaRepository;
 
     @Autowired
     private UserInfoRepository userInfoRepository;
@@ -176,6 +180,8 @@ public class AdminServiceImpl implements IAdminService {
     public PageResponse<EnterpriseResponse> getListCompany(int pageSize, int pageNumber) {
         return null;
     }
+
+
 
 
 }

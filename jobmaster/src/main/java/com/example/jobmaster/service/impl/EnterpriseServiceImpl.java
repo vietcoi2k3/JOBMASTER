@@ -284,4 +284,12 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
         campaignEntity.setName(campaignDTO.getName());
         campaignRepository.save(campaignEntity);
     }
+
+    @Override
+    public List<CampaignResponse> getAllCampaign(HttpServletRequest httpServletRequest) {
+        String username = jwtUntil.getUsernameFromRequest(httpServletRequest);
+        UserEntity user = userRepository.findByUsername(username);
+        System.out.println(user.getEnterpriseId());
+        return campaignRepository.getListCampaignForPost(user.getEnterpriseId());
+    }
 }
