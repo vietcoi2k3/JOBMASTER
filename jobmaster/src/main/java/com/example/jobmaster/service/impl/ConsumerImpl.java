@@ -7,8 +7,12 @@ import com.example.jobmaster.entity.*;
 import com.example.jobmaster.repository.*;
 import com.example.jobmaster.security.jwt.JWTUntil;
 import com.example.jobmaster.service.IConsumerService;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import jakarta.servlet.http.HttpServletRequest;
-import org.apache.catalina.mapper.Mapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -47,6 +51,9 @@ public class ConsumerImpl implements IConsumerService {
 
     @Autowired
     private CriteriaRepository criteriaRepository;
+
+    @Autowired
+    private EntityManager entityManager;
     @Override
     public PageResponse<PostResponse> getListPost(int pageNumber,int pageSize ,String search, String address, String field) {
         pageNumber--;
@@ -96,5 +103,46 @@ public class ConsumerImpl implements IConsumerService {
         UserEntity user = userRepository.findByUsername(jwtUntil.getUsernameFromRequest(httpServletRequest));
         criteriaEntity.setUserId(user.getId());
         return criteriaRepository.save(criteriaEntity);
+    }
+
+    @Override
+    public List<PostEntity> getListPostByCriteria(HttpServletRequest httpServletRequest
+     ) {
+        UserEntity user = userRepository.findByUsername(jwtUntil.getUsernameFromRequest(httpServletRequest));
+        CriteriaEntity criteriaEntity = criteriaRepository.findByUserId(user.getId());
+        String field = criteriaEntity.getField();
+        String position = criteriaEntity.getPosition();
+        String experience = criteriaEntity.getExperience();
+        String typeWorking = criteriaEntity.getTypeWorking();
+        String city = criteriaEntity.getCity();
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<PostEntity> query = cb.createQuery(PostEntity.class);
+        Root<PostEntity> root = query.from(PostEntity.class);
+
+        // Danh sách các điều kiện động
+        List<Predicate> predicates = new ArrayList<>();
+
+        if (field != null && !field.trim().isEmpty()) {
+            predicates.add(cb.equal(root.get("field"), field));
+        }
+        if (position != null && !position.trim().isEmpty()) {
+            predicates.add(cb.equal(root.get("position"), position));
+        }
+        if (typeWorking != null && !typeWorking.trim().isEmpty()) {
+            predicates.add(cb.equal(root.get("typeWorking"), typeWorking));
+        }
+        if (experience != null && !experience.trim().isEmpty()) {
+            predicates.add(cb.equal(root.get("experience"), experience));
+        }
+        if (city != null && !city.trim().isEmpty()) {
+            predicates.add(cb.equal(root.get("city"), city));
+        }
+
+        // Chỉ lấy bài đăng thỏa ít nhất 2 điều kiện
+        if (predicates.size() >= 2) {
+            query.where(cb.or(predicates.toArray(new Predicate[0])));
+        }
+
+        return entityManager.createQuery(query).getResultList();
     }
 }

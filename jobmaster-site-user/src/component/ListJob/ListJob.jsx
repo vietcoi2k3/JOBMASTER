@@ -7,7 +7,7 @@ import PeopleIcon from '@mui/icons-material/People'; // Thay cho Users
 import LocationOnIcon from '@mui/icons-material/LocationOn'; // Thay cho MapPin
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import ApplyJobPopup from "./ApplyJobPopup";
-import {useNavigate} from "react-router-dom"; // Thay cho ExternalLink
+import {useLocation, useNavigate} from "react-router-dom"; // Thay cho ExternalLink
 
 
 
@@ -132,15 +132,27 @@ const JobBoard = () => {
     const [jobList,setJobList] = useState([])
     const [pageNumber,setPageNumber] = useState(1)
     const [totalPage,setTotalPage] = useState(0)
+    const location = useLocation();
 
+    // Phân tích cú pháp query parameters từ URL
+    const queryParams = new URLSearchParams(location.search);
+
+    const search = queryParams.get('search') || '';
+    const address = queryParams.get('address') || '';
+    const field = queryParams.get('field') || '';
     useEffect(() => {
-        AuthApi.getListJob(pageNumber)
-            .then((e)=>{
+        const fetchJobs = async () => {
+            try {
+                const response = await AuthApi.getListJob(pageNumber, search, address, field);
+                setJobList(response.data);
+                setTotalPage(response.totalPage);
+            } catch (error) {
+                console.error('Error fetching jobs:', error);
+            }
+        };
 
-                setJobList(e.data)
-                setTotalPage(e.totalPage)
-            })
-    }, [pageNumber]);
+        fetchJobs();
+    }, [pageNumber, search, address, field]);
     return (
         <Grid container spacing={3} style={{ padding: '10px',justifyContent:'center'}}>
             <Grid item xs={4}>

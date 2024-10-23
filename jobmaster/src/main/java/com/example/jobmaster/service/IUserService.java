@@ -6,6 +6,7 @@ import com.example.jobmaster.dto.Request.RegisterRequest;
 import com.example.jobmaster.dto.TokenDTO;
 import com.example.jobmaster.dto.UserDTO;
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 
 /**
@@ -17,7 +18,7 @@ import org.springframework.http.ResponseEntity;
 
 public interface IUserService {
 
-    ResponseEntity loginByGoogle(String token);
+    ResponseEntity loginByGoogle(String token,HttpServletRequest httpServletRequest);
 
     TokenDTO registerEnterprise(RegisterRequest registerRequest) throws MessagingException;
 
@@ -25,7 +26,7 @@ public interface IUserService {
 
     public String sendEmail(String email) throws MessagingException;
 
-    public TokenDTO login(LoginRequest loginRequest);
+    public TokenDTO login(LoginRequest loginRequest, HttpServletRequest httpServletRequest);
 
     public UserDTO getUserByToken(String token);
     public UserDTO updateUser(String id, UserDTO userDTO);

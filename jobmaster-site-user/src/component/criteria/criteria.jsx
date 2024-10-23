@@ -5,6 +5,7 @@ import {
     Select, MenuItem, Button
 } from '@mui/material';
 import AuthApi from "../../api/AuthApi";
+import Consumer from "../../api/Consumer";
 
 export default function Criteria() {
     const [location, setLocation] = useState('');
@@ -16,6 +17,7 @@ export default function Criteria() {
 
     const [field,setField] = useState([])
     const [position,setPosition] = useState([])
+    const [city,setCity] = useState([])
 
     useEffect(() => {
         AuthApi.getAllField().then((e)=>{
@@ -23,6 +25,9 @@ export default function Criteria() {
         })
         AuthApi.getAllPosition().then((e)=>{
             setPosition(e)
+        })
+        AuthApi.getAllCity().then((e)=>{
+            setCity(e)
         })
     }, []);
 
@@ -33,14 +38,16 @@ export default function Criteria() {
 
     const handleSubmit = () => {
         const formData = {
-            location,
-            companySize,
-            jobType,
-            experience,
-            fieldSelect,
-            positionSelect
+            city: location,
+            scales: companySize,
+            typeWorking :jobType,
+            experience: experience,
+            field: fieldSelect,
+            position: positionSelect
         };
-        console.log('Thông tin form:', formData);
+        Consumer.addCriteria(formData).then((e)=>{
+            console.log(e)
+        })
     };
 
     return (
@@ -119,9 +126,9 @@ export default function Criteria() {
                     variant="outlined"
                     onChange={(e)=>setPositionSelect(e.target.value)}
                 >
-                    {position.map((item) => (
-                        <MenuItem key={item.id} value={item.name}>
-                            {item.name}
+                    {city.map((item) => (
+                        <MenuItem key={item.id} value={item.province_name}>
+                            {item.province_name}
                         </MenuItem>
                     ))}
                 </TextField>

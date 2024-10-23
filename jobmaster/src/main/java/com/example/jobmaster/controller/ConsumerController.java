@@ -30,4 +30,9 @@ public class ConsumerController {
     public ResponseEntity addCriteria(@RequestBody CriteriaEntity criteriaEntity, HttpServletRequest httpServletRequest){
         return ResponseEntity.ok(iConsumerService.addCriteriaEntity(criteriaEntity,httpServletRequest));
     }
+
+    @PostMapping(value = "/get-list-post")
+    public ResponseEntity getCampaignByCriteria(HttpServletRequest httpServletRequest){
+        return ResponseEntity.ok(iConsumerService.getListPostByCriteria(httpServletRequest));
+    }
 }

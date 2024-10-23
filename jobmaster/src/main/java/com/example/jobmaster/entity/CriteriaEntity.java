@@ -18,7 +18,7 @@ public class CriteriaEntity extends BaseEntity{
     private String id;
     private String field;
     private String position;
-    private String typeWork;
+    private String typeWorking;
     private String experience;
     private String city;
     private String scales;

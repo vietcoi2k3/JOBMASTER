@@ -72,8 +72,8 @@ public class  AuthController {
 
 
     @PostMapping(value = "/login-by-goolge")
-    public ResponseEntity loginByGoogle(@RequestParam String token){
-        return userService.loginByGoogle(token);
+    public ResponseEntity loginByGoogle(@RequestParam String token,HttpServletRequest httpServletRequest){
+        return userService.loginByGoogle(token,httpServletRequest);
     }
 
     @PostMapping(value = "/register-enterprise")
@@ -82,8 +82,8 @@ public class  AuthController {
     }
 
     @PostMapping(value = "/login")
-    public ResponseEntity login(@RequestBody LoginRequest loginRequest){
-        return ResponseEntity.ok(userService.login(loginRequest));
+    public ResponseEntity login(@RequestBody LoginRequest loginRequest,HttpServletRequest httpServletRequest){
+        return ResponseEntity.ok(userService.login(loginRequest,httpServletRequest));
     }
 
     @GetMapping("/confirm")

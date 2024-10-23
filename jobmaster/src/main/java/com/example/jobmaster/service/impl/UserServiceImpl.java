@@ -14,6 +14,7 @@ import com.example.jobmaster.service.IUserService;
 import com.example.jobmaster.until.constants.ExceptionMessage;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.apache.catalina.User;
 import org.apache.logging.log4j.message.SimpleMessage;
@@ -75,7 +76,7 @@ public class UserServiceImpl implements IUserService {
     private String baseUrl;
 
     @Override
-    public ResponseEntity loginByGoogle(String token) {
+    public ResponseEntity loginByGoogle(String token,HttpServletRequest httpServletRequest) {
         RestTemplate restTemplate = new RestTemplate();
         String url = URL_GET_TOKEN_GOOGLE;
 
@@ -88,6 +89,13 @@ public class UserServiceImpl implements IUserService {
 
         if (userRepository.existsByUsername(response.getEmail()) || userRepository.existsByGoogleId(response.getSub())) {
             UserEntity user = userRepository.findByUsername(response.getEmail());
+            String origin = httpServletRequest.getHeader("Origin");
+            if (origin.equals("http://localhost:3001")&&user.getUserInfoId()==null){
+                throw new IllegalArgumentException("Tài khoản không hợp lệ");
+            }
+            if (origin.equals("http://localhost:3000")&&user.getEnterpriseId()==null){
+                throw new IllegalArgumentException("Tài khoản không hợp lệ");
+            }
             return ResponseEntity.ok(this.loginByGoogle(user));
         } else {
             UserEntity userEntity = new UserEntity();
@@ -104,6 +112,7 @@ public class UserServiceImpl implements IUserService {
         if (userRepository.existsByUsername(registerRequest.getEmail())) {
             throw new RuntimeException("Tài khoản đã tồn tại");
         }
+
         if (registerRequest.getIsConsumer()) {
             RoleEntity roleEntity = roleRepository.findById(2)
                     .orElseThrow(() -> new RuntimeException("Role not found"));
@@ -188,8 +197,16 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public TokenDTO login(LoginRequest loginRequest) {
+    public TokenDTO login(LoginRequest loginRequest, HttpServletRequest httpServletRequest) {
         UserEntity user = userRepository.findByUsername(loginRequest.getEmail());
+        String origin = httpServletRequest.getHeader("Origin");
+        System.out.println(origin);
+        if (origin.equals("http://localhost:3001")&&user.getUserInfoId()==null){
+            throw new IllegalArgumentException("Tài khoản không hợp lệ");
+        }
+        if (origin.equals("http://localhost:3000")&&user.getEnterpriseId()==null){
+            throw new IllegalArgumentException("Tài khoản không hợp lệ");
+        }
         if (user == null) {
             throw new IllegalArgumentException("Tài khoản không tồn tại");
         }
