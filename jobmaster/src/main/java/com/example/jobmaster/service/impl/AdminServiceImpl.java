@@ -165,13 +165,17 @@ public class AdminServiceImpl implements IAdminService {
     }
 
     @Override
-    public PageResponse<EnterpriseEntity> getListEnterprise(int pageNumber,int pageSize) {
+    public List<EnterpriseEntity> getListEnterprise(int pageNumber, int pageSize) {
         pageNumber--;
         Pageable pageable = PageRequest.of(pageNumber,pageSize);
-        Page<EnterpriseEntity> page = enterpriseRepository.getListCompany(pageable);
-        return PageResponse.<EnterpriseEntity>builder()
-                .totalPage(page.getTotalPages())
-                .data(page.getContent())
-                .build();
+        List<EnterpriseEntity> page = enterpriseRepository.getListCompany();
+        return page;
     }
+
+    @Override
+    public PageResponse<EnterpriseResponse> getListCompany(int pageSize, int pageNumber) {
+        return null;
+    }
+
+
 }

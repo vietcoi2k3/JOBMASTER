@@ -179,7 +179,7 @@ public class  AuthController {
         return ResponseEntity.ok(consumer.getListPost(pageNumber,pageSize,search,address,field));
     }
 
-    @RequestMapping(value = "/get-detail-job")
+    @RequestMapping(value = "/get-detail-job",method = RequestMethod.GET)
     public ResponseEntity getDetailJob(@RequestParam String postId){
         return ResponseEntity.ok(postRepository.findById(postId).get());
     }
@@ -213,7 +213,7 @@ public class  AuthController {
             @RequestParam(defaultValue = DefautlConstants.PAGE_SIZE) int pageSize,
             @RequestParam(defaultValue = DefautlConstants.PAGE_NO) int pageNumber
     ){
-        return ResponseEntity.ok(iAdminService.getListAdmin(pageSize,pageNumber));
+        return ResponseEntity.ok(iAdminService.getListEnterprise(pageNumber,pageSize));
     }
 
 }

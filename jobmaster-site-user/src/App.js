@@ -8,6 +8,7 @@ import JobBoard from "./component/ListJob/ListJob";
 import CompanyProfile from "./component/companydetail/CompanyDetail";
 import Login from "./component/LoginComponent/Login";
 import SignUp from "./component/sign-up/SignUp";
+import Criteria from "./component/criteria/criteria";
 
 function AppContent() {
     // Lấy đường dẫn hiện tại
@@ -20,13 +21,14 @@ function AppContent() {
         <>
             {/* Chỉ hiển thị Header nếu không phải là trang /login */}
             {!isLoginPage && <Header />}
-            <div style={{ minHeight: '80vh' }}> {/* Nội dung trang nằm giữa Header và Footer */}
+            <div style={{ minHeight: '80vh', backgroundColor: '#e8edf2' }}> {/* Đặt màu nền */}
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/list-job" element={<JobBoard />} />
                     <Route path="/detail-company/:id" element={<CompanyProfile />} />
                     <Route path="/login" element={<Login />} />
-                    <Route path="/sign-up" element={<SignUp/>}/>
+                    <Route path="/sign-up" element={<SignUp />} />
+                    <Route path="/criteria" element={<Criteria />} />
                 </Routes>
             </div>
             {/* Chỉ hiển thị Footer nếu không phải là trang /login */}

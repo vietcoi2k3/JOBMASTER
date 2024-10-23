@@ -30,6 +30,9 @@ public interface EnterpriseRepository extends JpaRepository<EnterpriseEntity,Str
     Page<EnterpriseEntity> getListCertificate(Pageable pageable);
 
     @Query("SELECT c " +
-            "FROM EnterpriseEntity c WHERE c.isActive = 'ACTIVE'")
-    Page<EnterpriseEntity> getListCompany(Pageable pageable);
+            "FROM EnterpriseEntity c " +
+            "INNER JOIN CampaignEntity ce ON c.id = ce.enterpriseId " +
+            "INNER JOIN PackageCampaign pc ON ce.id = pc.campaignId " +
+            "WHERE c.isActive = 'ACTIVE'")
+    List<EnterpriseEntity> getListCompany();
 }

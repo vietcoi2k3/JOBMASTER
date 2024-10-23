@@ -25,5 +25,7 @@ public interface IAdminService {
 
     EnterpriseEntity updateStatusEnterprise(String status, String id);
 
-    PageResponse<EnterpriseEntity> getListEnterprise(int pageNumber,int pageSize);
+    List<EnterpriseEntity> getListEnterprise(int pageNumber, int pageSize);
+
+    PageResponse<EnterpriseResponse> getListCompany(int pageSize, int pageNumber);
 }

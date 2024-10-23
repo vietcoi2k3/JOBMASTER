@@ -20,4 +20,6 @@ public class ConsumerController {
         return ResponseEntity.ok(cvRepository.save(cvEntity));
     }
 
+//    @PostMapping(value = "/")
+
 }

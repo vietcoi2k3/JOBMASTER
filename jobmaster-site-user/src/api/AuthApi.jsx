@@ -66,6 +66,21 @@ const AuthApi = {
     getFile:(id)=>{
         const url ="auth/get-file"
         return axiosClient.get(url+"?fileId="+id,{ responseType: 'blob' })
+    },
+
+    getListCompany:()=>{
+        const url = "auth/get-list-company"
+        return axiosClient.get(url)
+    },
+
+    getAllField:()=>{
+        const url = "auth/get-all-field"
+        return axiosClient.get(url)
+    },
+
+    getAllPosition:()=>{
+        const url = "auth/get-all-field"
+        return axiosClient.get(url)
     }
 }
 

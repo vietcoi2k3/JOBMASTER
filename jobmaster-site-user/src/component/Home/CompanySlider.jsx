@@ -1,8 +1,9 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import Slider from 'react-slick';
 import { Card, CardContent, Typography, Box } from '@mui/material';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import AuthApi from "../../api/AuthApi";
 
 const companies = [
     { name: 'BSS Group', location: 'Hà Nội', logo: '/images/bss-logo.png' },
@@ -18,11 +19,17 @@ const companies = [
 ];
 
 const CompanySlider = () => {
+    const [companies,setCompanies] = useState([])
+    useEffect(() => {
+        AuthApi.getListCompany().then((e)=>{
+            setCompanies(e)
+        })
+    }, []);
     const settings = {
         dots: true, // Hiển thị các dấu chấm phân trang
         infinite: true, // Vòng lặp vô tận
         speed: 500, // Tốc độ chuyển trang (ms)
-        slidesToShow: 4, // Số lượng slide hiển thị cùng lúc
+        slidesToShow: 5, // Số lượng slide hiển thị cùng lúc
         slidesToScroll: 4, // Số lượng slide cuộn mỗi lần
         responsive: [
             {
@@ -44,7 +51,7 @@ const CompanySlider = () => {
         <Box sx={{ mt: 2 }}>
             <Slider {...settings}>
                 {companies.map((company, index) => (
-                    <Card key={index} sx={{ padding: 2 }}>
+                    <Card key={index} sx={{ padding: 2,height : '110%',borderRadius :"30px" }}>
                         <CardContent>
                             <img
                                 src={company.logo}

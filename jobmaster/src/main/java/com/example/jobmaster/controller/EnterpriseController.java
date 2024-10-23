@@ -174,12 +174,12 @@ public class EnterpriseController {
         return ResponseEntity.ok(iEnterpiseService.activatePackage(activatePackageRequest,httpServletRequest));
     }
 
-    @RequestMapping(value = "/get-money-history")
+    @RequestMapping(value = "/get-money-history",method = RequestMethod.GET)
     public ResponseEntity getMoneyHistory(HttpServletRequest httpServletRequest){
         return ResponseEntity.ok(iEnterpiseService.getHistoryMoney(httpServletRequest));
     }
 
-    @RequestMapping(value = "/get-package-by-campaign/{id}")
+    @RequestMapping(value = "/get-package-by-campaign/{id}",method = RequestMethod.GET)
     public ResponseEntity getListPackageByCampaign(@PathVariable String id){
         return ResponseEntity.ok(iEnterpiseService.getListPackageByCampaign(id));
     }
