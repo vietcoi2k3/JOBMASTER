@@ -9,13 +9,16 @@ import CompanyProfile from "./component/companydetail/CompanyDetail";
 import Login from "./component/LoginComponent/Login";
 import SignUp from "./component/sign-up/SignUp";
 import Criteria from "./component/criteria/criteria";
+import CallBack from "./component/sign-up/CallBack";
+import VerifyEmail from "./component/sign-up/VerifyEmail";
+import EmailVerification from "./component/sign-up/EmailVerification";
 
 function AppContent() {
     // Lấy đường dẫn hiện tại
     const location = useLocation();
 
     // Kiểm tra xem có phải trang /login hay không
-    const isLoginPage = location.pathname === '/login' || location.pathname==='/sign-up';
+    const isLoginPage = location.pathname === '/login' || location.pathname==='/sign-up' || location.pathname ==='/verify-email';
 
     return (
         <>
@@ -29,6 +32,8 @@ function AppContent() {
                     <Route path="/login" element={<Login />} />
                     <Route path="/sign-up" element={<SignUp />} />
                     <Route path="/criteria" element={<Criteria />} />
+                    <Route path="/callback" element={<CallBack />} />
+                    <Route path="/verify-email" element={<EmailVerification />} />
                 </Routes>
             </div>
             {/* Chỉ hiển thị Footer nếu không phải là trang /login */}

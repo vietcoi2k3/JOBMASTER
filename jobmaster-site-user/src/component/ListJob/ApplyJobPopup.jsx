@@ -20,8 +20,11 @@ import CloseIcon from '@mui/icons-material/Close';
 import AuthApi from "../../api/AuthApi";
 import authApi from "../../api/AuthApi";
 import consumer from "../../api/Consumer";
+import {useNavigate} from "react-router-dom";
 
 const ApplyJobPopup = ({ open, onClose,postId }) => {
+    const navigate = useNavigate(); // Dùng để điều hướng
+    const token = localStorage.getItem("access_token");
     const [selectedCV, setSelectedCV] = useState('cv1');
     const [email, setEmail] = useState('vn.phuong.22@gmail.com');
     const [phoneNumber, setPhoneNumber] = useState('0333482009');
@@ -43,6 +46,11 @@ const ApplyJobPopup = ({ open, onClose,postId }) => {
         };
 
     const handleSubmit =()=>{
+        if (token === null) {
+            // Nếu chưa đăng nhập, điều hướng đến /login
+            navigate('/login');
+            return
+        }
         let data = {
             fileId:fileEntity.id,
           postId:postId,

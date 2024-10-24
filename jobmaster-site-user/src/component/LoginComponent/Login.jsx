@@ -45,7 +45,7 @@ const Login = () => {
     const handleLoginGoogle = () => {
         const clientId =
             "421794227239-vvm5o77fkd4qsendqmr4movhv6kmqt3m.apps.googleusercontent.com";
-        const redirectUri = "http://localhost:3000/callback";
+        const redirectUri = "http://localhost:3001/callback";
         const scope =
             "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email";
         const responseType = "code";
@@ -58,7 +58,7 @@ const Login = () => {
             setLoading(true)
             AuthApi.login(formData).then((e)=>{
                 localStorage.setItem("access_token",e.token)
-                window.location.href= "http://localhost:3000/dashboard"
+                window.location.href= "http://localhost:3001/"
             })
                 .catch((e)=>{
                     if (e.response.data==="Tài khoản không tồn tại"){
@@ -75,6 +75,12 @@ const Login = () => {
                         setNotification({
                             open: true,
                             message: "Mật khẩu không khớp",
+                        });
+                    }
+                    if (e.response.data==="Tài khoản không hợp lệ"){
+                        setNotification({
+                            open: true,
+                            message: "Tài khoản không hợp lệ",
                         });
                     }
                 })

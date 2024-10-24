@@ -19,12 +19,20 @@ public interface PostRepository extends JpaRepository<PostEntity,String> {
             "LEFT JOIN CampaignEntity ce ON c.campaignId = ce.id " +
             "LEFT JOIN PackageCampaign pc ON ce.id= pc.campaignId " +
             "WHERE " +
-            "c.title LIKE CONCAT('%', '', '%') " +
-            "AND c.city LIKE CONCAT('%', '', '%') " +
-            "AND c.field LIKE CONCAT('%', '', '%') " +
+            "c.title LIKE CONCAT('%', :search, '%') " +
+            "AND c.city LIKE CONCAT('%', :address, '%') " +
+            "AND c.field LIKE CONCAT('%', :field, '%') " +
             "AND ce.isActive = TRUE AND c.status = 'APPROVED' " +
             "ORDER BY CASE WHEN pc.packageId='SP01' THEN 0 ELSE 1 END" )
     Page<PostEntity> getListPost(@Param("search") String search, @Param("address") String address, @Param("field") String field, Pageable pageable);
+
+    @Query("SELECT c FROM PostEntity c " +
+            "LEFT JOIN CampaignEntity ce ON c.campaignId = ce.id " +
+            "LEFT JOIN PackageCampaign pc ON ce.id= pc.campaignId " +
+            "WHERE " +
+            "ce.isActive = TRUE AND c.status = 'APPROVED' " +
+            "AND pc.packageId='MJ01' " )
+    List<PostEntity> getListPostByMoney();
 
     @Query("SELECT c FROM PostEntity c")
     Page<PostEntity> getListPostAdmin( Pageable pageable);

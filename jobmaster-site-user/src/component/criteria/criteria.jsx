@@ -5,24 +5,37 @@ import {
     Select, MenuItem, Button
 } from '@mui/material';
 import AuthApi from "../../api/AuthApi";
+import Consumer from "../../api/Consumer";
 
 export default function Criteria() {
     const [location, setLocation] = useState('');
     const [companySize, setCompanySize] = useState('');
     const [jobType, setJobType] = useState(''); // Loại công việc
     const [experience, setExperience] = useState(''); // Kinh nghiệm
-    const [fieldSelect,setFieldSelect] = useState(null)
-    const [positionSelect,setPositionSelect] = useState(null)
+    const [fieldSelect,setFieldSelect] = useState('')
+    const [positionSelect,setPositionSelect] = useState('')
 
     const [field,setField] = useState([])
     const [position,setPosition] = useState([])
-
+    const [city,setCity] = useState([])
     useEffect(() => {
         AuthApi.getAllField().then((e)=>{
             setField(e)
         })
         AuthApi.getAllPosition().then((e)=>{
             setPosition(e)
+        })
+        AuthApi.getAllCity().then((e)=>{
+            setCity(e)
+        })
+        Consumer.getCriteria().then((e)=>{
+            console.log(e)
+            setLocation(e.city)
+            setFieldSelect(e.field)
+            setPositionSelect(e.position)
+            setCompanySize(e.scales)
+            setJobType(e.typeWorking)
+            setExperience(e.experience)
         })
     }, []);
 
@@ -33,35 +46,37 @@ export default function Criteria() {
 
     const handleSubmit = () => {
         const formData = {
-            location,
-            companySize,
-            jobType,
-            experience,
-            fieldSelect,
-            positionSelect
+            city: location,
+            scales: companySize,
+            typeWorking :jobType,
+            experience: experience,
+            field: fieldSelect,
+            position: positionSelect
         };
-        console.log('Thông tin form:', formData);
+        Consumer.addCriteria(formData).then((e)=>{
+            console.log(e)
+        })
     };
 
-    return (
-        <div>
-            <Box sx={{ bgcolor: '#e8edf2', padding: '20px 0' }}>
-                <Typography variant="h5" sx={{ textAlign: 'center', bgcolor: '#ffffff' }}>
-                    Tiêu chí tìm việc
-                </Typography>
+    return  (
+        <div className='p-20'>
+            {/* Header section */}
+            <Box sx={{ bgcolor: '#e8edf2'}}>
+
             </Box>
 
+            {/* Form container */}
             <Box
                 sx={{
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: 2,
-                    bgcolor: '#ffffff',
-                    maxWidth: 600,
+                    gap: 3,
+                    bgcolor: '#fff',
+                    maxWidth: 700,
                     margin: 'auto',
-                    padding: 4,
-                    border: '1px solid #ddd',
+                    p: 4,
                     borderRadius: 2,
+                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
                 }}
             >
                 {/* Dropdown cho lĩnh vực */}
@@ -69,7 +84,9 @@ export default function Criteria() {
                     select
                     label="Lĩnh vực"
                     variant="outlined"
-                    onChange={(e) =>  setFieldSelect(e.target.value)}
+                    value={fieldSelect}
+                    fullWidth
+                    onChange={(e) => setFieldSelect(e.target.value)}
                 >
                     {field.map((item) => (
                         <MenuItem key={item.id} value={item.name}>
@@ -81,9 +98,11 @@ export default function Criteria() {
                 {/* Dropdown cho vị trí */}
                 <TextField
                     select
-                    label="Vị trí"
+                    label={"Chon vị trí"}
+                    value={positionSelect}
                     variant="outlined"
-                    onChange={(e)=>setPositionSelect(e.target.value)}
+                    fullWidth
+                    onChange={(e) => setPositionSelect(e.target.value)}
                 >
                     {position.map((item) => (
                         <MenuItem key={item.id} value={item.name}>
@@ -93,7 +112,9 @@ export default function Criteria() {
                 </TextField>
 
                 {/* Loại công việc */}
-                <Typography variant="subtitle1">Loại công việc</Typography>
+                <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                    Loại công việc
+                </Typography>
                 <RadioGroup value={jobType} onChange={handleJobTypeChange}>
                     <FormControlLabel value="Toàn thời gian" control={<Radio />} label="Toàn thời gian" />
                     <FormControlLabel value="Bán thời gian" control={<Radio />} label="Bán thời gian" />
@@ -101,50 +122,51 @@ export default function Criteria() {
                 </RadioGroup>
 
                 {/* Kinh nghiệm */}
-                <Typography variant="subtitle1">Kinh nghiệm</Typography>
+                <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                    Kinh nghiệm
+                </Typography>
                 <RadioGroup row value={experience} onChange={handleExperienceChange}>
-                    <FormControlLabel value="Chưa có kinh nghiệm" control={<Radio />} label="Chưa có kinh nghiệm" />
-                    <FormControlLabel value="Dưới 1 năm" control={<Radio />} label="Dưới 1 năm" />
-                    <FormControlLabel value="1 năm" control={<Radio />} label="1 năm" />
-                    <FormControlLabel value="2 năm" control={<Radio />} label="2 năm" />
-                    <FormControlLabel value="3 năm" control={<Radio />} label="3 năm" />
-                    <FormControlLabel value="4 năm" control={<Radio />} label="4 năm" />
-                    <FormControlLabel value="5 năm" control={<Radio />} label="5 năm" />
-                    <FormControlLabel value="5 năm trở lên" control={<Radio />} label="5 năm trở lên" />
+                    {["Chưa có kinh nghiệm", "Dưới 1 năm", "1 năm", "2 năm", "3 năm", "4 năm", "5 năm", "5 năm trở lên"].map((exp) => (
+                        <FormControlLabel key={exp} value={exp} control={<Radio />} label={exp} />
+                    ))}
                 </RadioGroup>
 
+                {/* Chọn địa điểm */}
                 <TextField
                     select
-                    label="Chọn địa điểm"
+                    label={location !== '' ? "Chọn địa điểm" :"Chọn địa điểm"}
+                    value={location}
                     variant="outlined"
-                    onChange={(e)=>setPositionSelect(e.target.value)}
+                    fullWidth
+                    onChange={(e) => setLocation(e.target.value)}
                 >
-                    {position.map((item) => (
-                        <MenuItem key={item.id} value={item.name}>
-                            {item.name}
+                    {city.map((item) => (
+                        <MenuItem key={item.id} value={item.province_name}>
+                            {item.province_name}
                         </MenuItem>
                     ))}
                 </TextField>
-                {/* Quy mô công ty */}
+
+                {/* Cấp bậc */}
                 <TextField
                     label="Cấp bậc"
-
-                    select value={companySize} onChange={handleCompanySizeChange} displayEmpty fullWidth >
-                    <MenuItem value="Chưa có kinh nghiệm">Chưa có kinh nghiệm</MenuItem>
-                    <MenuItem value="Dưới 1 năm">Dưới 1 năm</MenuItem>
-                    <MenuItem value="1 năm">1 năm</MenuItem>
-                    <MenuItem value="2 năm">2 năm</MenuItem>
-                    <MenuItem value="3 năm">3 năm</MenuItem>
-                    <MenuItem value="4 năm">4 năm</MenuItem>
-                    <MenuItem value="5 năm"> 5 năm</MenuItem>
-                    <MenuItem value="Trên 5 năm">Trên 5 năm</MenuItem>
+                    select
+                    value={companySize}
+                    onChange={handleCompanySizeChange}
+                    fullWidth
+                >
+                    {["Chưa có kinh nghiệm", "Dưới 1 năm", "1 năm", "2 năm", "3 năm", "4 năm", "5 năm", "Trên 5 năm"].map((size) => (
+                        <MenuItem key={size} value={size}>
+                            {size}
+                        </MenuItem>
+                    ))}
                 </TextField>
 
                 {/* Nút lưu */}
                 <Button
                     variant="contained"
                     color="primary"
-                    sx={{ alignSelf: 'center' }}
+                    sx={{ alignSelf: 'center', mt: 2, px: 4, py: 1 }}
                     onClick={handleSubmit}
                 >
                     Lưu

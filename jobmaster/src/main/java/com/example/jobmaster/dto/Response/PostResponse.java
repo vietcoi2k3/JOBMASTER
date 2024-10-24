@@ -28,6 +28,7 @@ public class PostResponse {
     private String nameCompany;
     private String scales;
     private int quantity;
+    private String city;
     private String packageId;
     private boolean isLabel;
     private String campaignId;

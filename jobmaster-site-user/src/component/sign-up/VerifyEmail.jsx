@@ -7,7 +7,7 @@ const VerifyEmail = () => {
     const token = urlParams.get('token');
     AuthApi.confirmToken(token).then(res => {
         if(res==="Email verified successfully!"){
-            window.location.href= "http://localhost:3000/dashboard"
+            window.location.href= "http://localhost:3001"
         }
     })
 

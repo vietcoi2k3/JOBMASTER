@@ -1,23 +1,37 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { Box, TextField, Button, MenuItem, IconButton } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
 import {useNavigate} from "react-router-dom";
+import AuthApi from "../../api/AuthApi";
 
 const SearchBar = () => {
-    // Sample data for dropdowns
-    const locations = ['Hà Nội', 'Hồ Chí Minh', 'Đà Nẵng'];
-    const categories = ['Công nghệ thông tin', 'Kinh doanh', 'Nhân sự'];
-    const [search,setSearch] = useState(null)
+    const [search,setSearch] = useState('')
+    const [locations,setLocations] = useState([])
+    const [categories,setCategories] = useState([])
+    const [locationsSelect,setLocationsSelect] = useState('')
+    const [categorySelect,setCategorySelect] = useState('')
     const  navigate =useNavigate()
     const handleSearch = () => {
         // Điều hướng sang trang list-job với các tham số
-        navigate(`/list-job?search=${search}&address=${""}&field=${""}`);
+        navigate(`/list-job?search=${search}&address=${locationsSelect}&field=${categorySelect}`);
     };
     const handleSearchChange = (event) => {
         setSearch(event.target.value);
     };
+
+    const setPositionSelect = (event) => {
+        setLocationsSelect(event.target.value);
+    };
+
+    const setFieldSelect = (event) => {
+        setCategorySelect(event.target.value);
+    };
+    useEffect(() => {
+        AuthApi.getAllCity().then(e=>setLocations(e))
+        AuthApi.getAllField().then(e=>setCategories(e))
+    }, []);
 
     return (
         <Box
@@ -57,34 +71,50 @@ const SearchBar = () => {
             {/* Location Dropdown */}
             <TextField
                 select
+                label="Chọn địa điểm"
                 size="small"
-                value="Địa điểm"
+                variant="outlined"
                 sx={{ marginRight: 2, minWidth: 150 ,backgroundColor:"#ffffff"}}
-
+                onChange={setPositionSelect}
                 InputProps={{
                     startAdornment: <LocationOnIcon sx={{ marginRight: 1 }} />,
                 }}
             >
                 {locations.map((option) => (
-                    <MenuItem key={option} value={option}>
-                        {option}
+                    <MenuItem key={option.id} value={option.province_name}>
+                        {option.province_name}
                     </MenuItem>
                 ))}
             </TextField>
+
+            {/*<TextField*/}
+            {/*    select*/}
+            {/*    label="Chọn địa điểm"*/}
+            {/*    variant="outlined"*/}
+            {/*    onChange={(e)=>setPositionSelect(e.target.value)}*/}
+            {/*>*/}
+            {/*    {city.map((item) => (*/}
+            {/*        <MenuItem key={item.id} value={item.province_name}>*/}
+            {/*            {item.province_name}*/}
+            {/*        </MenuItem>*/}
+            {/*    ))}*/}
+            {/*</TextField>*/}
 
             {/* Category Dropdown */}
             <TextField
                 select
                 size="small"
-                value="Ngành nghề"
+                label="Chọn lĩnh vực"
+                variant="outlined"
                 sx={{ minWidth: 150,backgroundColor:"#ffffff" }}
                 InputProps={{
                     startAdornment: <WorkOutlineIcon sx={{ marginRight: 1 }} />,
                 }}
+                onChange={setFieldSelect}
             >
                 {categories.map((option) => (
-                    <MenuItem key={option} value={option}>
-                        {option}
+                    <MenuItem key={option.id} value={option.name}>
+                        {option.name}
                     </MenuItem>
                 ))}
             </TextField>

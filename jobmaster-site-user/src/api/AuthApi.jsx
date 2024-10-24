@@ -1,16 +1,24 @@
 import axiosClient from "./AxiosClient";
 
 const AuthApi = {
-    getListJob:(pageNumber)=>{
-        const url="auth/get-list-post"
-        return axiosClient.get(url+"?pageNumber="+pageNumber)
+    getListJob: (pageNumber, search, address, field) => {
+        const url = "auth/get-list-post";
+        return axiosClient.get(url, {
+            params: {
+                pageNumber: pageNumber,
+                search: search,
+                address: address,
+                field: field
+            },
+        });
     },
+
     getTokenGoogle : async (authorizationCode)=>{
         const data = {
             code: authorizationCode,
             client_id: '421794227239-vvm5o77fkd4qsendqmr4movhv6kmqt3m.apps.googleusercontent.com',
             client_secret: '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',
-            redirect_uri: 'http://localhost:3000/callback',
+            redirect_uri: 'http://localhost:3001/callback',
             grant_type: 'authorization_code',
         };
 
@@ -79,9 +87,20 @@ const AuthApi = {
     },
 
     getAllPosition:()=>{
-        const url = "auth/get-all-field"
+        const url = "auth/get-all-position"
+        return axiosClient.get(url)
+    },
+
+    getAllCity:()=>{
+        const url = "auth/get-all-city"
+        return axiosClient.get(url)
+    },
+
+    getPostByMoney:()=>{
+        const url = "auth/get-post-by-money"
         return axiosClient.get(url)
     }
+
 }
 
 export default AuthApi;

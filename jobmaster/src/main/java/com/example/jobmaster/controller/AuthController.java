@@ -5,10 +5,7 @@ import com.example.jobmaster.dto.Request.RegisterRequest;
 import com.example.jobmaster.entity.FileEntity;
 import com.example.jobmaster.entity.UserEntity;
 import com.example.jobmaster.repository.*;
-import com.example.jobmaster.service.IAdminService;
-import com.example.jobmaster.service.IFileService;
-import com.example.jobmaster.service.IFileUploadService;
-import com.example.jobmaster.service.IUserService;
+import com.example.jobmaster.service.*;
 
 import com.example.jobmaster.service.impl.ConsumerImpl;
 import com.example.jobmaster.until.constants.DefautlConstants;
@@ -70,10 +67,13 @@ public class  AuthController {
     @Autowired
     private IAdminService iAdminService;
 
+    @Autowired
+    private IConsumerService iConsumerService;
+
 
     @PostMapping(value = "/login-by-goolge")
-    public ResponseEntity loginByGoogle(@RequestParam String token){
-        return userService.loginByGoogle(token);
+    public ResponseEntity loginByGoogle(@RequestParam String token,HttpServletRequest httpServletRequest){
+        return userService.loginByGoogle(token,httpServletRequest);
     }
 
     @PostMapping(value = "/register-enterprise")
@@ -82,8 +82,8 @@ public class  AuthController {
     }
 
     @PostMapping(value = "/login")
-    public ResponseEntity login(@RequestBody LoginRequest loginRequest){
-        return ResponseEntity.ok(userService.login(loginRequest));
+    public ResponseEntity login(@RequestBody LoginRequest loginRequest,HttpServletRequest httpServletRequest){
+        return ResponseEntity.ok(userService.login(loginRequest,httpServletRequest));
     }
 
     @GetMapping("/confirm")
@@ -214,6 +214,11 @@ public class  AuthController {
             @RequestParam(defaultValue = DefautlConstants.PAGE_NO) int pageNumber
     ){
         return ResponseEntity.ok(iAdminService.getListEnterprise(pageNumber,pageSize));
+    }
+
+    @GetMapping(value = "/get-post-by-money")
+    public ResponseEntity getPostByMoney(){
+        return ResponseEntity.ok(iConsumerService.getListByMoney());
     }
 
 }
