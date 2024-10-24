@@ -35,13 +35,12 @@ const Home = () => {
             </Typography>
             <CompanySlider/>
 
-            {token &&
-                <div>
+            {token && <div><div>
                 <Typography variant="h5" sx={{ mt: 2, fontWeight: 'bold' }}>
                     Việc phù hợp
                 </Typography>
             </div>
-                <JobSlider/>}
+                <JobSlider/></div>}
         </Box>
     );
 };
