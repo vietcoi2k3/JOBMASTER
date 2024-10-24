@@ -108,18 +108,48 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
     }
 
     @Override
-    public PostDTO addPost(PostDTO postDTO) {
+    public PostDTO addPost(String token,PostDTO postDTO) {
+        String username = jwtUntil.getUsernameFromToken(token.substring(7));
+        EnterpriseEntity enterpriseEntity = enterpriseRepository.findEnterpriseEntityByUsername(username)
+                .orElseThrow(()-> new NotFoundException(ExceptionMessage.ENTERPRISE_NOT_FOUND));
+        if(!EnterpriseEnum.ACTIVE.name().equalsIgnoreCase(enterpriseEntity.getIsActive())){
+            throw new IllegalArgumentException(ExceptionMessage.ENTERPRISE_NOT_ACTIVE);
+        }
         CampaignEntity campaignEntity = campaignRepository.findById(postDTO.getCampaignId()).get();
 
         PostEntity postEntity = mapper.map(postDTO,PostEntity.class);
         postEntity.setStatus(PostEnum.AWAITING_APPROVAL.name());
         PostDTO postDTO1 =mapper.map(postRepository.save(postEntity),PostDTO.class);
-
+        postDTO1.setCampaignName(campaignEntity.getName());
         campaignEntity.setPostId(postDTO1.getId());
         campaignRepository.save(campaignEntity);
         return postDTO1;
     }
+    @Override
+    public PostDTO updatePost(String id,PostDTO postDTO) {
+        PostEntity postEntity = postRepository.findById(id)
+                .orElseThrow(()-> new NotFoundException(ExceptionMessage.POST_NOT_FOUND));
+        CampaignEntity oldCampaignEntity = campaignRepository.findById(postEntity.getCampaignId())
+                .orElseThrow(()-> new NotFoundException(ExceptionMessage.CAMPAIGN_NOT_FOUND));
+        oldCampaignEntity.setPostId(null);
+        campaignRepository.save(oldCampaignEntity);
+        CampaignEntity newCampaignEntity = campaignRepository.findById(postDTO.getCampaignId())
+                .orElseThrow(()-> new NotFoundException(ExceptionMessage.CAMPAIGN_NOT_FOUND));
+        newCampaignEntity.setPostId(postEntity.getId());
+        campaignRepository.save(newCampaignEntity);
+        mapper.map(postDTO,postEntity);
+        postEntity.setStatus(PostEnum.AWAITING_APPROVAL.name());
+        return mapper.map(postRepository.save(postEntity),PostDTO.class);
+    }
 
+
+    @Override
+    public void resetPostStatus(String id) {
+        PostEntity postEntity = postRepository.findById(id)
+                .orElseThrow(()-> new NotFoundException(ExceptionMessage.POST_NOT_FOUND));
+        postEntity.setStatus(PostEnum.NOT_APPROVED.name());
+        postRepository.save(postEntity);
+    }
 
     @Override
     public EnterpriseDTO updateEnterprise(EnterpriseDTO enterpriseDTO,HttpServletRequest httpServletRequest) {
@@ -141,14 +171,14 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
     }
 
     @Override
-    public PageResponse getListPost(int pageNumber, int pageSize, HttpServletRequest httpServletRequest, String search) {
+    public PageResponse getListPost(int pageNumber, int pageSize, HttpServletRequest httpServletRequest, String search, String status) {
         pageNumber--;
         Pageable pageable = PageRequest.of(pageNumber,pageSize);
         String username = jwtUntil.getUsernameFromRequest(httpServletRequest);
         UserEntity user = userRepository.findByUsername(username);
         List<String> campaignId = campaignRepository.getListIdCampaign(user.getEnterpriseId());
 
-        Page<PostEntity> postEntities =  postRepository.getListCampaign(search,campaignId,pageable);
+        Page<PostEntity> postEntities =  postRepository.getListCampaign(search,status,campaignId,pageable);
 
         List<PostResponse> postResponses = new ArrayList<>();
         for (PostEntity x : postEntities.getContent()){
@@ -162,6 +192,7 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
             postResponse.setNameCam(campaignEntity.getName());
             postResponse.setQuantityCv(cvRepository.countByPostId(x.getId()));
             postResponse.setId(x.getId());
+            postResponse.setStatus(x.getStatus());
             postResponses.add(postResponse);
 
         }
@@ -172,17 +203,36 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
     }
 
     @Override
-    public PostResponse getDetailPost(String id) {
+    public PostDTO getDetailPost(String id) {
          PostEntity postEntity = postRepository.findById(id).get();
          CampaignEntity campaignEntity = campaignRepository.findById(postEntity.getCampaignId()).get();
-         PostResponse postResponse = PostResponse.builder()
-                 .id(postEntity.getId())
-                 .title(postEntity.getTitle())
-                 .position(postEntity.getPosition())
-                 .quantity(postEntity.getQuantity())
-                 .nameCam(campaignEntity.getName())
-                 .build();
-         return postResponse;
+        return PostDTO.builder()
+                .id(postEntity.getId())
+                .title(postEntity.getTitle())
+                .field(postEntity.getField())
+                .position(postEntity.getPosition())
+                .deadline(postEntity.getDeadline())
+                .quantity(postEntity.getQuantity())
+                .city(postEntity.getCity())
+                .district(postEntity.getDistrict())
+                .typeWorking(postEntity.getTypeWorking())
+                .level(postEntity.getLevel())
+                .experience(postEntity.getExperience())
+                .timeWorking(postEntity.getTimeWorking())
+                .description(postEntity.getDescription())
+                .required(postEntity.getRequired())
+                .interest(postEntity.getInterest())
+                .gender(postEntity.getGender())
+                .requiredSkill(postEntity.getRequiredSkill())
+                .skillShouldHave(postEntity.getSkillShouldHave())
+                .campaignId(campaignEntity.getId())
+                .campaignName(campaignEntity.getName())
+                .salaryRange(postEntity.getSalaryRange())
+                .additionalSkills(postEntity.getAdditionalSkills())
+                .requiredSkills(postEntity.getRequiredSkills())
+                .detailAddress(postEntity.getDetailAddress())
+                .status(postEntity.getStatus())
+                .build();
     }
 
     @Override
@@ -275,6 +325,12 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
                 .orElseThrow(()->new NotFoundException(ExceptionMessage.CAMPAIGN_NOT_FOUND));
         campaignEntity.setActive(!campaignEntity.isActive());
         campaignRepository.save(campaignEntity);
+        if(!campaignEntity.isActive() && campaignEntity.getPostId()!=null){
+            PostEntity postEntity = postRepository.findById(campaignEntity.getPostId())
+                    .orElseThrow(()-> new NotFoundException(ExceptionMessage.POST_NOT_FOUND));
+            postEntity.setStatus(PostEnum.NOT_APPROVED.name());
+            postRepository.save(postEntity);
+        }
     }
 
     @Override

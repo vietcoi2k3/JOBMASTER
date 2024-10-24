@@ -3,6 +3,7 @@ package com.example.jobmaster.dto.Response;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
@@ -29,4 +30,7 @@ public class PostResponse {
     private int quantity;
     private String packageId;
     private boolean isLabel;
+    private String campaignId;
+    private String status;
+
 }

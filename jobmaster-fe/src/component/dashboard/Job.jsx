@@ -4,7 +4,7 @@ import {
     TableHead, TableRow, Paper, TextField,
     IconButton, Switch, Pagination, Dialog, DialogTitle,
     DialogContent, DialogActions, Button, Checkbox,
-    FormControlLabel, Box, InputAdornment, Typography,CircularProgress
+    FormControlLabel, Box, InputAdornment, Typography, CircularProgress
 } from '@mui/material';
 import RecruitmentPopup from "../share/RecruitmentPopup ";
 import EnterpriseApi from "../../api/EnterpriseApi";
@@ -13,6 +13,8 @@ import { useNavigate } from "react-router-dom";
 import EuroIcon from '@mui/icons-material/Euro';
 import SearchIcon from '@mui/icons-material/Search';
 import Notification from "../notification/Notification";
+import ConfirmDialog from '../share/ConfirmDialog';
+
 
 const Job = () => {
     const [data, setData] = useState([]);
@@ -21,8 +23,11 @@ const Job = () => {
     const [totalPage, setTotalPage] = useState(0);
     const [search, setSearch] = useState('');
     const [pageNumber, setPageNumber] = useState(1);
+    const [openConfirm, setOpenConfirm] = useState(false);
     const [openServicePopup, setOpenServicePopup] = useState(false);
+    const [mgsConfirm, setMgsConfirm] = useState('');
     const [services, setServices] = useState([]);
+    const [campaignDown,setCampaignDown] = useState();
     const [selectedServices, setSelectedServices] = useState([]);
     const [openPaymentPopup, setOpenPaymentPopup] = useState(false); // Popup xác nhận thanh toán
     const [totalAmount, setTotalAmount] = useState(0); // Tổng số tiền
@@ -49,17 +54,17 @@ const Job = () => {
                 setData(e.content);
                 setTotalPage(e.totalPages);
             })
-            .catch((error)=>{
+            .catch((error) => {
                 setNotification({
                     open: true,
                     message: error,
                     type: 'error'
                 });
             })
-            .finally(()=>{
+            .finally(() => {
                 setLoading(false);
             });
-            
+
     };
 
     const fetchServices = (id) => {
@@ -106,25 +111,31 @@ const Job = () => {
             handleSearch();
         }
     };
-    const handleToggle = (campaign) => {
-        EnterpriseApi.updateStatusCampaign(campaign.id)
-        .then((res)=>{
-            campaign.isActive = !campaign.isActive;
-            setNotification({
-                open: true,
-                message: "Cập nhật trạng thái thành công",
-                type: 'success'
-            });
-        })
-        .catch((error)=>{
-            setNotification({
-                open: true,
-                message: error,
-                type: 'erro'
-            });
-        })
-      };
-
+    const handleToggle = () => {
+        EnterpriseApi.updateStatusCampaign(campaignDown.id)
+            .then((res) => {
+                getList();
+                setNotification({
+                    open: true,
+                    message: "Cập nhật trạng thái thành công",
+                    type: 'success'
+                });
+            })
+            .catch((error) => {
+                setNotification({
+                    open: true,
+                    message: error,
+                    type: 'erro'
+                });
+            })
+    };
+    const handleClickOpenConfirm = () => {
+        setOpenConfirm(true);
+    };
+    const handleConfirm = () => {
+        handleToggle();
+        
+    };
     return (
 
         <div className="w-full">
@@ -159,47 +170,55 @@ const Job = () => {
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell sx={{ fontWeight: 'bold' }}>Chiến dịch tuyển dụng</TableCell>
-                            <TableCell sx={{ fontWeight: 'bold' }}>Vị trí</TableCell>
-                            <TableCell sx={{ fontWeight: 'bold' }}>Tin tuyển dụng</TableCell>
-                            <TableCell sx={{ fontWeight: 'bold' }}>Số lượng CV</TableCell>
-                            <TableCell sx={{ fontWeight: 'bold' }}>Thao tác</TableCell>
+                            <TableCell align="center" sx={{ fontWeight: 'bold' }}>Chiến dịch tuyển dụng</TableCell>
+                            <TableCell align="center" sx={{ fontWeight: 'bold' }}>Số lượng CV</TableCell>
+                            <TableCell align="center" sx={{ fontWeight: 'bold' }}>Thao tác</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-    {loading ? ( // Kiểm tra trạng thái loading
-        <TableRow>
-            <TableCell colSpan={5} align="center">
-                <CircularProgress /> 
-            </TableCell>
-        </TableRow>
-    ) : (
-        data.map((campaign, index) => (
-            <TableRow key={index}>
-                <TableCell sx={{ fontWeight: 'bold' }}>{campaign.name}</TableCell>
-                <TableCell>{campaign.position ? campaign.position : 'Chưa có thông tin'}</TableCell>
-                <TableCell>{campaign.titlePost ? campaign.titlePost : 'Chưa có tin nào'}<br /></TableCell>
-                <TableCell>{campaign.quantity ? campaign.quantity : 0}</TableCell>
-                <TableCell>
-                    <IconButton>
-                        <EuroIcon onClick={() => { fetchServices(campaign.id); setOpenServicePopup(true); }} />
-                    </IconButton>
-                    <IconButton>
-                        <RecruitmentPopup onSuccess={handleReload} createStep={false} campaign={campaign} />
-                    </IconButton>
-                    <Switch 
-                    checked={campaign.isActive}
-                    onChange={(event) => handleToggle(campaign)} />
-                    <IconButton>
-                        <EventNoteIcon onClick={() => { navigate("/dashboard/job-form/"+campaign.id) }} />
-                    </IconButton>
-                </TableCell>
-            </TableRow>
-        ))
-    )}
-</TableBody>
+                        {loading ? (
+                            <TableRow>
+                                <TableCell colSpan={3} align="center">
+                                    <CircularProgress />
+                                </TableCell>
+                            </TableRow>
+                        ) : (
+                            data.map((campaign, index) => (
+                                <TableRow key={index}>
+                                    <TableCell align="center">{campaign.name}</TableCell>
+                                    <TableCell align="center">{campaign.quantity ? campaign.quantity : 0}</TableCell>
+                                    <TableCell align="center">
+                                        <IconButton>
+                                            <EuroIcon onClick={() => { fetchServices(campaign.id); setOpenServicePopup(true); }} />
+                                        </IconButton>
+                                        <IconButton>
+                                            <RecruitmentPopup onSuccess={handleReload} createStep={false} campaign={campaign} />
+                                        </IconButton>
+                                        <Switch
+                                            checked={campaign.isActive}
+                                            onChange={(event) => {
+                                                const isChecked = event.target.checked;
+                                                setCampaignDown(campaign);
+                                                // Chỉ bật popup khi chuyển từ mở (true) sang tắt (false)
+                                                if (!isChecked && campaign.isActive) {
+                                                    setMgsConfirm('Xác nhận tắt chiến dịch, tin đăng của chiến dịch cũng sẽ bị tắt?');
+                                                    handleClickOpenConfirm();
+                                                } else {
+                                                    handleToggle(campaign);
+                                                }
+                                            }}
+                                        />
+                                        <IconButton disabled={!campaign.postId}>
+                                            <EventNoteIcon onClick={() => { navigate("/dashboard/job-form/detail/" + campaign.postId) }} />
+                                        </IconButton>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        )}
+                    </TableBody>
                 </Table>
             </TableContainer>
+
             <Pagination
                 onChange={(event, page) => setPageNumber(page)}
                 page={pageNumber}
@@ -256,6 +275,13 @@ const Job = () => {
                 onClose={() => setNotification({ ...notification, open: false })}
                 message={notification.message}
                 type={notification.type}
+            />
+            <ConfirmDialog
+                open={openConfirm}
+                onClose={setOpenConfirm}
+                title="Xác nhận"
+                message={mgsConfirm}
+                onConfirm={()=>handleConfirm()}
             />
         </div>
     );

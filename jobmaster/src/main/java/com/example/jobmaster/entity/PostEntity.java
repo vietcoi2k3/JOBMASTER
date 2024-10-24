@@ -22,6 +22,7 @@ public class PostEntity extends BaseEntity{
     private int quantity;
     private String city;
     private String district;
+    private String detailAddress;
     private String typeWorking;
     private String level;
     private String experience;
@@ -42,4 +43,8 @@ public class PostEntity extends BaseEntity{
     private String salaryRange;
     private String position;
     private String field;
+    @Column(columnDefinition = "longtext")
+    private String requiredSkills;
+    @Column(columnDefinition = "longtext")
+    private String additionalSkills;
 }

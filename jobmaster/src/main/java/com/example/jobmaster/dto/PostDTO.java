@@ -1,5 +1,6 @@
 package com.example.jobmaster.dto;
 
+import jakarta.persistence.Column;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -19,6 +20,7 @@ public class PostDTO {
     private int quantity;
     private String city;
     private String district;
+    private String detailAddress;
     private String typeWorking;
     private String level;
     private String experience;
@@ -30,4 +32,9 @@ public class PostDTO {
     private String requiredSkill;
     private String skillShouldHave;
     private String campaignId;
+    private String salaryRange;
+    private String campaignName;
+    private String requiredSkills;
+    private String additionalSkills;
+    private String status;
 }

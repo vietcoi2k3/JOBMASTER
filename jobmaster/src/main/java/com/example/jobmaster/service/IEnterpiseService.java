@@ -21,13 +21,17 @@ public interface IEnterpiseService {
 
     Page<CampaignResponse> getListCampaign(String search, int pageSize, int pageNumber, HttpServletRequest httpServletRequest);
 
-    PostDTO addPost(PostDTO postDTO);
+    PostDTO addPost(String token,PostDTO postDTO);
+
+    PostDTO updatePost(String id,PostDTO postDTO);
+
+    void resetPostStatus(String id);
 
     EnterpriseDTO updateEnterprise(EnterpriseDTO enterpriseDTO,HttpServletRequest httpServletRequest);
 
-    PageResponse getListPost(int pageNumber, int pageSize, HttpServletRequest httpServletRequest, String search);
+    PageResponse getListPost(int pageNumber, int pageSize, HttpServletRequest httpServletRequest, String search,String status);
 
-    PostResponse getDetailPost(String id);
+    PostDTO getDetailPost(String id);
 
     PageResponse getListCv(
       int pageNumber,

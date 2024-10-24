@@ -130,10 +130,25 @@ public class EnterpriseController {
 
     @PostMapping(value = "/add-new-post")
     public ResponseEntity addPost(
-            @RequestBody PostDTO postDTO
+            @RequestBody PostDTO postDTO,
+            @RequestHeader("Authorization") String token
             ){
-        return ResponseEntity.ok(iEnterpiseService.addPost(postDTO));
+        return ResponseEntity.ok(iEnterpiseService.addPost(token,postDTO));
     }
+    @PutMapping("/update-post/{id}")
+    public ResponseEntity updatePost(
+            @PathVariable(value = "id") String id,
+            @RequestBody PostDTO postDTO
+    ){
+        return ResponseEntity.ok().body(iEnterpiseService.updatePost(id,postDTO));
+    }
+
+    @PutMapping("/reset-post-status/{id}")
+    public ResponseEntity resetPostStatus(@PathVariable(value = "id") String id){
+        iEnterpiseService.resetPostStatus(id);
+        return ResponseEntity.ok().body("OK");
+    }
+
 
     @GetMapping(value = "/get-info-enterprise")
     public ResponseEntity getInfoEnterpise(HttpServletRequest httpServletRequest){
@@ -149,10 +164,11 @@ public class EnterpriseController {
     public ResponseEntity getListPost(
             @RequestParam(defaultValue = DefautlConstants.PAGE_SIZE) int pageSize,
             @RequestParam(defaultValue = DefautlConstants.PAGE_NO) int pageNumber,
-            @RequestParam(defaultValue = "") String search,
+            @RequestParam(value = "search",defaultValue = "") String search,
+            @RequestParam(value = "status", required = false) String status,
             HttpServletRequest httpServletRequest
     ){
-        return ResponseEntity.ok(iEnterpiseService.getListPost(pageNumber,pageSize,httpServletRequest,search));
+        return ResponseEntity.ok(iEnterpiseService.getListPost(pageNumber,pageSize,httpServletRequest,search,status));
     }
 
     @GetMapping(value = "/get-all-field")

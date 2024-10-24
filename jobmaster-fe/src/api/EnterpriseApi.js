@@ -73,9 +73,19 @@ const EnterpriseApi = {
         return axiosClient.put(url, data)
     },
 
-    getListPost(pageNumber) {
+    getListPost(pageNumber,search,status) {
         const url = "/enterprise/get-list-post"
-        return axiosClient.get(url + "?pageNumber=" + pageNumber)
+        const params = new URLSearchParams();
+        if (search) {
+            params.append('search', search);
+        }
+        if (status) {
+            params.append('status', status);
+        }
+        if (pageNumber) {
+            params.append('pageNumber', pageNumber);
+        }
+        return axiosClient.get(url + "?" + params.toString())
     },
 
     getAllField() {
@@ -91,6 +101,14 @@ const EnterpriseApi = {
     getDetailPost(id) {
         const url = "/enterprise/get-post-detail/"
         return axiosClient.get(url + id)
+    },
+    updatePost(id,postDTO) {
+        const url = "/enterprise/update-post/";
+        return axiosClient.put(url+id,postDTO);
+    },
+    resetPostStatus(id) {
+        const url = "/enterprise/reset-post-status/";
+        return axiosClient.put(url+id);
     },
 
     getListCv(pageNumber, postId) {
