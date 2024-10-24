@@ -18,6 +18,8 @@ const Home = () => {
         { title: 'IT Business Analyst', company: 'BSS Group', location: 'Hồ Chí Minh', salary: '3-4 triệu', isHot: true },
     ];
 
+    const token = localStorage.getItem("access_token")
+
     return (
         <Box sx={{ bgcolor: '#f0f2f5', minHeight: '100vh', p: 3 }}>
 
@@ -32,12 +34,14 @@ const Home = () => {
                 Công ty hàng đầu
             </Typography>
             <CompanySlider/>
-            <div>
+
+            {token &&
+                <div>
                 <Typography variant="h5" sx={{ mt: 2, fontWeight: 'bold' }}>
                     Việc phù hợp
                 </Typography>
             </div>
-            <JobSlider/>
+                <JobSlider/>}
         </Box>
     );
 };
