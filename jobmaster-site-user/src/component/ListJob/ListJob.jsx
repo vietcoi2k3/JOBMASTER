@@ -30,12 +30,12 @@ const JobList = ({ jobs, onSelectJob }) => (
                                 style={{ width: '40px', height: '40px', objectFit: 'cover', marginRight: '12px', borderRadius: '8px' }}
                             />
                             <div>
-                                <Chip
+                                {job.label&& <Chip
                                     label={"Hot"}
-                                    color={job.urgency === 'Hot' ? 'error' : 'error'}
+                                    color={'error'}
                                     size="small"
                                     sx={{ marginBottom: '4px', fontSize: '12px', height: '20px' }}
-                                />
+                                />}
                                 <Typography variant="subtitle2" fontWeight="bold">
                                     {job.title}
                                 </Typography>

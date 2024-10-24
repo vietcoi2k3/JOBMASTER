@@ -42,4 +42,5 @@ public class PostEntity extends BaseEntity{
     private String salaryRange;
     private String position;
     private String field;
+
 }

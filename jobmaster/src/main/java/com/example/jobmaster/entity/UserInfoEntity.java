@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "user")
+@Table(name = "user_info")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -15,6 +15,7 @@ public class UserInfoEntity extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String userId;
+    private String criteriaId;
     private String fullName;
 
 }

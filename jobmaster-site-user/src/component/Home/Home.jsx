@@ -5,6 +5,8 @@ import SearchBar from "./SearchBar";
 import Slider from "./Slider";
 import SliderHome from "./Slider";
 import CompanySlider from "./CompanySlider";
+import JobSlider from "./JobSlider";
+import JobMoneySlider from "./JobMoneySlider";
 
 const Home = () => {
     const jobs = [
@@ -25,81 +27,17 @@ const Home = () => {
                 Việc làm tốt nhất
             </Typography>
 
-            <Grid container spacing={2}>
-                {jobs.map((job, index) => (
-                    <Grid item xs={12} sm={6} md={4} key={index}>
-                        <Card>
-                            <CardContent>
-                                <Typography variant="h6" component="div" gutterBottom>
-                                    {job.title}
-                                    {job.isHot && (
-                                        <Typography component="span" sx={{ ml: 1, color: 'red', fontSize: '0.8rem' }}>
-                                            Hot
-                                        </Typography>
-                                    )}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary" gutterBottom>
-                                    <Work fontSize="small" sx={{ mr: 1, verticalAlign: 'middle' }} />
-                                    {job.company}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary" gutterBottom>
-                                    <LocationOn fontSize="small" sx={{ mr: 1, verticalAlign: 'middle' }} />
-                                    {job.location}
-                                </Typography>
-                                <Typography variant="body2" color="primary" gutterBottom>
-                                    {job.salary}
-                                </Typography>
-                                <Typography variant="caption" display="block" sx={{ mt: 1 }}>
-                                    Còn 29 ngày để ứng tuyển
-                                </Typography>
-                            </CardContent>
-                        </Card>
-                    </Grid>
-                ))}
-
-            </Grid>
+            <JobMoneySlider/>
             <Typography variant="h5" sx={{ mt: 2, fontWeight: 'bold' }}>
                 Công ty hàng đầu
             </Typography>
             <CompanySlider/>
             <div>
                 <Typography variant="h5" sx={{ mt: 2, fontWeight: 'bold' }}>
-                    Việc hấp dẫn
+                    Việc phù hợp
                 </Typography>
             </div>
-            <Grid container spacing={2}>
-                {jobs.map((job, index) => (
-                    <Grid item xs={12} sm={6} md={4} key={index}>
-                        <Card>
-                            <CardContent>
-                                <Typography variant="h6" component="div" gutterBottom>
-                                    {job.title}
-                                    {job.isHot && (
-                                        <Typography component="span" sx={{ ml: 1, color: 'red', fontSize: '0.8rem' }}>
-                                            Hot
-                                        </Typography>
-                                    )}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary" gutterBottom>
-                                    <Work fontSize="small" sx={{ mr: 1, verticalAlign: 'middle' }} />
-                                    {job.company}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary" gutterBottom>
-                                    <LocationOn fontSize="small" sx={{ mr: 1, verticalAlign: 'middle' }} />
-                                    {job.location}
-                                </Typography>
-                                <Typography variant="body2" color="primary" gutterBottom>
-                                    {job.salary}
-                                </Typography>
-                                <Typography variant="caption" display="block" sx={{ mt: 1 }}>
-                                    Còn 29 ngày để ứng tuyển
-                                </Typography>
-                            </CardContent>
-                        </Card>
-                    </Grid>
-                ))}
-
-            </Grid>
+            <JobSlider/>
         </Box>
     );
 };

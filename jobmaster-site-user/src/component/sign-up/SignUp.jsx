@@ -74,7 +74,7 @@ const SignUp = () => {
       setLoading(true)
      AuthApi.registerEnterprise(formData).then(()=>{
       let email = formData.email
-      navigate('/', { state: { email } });
+      navigate('/login', { state: { email } });
      })
      .catch((error)=>{
         if(error.response.data==="Tài khoản đã tồn tại"){

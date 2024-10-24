@@ -134,7 +134,7 @@ public class UserServiceImpl implements IUserService {
             userInfoEntity = userInfoRepository.save(userInfoEntity);
 
             user = userRepository.findById(user.getId()).get();
-            user.setUserInfoId(userInfoEntity.getUserId());
+            user.setUserInfoId(userInfoEntity.getId());
             userRepository.save(user);
 
             return TokenDTO.builder()
@@ -225,7 +225,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public String confirmToken(String token) {
-        VerifyTokenEntity verificationToken = tokenRepository.findByToken(token);
+         VerifyTokenEntity verificationToken = tokenRepository.findByToken(token);
         if (verificationToken == null) {
             return "Invalid token";
         }

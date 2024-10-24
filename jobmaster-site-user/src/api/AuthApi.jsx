@@ -87,12 +87,17 @@ const AuthApi = {
     },
 
     getAllPosition:()=>{
-        const url = "auth/get-all-field"
+        const url = "auth/get-all-position"
         return axiosClient.get(url)
     },
 
     getAllCity:()=>{
         const url = "auth/get-all-city"
+        return axiosClient.get(url)
+    },
+
+    getPostByMoney:()=>{
+        const url = "auth/get-post-by-money"
         return axiosClient.get(url)
     }
 

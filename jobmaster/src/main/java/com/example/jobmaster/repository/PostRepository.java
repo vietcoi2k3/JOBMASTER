@@ -26,8 +26,15 @@ public interface PostRepository extends JpaRepository<PostEntity,String> {
             "ORDER BY CASE WHEN pc.packageId='SP01' THEN 0 ELSE 1 END" )
     Page<PostEntity> getListPost(@Param("search") String search, @Param("address") String address, @Param("field") String field, Pageable pageable);
 
+    @Query("SELECT c FROM PostEntity c " +
+            "LEFT JOIN CampaignEntity ce ON c.campaignId = ce.id " +
+            "LEFT JOIN PackageCampaign pc ON ce.id= pc.campaignId " +
+            "WHERE " +
+            "ce.isActive = TRUE AND c.status = 'APPROVED' " +
+            "AND pc.packageId='MJ01' " )
+    List<PostEntity> getListPostByMoney();
+
     @Query("SELECT c FROM PostEntity c")
     Page<PostEntity> getListPostAdmin( Pageable pageable);
-
 
 }

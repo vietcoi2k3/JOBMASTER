@@ -5,10 +5,7 @@ import com.example.jobmaster.dto.Request.RegisterRequest;
 import com.example.jobmaster.entity.FileEntity;
 import com.example.jobmaster.entity.UserEntity;
 import com.example.jobmaster.repository.*;
-import com.example.jobmaster.service.IAdminService;
-import com.example.jobmaster.service.IFileService;
-import com.example.jobmaster.service.IFileUploadService;
-import com.example.jobmaster.service.IUserService;
+import com.example.jobmaster.service.*;
 
 import com.example.jobmaster.service.impl.ConsumerImpl;
 import com.example.jobmaster.until.constants.DefautlConstants;
@@ -69,6 +66,9 @@ public class  AuthController {
 
     @Autowired
     private IAdminService iAdminService;
+
+    @Autowired
+    private IConsumerService iConsumerService;
 
 
     @PostMapping(value = "/login-by-goolge")
@@ -214,6 +214,11 @@ public class  AuthController {
             @RequestParam(defaultValue = DefautlConstants.PAGE_NO) int pageNumber
     ){
         return ResponseEntity.ok(iAdminService.getListEnterprise(pageNumber,pageSize));
+    }
+
+    @GetMapping(value = "/get-post-by-money")
+    public ResponseEntity getPostByMoney(){
+        return ResponseEntity.ok(iConsumerService.getListByMoney());
     }
 
 }
