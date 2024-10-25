@@ -12,8 +12,8 @@ import java.util.List;
 
 @Repository
 public interface PostRepository extends JpaRepository<PostEntity,String> {
-    @Query("SELECT c FROM PostEntity c WHERE c.title LIKE %:search% AND c.campaignId IN :campaignId")
-    Page<PostEntity> getListCampaign(@Param("search") String search, @Param("campaignId") List<String> campaignId, Pageable pageable);
+    @Query("SELECT c FROM PostEntity c WHERE c.title LIKE %:search% AND (:status is null or c.status = :status) AND c.campaignId IN :campaignId ")
+    Page<PostEntity> getListCampaign(@Param("search") String search,@Param("status") String status, @Param("campaignId") List<String> campaignId, Pageable pageable);
 
     @Query("SELECT c FROM PostEntity c " +
             "LEFT JOIN CampaignEntity ce ON c.campaignId = ce.id " +

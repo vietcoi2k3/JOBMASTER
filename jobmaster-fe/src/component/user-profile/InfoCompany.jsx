@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import { TextField, Button, MenuItem, Select, InputLabel, FormControl, Typography,CircularProgress } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { TextField, Button, MenuItem, Select, InputLabel, FormControl, Typography, CircularProgress } from '@mui/material';
 import enterpriseApi from "../../api/EnterpriseApi";
 import Notification from "../notification/Notification";
 import ReactQuill from 'react-quill';
@@ -7,7 +7,12 @@ import 'react-quill/dist/quill.snow.css'; // Để có style mặc định
 import EnterpriseApi from "../../api/EnterpriseApi";
 const InfoCompany = () => {
     const [loading, setLoading] = useState(false);
-    const [notification, setNotification] = useState({ open: false, message: '',type:'' });
+    const [listField, setListField] = useState([]);
+    const [notification, setNotification] = React.useState({
+        open: false,
+        message: '',
+        type: 'success'
+    });
     const [companyInfo, setCompanyInfo] = useState({
         logo: '',
         companyName: '',
@@ -21,8 +26,8 @@ const InfoCompany = () => {
         description: '',
     });
 
-    useEffect(()=>{
-        enterpriseApi.getEnterprise().then((e)=>{
+    useEffect(() => {
+        enterpriseApi.getEnterprise().then((e) => {
             setCompanyInfo({
                 logo: e.logo,
                 companyName: e.companyName,
@@ -30,16 +35,20 @@ const InfoCompany = () => {
                 fieldOfActivity: e.fieldOfActivity,
                 address: e.address,
                 phoneNumber: e.phoneNumber,
-                emailCompany:e.emailCompany,
+                emailCompany: e.emailCompany,
                 linkWebSite: e.linkWebSite,
                 scale: e.scale,
                 description: e.description,
             })
         })
-            .catch((e)=>{
+            .catch((e) => {
                 console.log(e)
             })
-    },[])
+
+        EnterpriseApi.getAllField().then((e) => {
+            setListField(e)
+        })
+    }, [])
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -52,7 +61,7 @@ const InfoCompany = () => {
 
     const handleLogoChange = async (e) => {
         const file = e.target.files[0];
-        EnterpriseApi.uploadFile(file).then((e)=>{
+        EnterpriseApi.uploadFile(file).then((e) => {
             setCompanyInfo(
                 {
                     ...companyInfo,
@@ -64,7 +73,7 @@ const InfoCompany = () => {
 
     const handleSubmit = () => {
         setLoading(true)
-        enterpriseApi.updateEnterprise(companyInfo).then((e)=>{
+        enterpriseApi.updateEnterprise(companyInfo).then((e) => {
             setCompanyInfo({
                 logo: e.logo,
                 companyName: e.companyName,
@@ -72,16 +81,26 @@ const InfoCompany = () => {
                 fieldOfActivity: e.fieldOfActivity,
                 address: e.address,
                 phoneNumber: e.phoneNumber,
-                emailCompany:e.emailCompany,
+                emailCompany: e.emailCompany,
                 linkWebSite: e.linkWebSite,
                 scale: e.scale,
                 description: e.description,
             })
+            setNotification({
+                open: true,
+                message: "Cập nhật thông tin thành công",
+                type: 'success'
+            });
         })
-            .catch((e)=>{
-                console.log(e)
+            .catch((e) => {
+                console.log(e);
+                setNotification({
+                    open: true,
+                    message: e,
+                    type: 'error'
+                });
             })
-            .finally(()=>setLoading(false))
+            .finally(() => setLoading(false))
     };
 
     return (
@@ -128,11 +147,17 @@ const InfoCompany = () => {
                 <TextField
                     label="Lĩnh vực hoạt động"
                     name="fieldOfActivity"
+                    select
                     value={companyInfo.fieldOfActivity}
                     onChange={handleChange}
                     fullWidth
                     className="col-span-1"
-                />
+                >
+                    {listField.map((e) => {
+                        return <MenuItem key={e.index} value={e.name}>{e.name}</MenuItem>
+                    })}
+                </TextField>
+
 
                 {/* Address */}
                 <TextField
@@ -196,16 +221,22 @@ const InfoCompany = () => {
 
             <ReactQuill
                 theme="snow"
-                style={{ width: '100%',marginTop:'15px' }}  // Đặt chiều rộng 100%
+                style={{ width: '100%', marginTop: '15px' }}  // Đặt chiều rộng 100%
                 value={companyInfo.description}
                 onChange={(value) => handleChange({ target: { name: 'description', value } })}
             />
             {/* Buttons */}
             <div className="flex justify-between mt-6">
                 <Button variant="contained" color="primary" onClick={handleSubmit} disabled={loading}>
-                    {loading? <CircularProgress size={24} color={"inherit"}/>:"Cập nhật thông tin"}
+                    {loading ? <CircularProgress size={24} color={"inherit"} /> : "Cập nhật thông tin"}
                 </Button>
             </div>
+            <Notification
+                open={notification.open}
+                onClose={() => setNotification({ ...notification, open: false })}
+                message={notification.message}
+                type={notification.type}
+            />
         </div>
     );
 };

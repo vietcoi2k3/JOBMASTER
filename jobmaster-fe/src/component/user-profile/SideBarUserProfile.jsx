@@ -29,7 +29,7 @@ const SideBarProfile = () => {
         setSelected(index);
     };
     return (
-        <div className="flex bg-accent min-h-[75vh] w-[75vw]">
+        <div className="flex bg-accent min-h-[75vh] w-[100vw]">
             <div className="bg-sidebar  py-4 min-h-full w-[30%]">
                 <div
                     className={`flex cursor-pointer ${

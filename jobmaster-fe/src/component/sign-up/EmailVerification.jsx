@@ -1,19 +1,29 @@
-import React ,{useState}from 'react';
+import React ,{useEffect, useState}from 'react';
 import { Button, Typography, Box } from '@mui/material';
 import verifyemail from "../../assets/verifyemail.png";
 import SendIcon from '@mui/icons-material/Send';
 import { useLocation } from 'react-router-dom';
 import AuthApi from '../../api/AuthApi';
+import { useNavigate } from 'react-router-dom';
 const EmailVerification = () => {
   const location = useLocation();
-  const { email } = location.state || {}; // Lấy email từ state
+  const { email,password } = location.state || {}; // Lấy email từ state
   const [disabled, setDisabled] = useState(false);
   const [timer, setTimer] = useState(0);
+  const navigate = useNavigate();
+  useEffect(()=>{
+    AuthApi.login({email,password})
+    .then((res)=>{
+      localStorage.setItem("access_token", res.token)
+      navigate("/dashboard");
+    }).catch((error)=>{
+      console.log(error)
+    })
+  },[]);
   const handleClick = () => {
     AuthApi.sendEmail(email)
     setDisabled(true);
     setTimer(60); // Khóa nút trong 60 giây
-
     const countdown = setInterval(() => {
       setTimer((prev) => {
         if (prev === 1) {

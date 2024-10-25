@@ -139,7 +139,7 @@ const ChangePassword = () => {
                                 <Grid item xs={5}>
                                     <Typography></Typography>
                                 </Grid>
-                                <Grid item xs={7}>
+                                {/* <Grid item xs={7}>
                                     <FormControlLabel
                                         control={
                                             <Checkbox
@@ -150,7 +150,7 @@ const ChangePassword = () => {
                                         }
                                         label="Thoát tất cả các phiên đăng nhập hiện tại"
                                     />
-                                </Grid>
+                                </Grid> */}
                             </Grid>
                         </Grid>
                         <Grid item xs={12}>
