@@ -36,7 +36,8 @@ public interface IEnterpiseService {
     PageResponse getListCv(
       int pageNumber,
       int pageSize,
-      String postId
+      String postId,
+      String status
     );
 
     CVResponse getDetailCv(String id);

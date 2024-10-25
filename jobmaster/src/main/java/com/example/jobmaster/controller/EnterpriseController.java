@@ -190,9 +190,10 @@ public class EnterpriseController {
     public ResponseEntity getListCv(
             @RequestParam(defaultValue = DefautlConstants.PAGE_SIZE) int pageSize,
             @RequestParam(defaultValue = DefautlConstants.PAGE_NO) int pageNumber,
-            @RequestParam(defaultValue = "") String postId
+            @RequestParam(defaultValue = "") String postId,
+            @RequestParam(value = "status",required = false) String status
     ){
-        return ResponseEntity.ok(iEnterpiseService.getListCv(pageNumber,pageSize,postId));
+        return ResponseEntity.ok(iEnterpiseService.getListCv(pageNumber,pageSize,postId, status));
     }
 
     @RequestMapping(value = "/get-detail-cv/{id}",method = RequestMethod.GET)

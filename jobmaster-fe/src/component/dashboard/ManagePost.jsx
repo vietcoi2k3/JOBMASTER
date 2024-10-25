@@ -33,70 +33,11 @@ export default function ManagePost() {
     const [loading, setLoading] = useState(false);
     const [search, setSearch] = useState('');
     const [status, setStatus] = useState("ALL");
-    const [dialogOpen, setDialogOpen] = useState(false);
-    const [postDetail, setPostDetail] = useState({
-        title: "",
-        field: "",
-        position: "",
-        deadline: null,
-        quantity: 0,
-        city: "",
-        district: "",
-        detailAddress: "",
-        typeWorking: "",
-        level: "",
-        experience: "",
-        gender: "",
-        timeWorking: "",
-        description: "",
-        required: "",
-        interest: "",
-        requiredSkill: "",
-        skillShouldHave: "",
-        campaignId: "",
-        salaryRange: "",
-        campaignName: ""
-    });
     const [notification, setNotification] = React.useState({
         open: false,
         message: '',
         type: 'success'
     });
-    const handleOpenDialog = (id) => {
-        EnterpriseApi.getDetailPost(id)
-            .then((res) => {
-                setPostDetail(() => ({
-                    title: res.title,
-                        field: res.field,
-                        position: res.position,
-                        deadline: res.deadline,
-                        quantity: res.quantity,
-                        city: res.city,
-                        district: res.district || '',
-                        detailAddress: res.detailAddress,
-                        typeWorking: res.typeWorking,
-                        level: res.level,
-                        experience: res.experience,
-                        timeWorking: res.timeWorking,
-                        description: res.description,
-                        required: res.required,
-                        interest: res.interest,
-                        gender: res.gender,
-                        campaignId: res.campaignId,
-                        salaryRange: res.salaryRange || '',
-                        campaignName: res.campaignName
-                }));
-            })
-            .catch((error) => {
-                setNotification({
-                    open: true,
-                    message: error,
-                    type: "error"
-                });
-            })
-            .then(()=>setDialogOpen(true));
-        
-    };
 
     useEffect(() => {
         getList();
@@ -173,7 +114,7 @@ export default function ManagePost() {
                     />
                 </Grid>
             </Grid>
-            <TableContainer sx={{ backgroundColor: "#ffffff" }} className="border-s-accent rounded ">
+            <TableContainer sx={{ backgroundColor: "#ffffff"}} className="border-s-accent rounded ">
                 <Table>
                     <TableHead>
                         <TableRow>
@@ -208,7 +149,7 @@ export default function ManagePost() {
                                             Xem CV ({post.quantityCv})
                                         </Button>
                                     </TableCell>
-                                    <TableCell sx={{ textAlign: 'center' }}>
+                                    <TableCell sx={{ textAlign: 'space-between' }}>
                                         <Tooltip title="Xem tin">
                                             <IconButton onClick={() => navigate("/dashboard/job-form/detail/" + post.id)}>
                                                 <Visibility />
@@ -219,17 +160,18 @@ export default function ManagePost() {
                                                 <Edit />
                                             </IconButton>
                                         </Tooltip>
-                                        <Switch checked={post.isVisible} />
+                                        <Tooltip title="Hạ tin">
+                                        <Switch 
+                                        disabled ={post.status === 'NOT_APPROVED'}
+                                         checked={post.status === 'AWAITING_APPROVAL' || post.status === 'APPROVED'} />
+                                        </Tooltip>
+                                        
                                     </TableCell>
                                 </TableRow>
                             ))
                         )}
                     </TableBody>
-                    <JobPostingDialog
-                        open={dialogOpen}
-                        onClose={() => setDialogOpen(false)}
-                        data={postDetail}
-                    />
+                    
                 </Table>
             </TableContainer>
             <Pagination

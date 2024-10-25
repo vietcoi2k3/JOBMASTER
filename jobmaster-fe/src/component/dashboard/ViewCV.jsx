@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Box,
     Paper,
@@ -11,36 +11,58 @@ import {
     TableRow,
     Chip,
     IconButton,
-    Avatar
+    Avatar, Pagination, MenuItem, Select, InputLabel, FormControl
 } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import {useNavigate, useParams} from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import EnterpriseApi from "../../api/EnterpriseApi";
+import DownloadIcon from '@mui/icons-material/Download';
+import { STATIC_HOST } from '../../enviroment';
+import AuthApi from '../../api/AuthApi';
 
 const ViewCV = () => {
 
     const navigate = useNavigate();
     const id = useParams().id
-    const [jobInfo,setJobInfo] = useState({})
-    const [cv,setCv] = useState([])
-    const [totalPage ,setTotalPage]= useState(0)
-    const [pageIndex,setPageIndex] = useState(1)
+    const [jobInfo, setJobInfo] = useState({})
+    const [cv, setCv] = useState([])
+    const [totalPage, setTotalPage] = useState(0)
+    const [pageIndex, setPageIndex] = useState(1)
+    const [status, setStatus] = useState('')
+    const statuses = ['RECEIVED', 'MATCHED', 'INTERVIEW_SCHEDULED', 'OFFERED', 'HIRED', 'REJECTED'];
 
     useEffect(() => {
-        EnterpriseApi.getListCv(pageIndex,id).then((e)=>{
+        EnterpriseApi.getListCv(pageIndex, id, status).then((e) => {
             setCv(e.data)
             setTotalPage(e.totalPage)
         })
-    }, [pageIndex]);
+    }, [pageIndex, status]);
 
-    useEffect(()=>{
-        EnterpriseApi.getDetailPost(id).then((e)=>{
+    useEffect(() => {
+        EnterpriseApi.getDetailPost(id).then((e) => {
             setJobInfo(e)
         })
-    },[])
+    }, [])
+    const handleStatusChange = (event) => {
+        setStatus(event.target.value);
+    };
 
+    const handleDownload = async (id) => {
+        try {
+            const url = STATIC_HOST + "auth/download-cv?id=" + id;
+            // Tạo một liên kết tải xuống tạm thời
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', ''); // Thay đổi tên file nếu cần
+            document.body.appendChild(link);
+            link.click();
+            link.parentNode.removeChild(link);
+        } catch (error) {
+            console.error("Error downloading file:", error);
+        }
+    };
     return (
         <Box sx={{ width: '100%', mb: 2 }}>
             <Paper elevation={3} sx={{ p: 2, mb: 2 }}>
@@ -57,11 +79,31 @@ const ViewCV = () => {
                     <Typography><strong>Tiêu đề tin đăng:</strong> {jobInfo.title}</Typography>
                     <Typography><strong>Vị trí:</strong> {jobInfo.position}</Typography>
                     <Typography><strong>Số lượng:</strong> {jobInfo.quantity}</Typography>
-                    <Typography><strong>Chiến dịch:</strong> {jobInfo.nameCam}</Typography>
+                    <Typography><strong>Chiến dịch:</strong> {jobInfo.campaignName}</Typography>
                 </Box>
             </Paper>
 
-            <TableContainer component={Paper}>
+            <FormControl style={{ width: '20%', backgroundColor: 'white' }} sx={{ mb: 2 }}>
+            <InputLabel id="status-select-label">Chọn trạng thái</InputLabel>
+                <Select
+                labelId="status-select-label"
+                    id="status-select"
+                    value={status}
+                    onChange={handleStatusChange}
+                    label="Chọn trạng thái"
+                >
+                    <MenuItem value="">
+                        <em>Tất cả trạng thái</em>
+                    </MenuItem>
+                    {statuses.map((status) => (
+                        <MenuItem key={status} value={status}>
+                            {status}
+                        </MenuItem>
+                    ))}
+                </Select>
+
+            </FormControl>
+            <TableContainer component={Paper} >
                 <Table sx={{ minWidth: 650 }} aria-label="candidates table">
                     <TableHead>
                         <TableRow>
@@ -73,12 +115,11 @@ const ViewCV = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {cv.map((cv,index) => (
+                        {cv.map((cv, index) => (
                             <TableRow key={index}>
                                 <TableCell component="th" scope="row">
-                                    {cv.name}
                                     <Typography variant="body2" color="text.secondary">
-                                        Chưa xem
+                                        {cv.name}
                                     </Typography>
                                 </TableCell>
                                 <TableCell>
@@ -95,18 +136,35 @@ const ViewCV = () => {
                                     <Chip label={cv.status} color="default" />
                                 </TableCell>
                                 <TableCell>
-                                    <Chip onClick={()=>{navigate("/dashboard/detail-cv/"+cv.id);return null}} label="Xem Profile" color="primary" variant="outlined" clickable />
+                                    <Chip onClick={() => { navigate("/dashboard/detail-cv/" + cv.id); return null }} label="Xem Profile" color="primary" variant="outlined" clickable />
                                 </TableCell>
                                 <TableCell>
                                     <IconButton>
-                                        <MoreVertIcon />
+                                        <DownloadIcon
+                                            onClick={() => handleDownload(cv.id)}
+                                        ></DownloadIcon>
                                     </IconButton>
+
                                 </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
             </TableContainer>
+            <Pagination
+                onChange={(event, page) => setPageIndex(page)}
+                page={pageIndex}
+                count={totalPage}
+                color="primary"
+                sx={{
+                    width: '100%',
+                    backgroundColor: '#ffff',
+                    marginTop: 1,
+                    '& .MuiPagination-ul': {
+                        justifyContent: 'center'
+                    }
+                }}
+            />
         </Box>
     );
 };

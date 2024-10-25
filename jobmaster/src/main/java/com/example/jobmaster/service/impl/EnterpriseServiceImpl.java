@@ -58,6 +58,7 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
 
     @Autowired
     private PackageRepository packageRepository;
+
     @Override
     public EnterpriseEntity getEnterpriseByHttpRequest(HttpServletRequest httpServletRequest) {
         String username = jwtUntil.getUsernameFromRequest(httpServletRequest);
@@ -67,7 +68,7 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
     }
 
     @Override
-    public FileEntity sendCertificate(FileEntity fileEntity,HttpServletRequest httpServletRequest) {
+    public FileEntity sendCertificate(FileEntity fileEntity, HttpServletRequest httpServletRequest) {
         String username = jwtUntil.getUsernameFromRequest(httpServletRequest);
         UserEntity user = userRepository.findByUsername(username);
         fileRepository.setFileActiveIsFalse(user.getEnterpriseId());
@@ -91,72 +92,73 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
 
     @Override
     public CampaignDTO addCampaign(CampaignDTO campaignDTO, HttpServletRequest httpServletRequest) {
-        String username =jwtUntil.getUsernameFromRequest(httpServletRequest);
+        String username = jwtUntil.getUsernameFromRequest(httpServletRequest);
         UserEntity user = userRepository.findByUsername(username);
         campaignDTO.setEnterpriseId(user.getEnterpriseId());
-        CampaignEntity campaignEntity =mapper.map(campaignDTO,CampaignEntity.class);
+        CampaignEntity campaignEntity = mapper.map(campaignDTO, CampaignEntity.class);
         campaignEntity.setActive(true);
-        return mapper.map(campaignRepository.save(campaignEntity),CampaignDTO.class) ;
+        return mapper.map(campaignRepository.save(campaignEntity), CampaignDTO.class);
     }
 
     @Override
     public Page<CampaignResponse> getListCampaign(String search, int pageSize, int pageNumber, HttpServletRequest httpServletRequest) {
         pageNumber--;
-        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
         String username = jwtUntil.getUsernameFromRequest(httpServletRequest);
         UserEntity user = userRepository.findByUsername(username);
-        return campaignRepository.getListCampaign(search,user.getEnterpriseId(),pageable);
+        return campaignRepository.getListCampaign(search, user.getEnterpriseId(), pageable);
     }
 
     @Override
-    public PostDTO addPost(String token,PostDTO postDTO) {
+    public PostDTO addPost(String token, PostDTO postDTO) {
         String username = jwtUntil.getUsernameFromToken(token.substring(7));
         EnterpriseEntity enterpriseEntity = enterpriseRepository.findEnterpriseEntityByUsername(username)
-                .orElseThrow(()-> new NotFoundException(ExceptionMessage.ENTERPRISE_NOT_FOUND));
-        if(!EnterpriseEnum.ACTIVE.name().equalsIgnoreCase(enterpriseEntity.getIsActive())){
+                .orElseThrow(() -> new NotFoundException(ExceptionMessage.ENTERPRISE_NOT_FOUND));
+        if (!EnterpriseEnum.ACTIVE.name().equalsIgnoreCase(enterpriseEntity.getIsActive())) {
             throw new IllegalArgumentException(ExceptionMessage.ENTERPRISE_NOT_ACTIVE);
         }
         CampaignEntity campaignEntity = campaignRepository.findById(postDTO.getCampaignId()).get();
-        PostEntity postEntity = mapper.map(postDTO,PostEntity.class);
-        if (campaignEntity.isActive()){
+        PostEntity postEntity = mapper.map(postDTO, PostEntity.class);
+        if (campaignEntity.isActive()) {
             postEntity.setStatus(PostEnum.AWAITING_APPROVAL.name());
-        }else {
+        } else {
             postEntity.setStatus(PostEnum.NOT_APPROVED.name());
         }
-        PostDTO postDTO1 =mapper.map(postRepository.save(postEntity),PostDTO.class);
+        PostDTO postDTO1 = mapper.map(postRepository.save(postEntity), PostDTO.class);
         postDTO1.setCampaignName(campaignEntity.getName());
         campaignEntity.setPostId(postDTO1.getId());
         campaignRepository.save(campaignEntity);
         return postDTO1;
     }
+
     @Override
-    public PostDTO updatePost(String id,PostDTO postDTO) {
+    public PostDTO updatePost(String id, PostDTO postDTO) {
         PostEntity postEntity = postRepository.findById(id)
-                .orElseThrow(()-> new NotFoundException(ExceptionMessage.POST_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(ExceptionMessage.POST_NOT_FOUND));
         CampaignEntity oldCampaignEntity = campaignRepository.findById(postEntity.getCampaignId())
-                .orElseThrow(()-> new NotFoundException(ExceptionMessage.CAMPAIGN_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(ExceptionMessage.CAMPAIGN_NOT_FOUND));
         oldCampaignEntity.setPostId(null);
         campaignRepository.save(oldCampaignEntity);
         CampaignEntity newCampaignEntity = campaignRepository.findById(postDTO.getCampaignId())
-                .orElseThrow(()-> new NotFoundException(ExceptionMessage.CAMPAIGN_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(ExceptionMessage.CAMPAIGN_NOT_FOUND));
         newCampaignEntity.setPostId(postEntity.getId());
         campaignRepository.save(newCampaignEntity);
-        mapper.map(postDTO,postEntity);
+        mapper.map(postDTO, postEntity);
         postEntity.setStatus(PostEnum.AWAITING_APPROVAL.name());
-        return mapper.map(postRepository.save(postEntity),PostDTO.class);
+        return mapper.map(postRepository.save(postEntity), PostDTO.class);
     }
 
 
     @Override
     public void resetPostStatus(String id) {
         PostEntity postEntity = postRepository.findById(id)
-                .orElseThrow(()-> new NotFoundException(ExceptionMessage.POST_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(ExceptionMessage.POST_NOT_FOUND));
         postEntity.setStatus(PostEnum.NOT_APPROVED.name());
         postRepository.save(postEntity);
     }
 
     @Override
-    public EnterpriseDTO updateEnterprise(EnterpriseDTO enterpriseDTO,HttpServletRequest httpServletRequest) {
+    public EnterpriseDTO updateEnterprise(EnterpriseDTO enterpriseDTO, HttpServletRequest httpServletRequest) {
         EnterpriseEntity enterpriseEntity = getEnterpriseByHttpRequest(httpServletRequest);
 
         enterpriseEntity.setAddress(enterpriseDTO.getAddress());
@@ -171,23 +173,23 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
         enterpriseEntity.setLogo(enterpriseDTO.getLogo());
 
         enterpriseEntity = enterpriseRepository.save(enterpriseEntity);
-        return mapper.map(enterpriseEntity,EnterpriseDTO.class);
+        return mapper.map(enterpriseEntity, EnterpriseDTO.class);
     }
 
     @Override
     public PageResponse getListPost(int pageNumber, int pageSize, HttpServletRequest httpServletRequest, String search, String status) {
         pageNumber--;
-        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
         String username = jwtUntil.getUsernameFromRequest(httpServletRequest);
         UserEntity user = userRepository.findByUsername(username);
         List<String> campaignId = campaignRepository.getListIdCampaign(user.getEnterpriseId());
 
-        Page<PostEntity> postEntities =  postRepository.getListCampaign(search,status,campaignId,pageable);
+        Page<PostEntity> postEntities = postRepository.getListCampaign(search, status, campaignId, pageable);
 
         List<PostResponse> postResponses = new ArrayList<>();
-        for (PostEntity x : postEntities.getContent()){
+        for (PostEntity x : postEntities.getContent()) {
             PostResponse postResponse = new PostResponse();
-            if (x.getCampaignId()==null){
+            if (x.getCampaignId() == null) {
                 continue;
             }
             CampaignEntity campaignEntity = campaignRepository.findById(x.getCampaignId()).get();
@@ -208,8 +210,8 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
 
     @Override
     public PostDTO getDetailPost(String id) {
-         PostEntity postEntity = postRepository.findById(id).get();
-         CampaignEntity campaignEntity = campaignRepository.findById(postEntity.getCampaignId()).get();
+        PostEntity postEntity = postRepository.findById(id).get();
+        CampaignEntity campaignEntity = campaignRepository.findById(postEntity.getCampaignId()).get();
         return PostDTO.builder()
                 .id(postEntity.getId())
                 .title(postEntity.getTitle())
@@ -240,21 +242,28 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
     }
 
     @Override
-    public PageResponse getListCv(int pageNumber, int pageSize, String postId) {
+    public PageResponse getListCv(int pageNumber, int pageSize, String postId, String status) {
         pageNumber--;
-        Pageable pageable = PageRequest.of(pageNumber,pageSize);
-        Page<CVEntity> cvEntityPage = cvRepository.getListCv(postId,pageable);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        StatusCVEnum enumStatus = convertToEnum(status);
+        Page<CVEntity> cvEntityPage = cvRepository.getListCv(postId, enumStatus, pageable);
 
         return PageResponse.<CVEntity>builder()
                 .totalPage(cvEntityPage.getTotalPages())
                 .data(cvEntityPage.getContent())
                 .build();
     }
+    private StatusCVEnum convertToEnum(String status) {
+        if (status == null || status.isEmpty()) {
+            return null;
+        }
+        return StatusCVEnum.valueOf(status);
+    }
 
     @Override
     public CVResponse getDetailCv(String id) {
         CVEntity cvEntity = cvRepository.findById(id).get();
-        CVResponse cvResponse = mapper.map(cvEntity,CVResponse.class);
+        CVResponse cvResponse = mapper.map(cvEntity, CVResponse.class);
         FileEntity fileEntity = fileRepository.findById(cvResponse.getFileId()).get();
         cvResponse.setUrl(fileEntity.getUrl());
         return cvResponse;
@@ -266,14 +275,15 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
         cv.setNote(cvEntity.getNote());
         cv.setStatus(cvEntity.getStatus());
 
-        return  cvRepository.save(cv);
+        return cvRepository.save(cv);
     }
+
     @Override
     public List<PackageEntity> getListPackage(String campaignId) {
         List<String> packageId = packageCampaignRepository.getListIdPackage(campaignId);
         List<PackageEntity> packageEntities = packageRepository.findAll();
-        for (String a: packageId
-             ) {
+        for (String a : packageId
+        ) {
             packageEntities.removeIf(x -> x.getId().equals(a));
         }
         return packageEntities;
@@ -283,11 +293,11 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
     @Transactional
     public String activatePackage(ActivatePackageRequest activatePackageRequest, HttpServletRequest httpServletRequest) {
         UserEntity user = userRepository.findByUsername(jwtUntil.getUsernameFromRequest(httpServletRequest));
-        if (user.getBalance().compareTo(activatePackageRequest.getPrice())<0){
+        if (user.getBalance().compareTo(activatePackageRequest.getPrice()) < 0) {
             throw new IllegalArgumentException("MONEY NOT ENOUGH");
         }
-        for (String x: activatePackageRequest.getPackageId()
-             ) {
+        for (String x : activatePackageRequest.getPackageId()
+        ) {
 
             PackageCampaign packageCampaign = new PackageCampaign();
             packageCampaign.setPackageId(x);
@@ -331,12 +341,12 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
     @Override
     public void updateStatusCampaign(String id) {
         CampaignEntity campaignEntity = campaignRepository.findById(id)
-                .orElseThrow(()->new NotFoundException(ExceptionMessage.CAMPAIGN_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(ExceptionMessage.CAMPAIGN_NOT_FOUND));
         campaignEntity.setActive(!campaignEntity.isActive());
         campaignRepository.save(campaignEntity);
-        if(!campaignEntity.isActive() && campaignEntity.getPostId()!=null){
+        if (!campaignEntity.isActive() && campaignEntity.getPostId() != null) {
             PostEntity postEntity = postRepository.findById(campaignEntity.getPostId())
-                    .orElseThrow(()-> new NotFoundException(ExceptionMessage.POST_NOT_FOUND));
+                    .orElseThrow(() -> new NotFoundException(ExceptionMessage.POST_NOT_FOUND));
             postEntity.setStatus(PostEnum.NOT_APPROVED.name());
             postRepository.save(postEntity);
         }
@@ -345,7 +355,7 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
     @Override
     public void updateCampaign(String id, CampaignDTO campaignDTO) {
         CampaignEntity campaignEntity = campaignRepository.findById(id)
-                .orElseThrow(()->new NotFoundException(ExceptionMessage.CAMPAIGN_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(ExceptionMessage.CAMPAIGN_NOT_FOUND));
         campaignEntity.setName(campaignDTO.getName());
         campaignRepository.save(campaignEntity);
     }

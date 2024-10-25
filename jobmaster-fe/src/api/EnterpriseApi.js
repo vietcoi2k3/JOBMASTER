@@ -111,9 +111,9 @@ const EnterpriseApi = {
         return axiosClient.put(url+id);
     },
 
-    getListCv(pageNumber, postId) {
+    getListCv(pageNumber, postId,status) {
         const url = "/enterprise/get-list-cv";
-        return axiosClient.get(url + "?pageNumber=" + pageNumber + "&postId=" + postId);
+        return axiosClient.get(url + "?pageNumber=" + pageNumber + "&postId=" + postId+"&status="+status);
 
     },
 

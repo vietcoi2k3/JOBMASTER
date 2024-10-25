@@ -30,6 +30,7 @@ const JobForm = ({ operator }) => {
     const [openConfirm, setOpenConfirm] = useState(false);
     const [mgsConfirm, setMgsConfirm] = useState('');
     const [hasFillData, setHasFillData] = useState(true);
+    const [status,setStatus] = useState();
     const [notification, setNotification] = React.useState({
         open: false,
         message: '',
@@ -59,7 +60,6 @@ const JobForm = ({ operator }) => {
         requiredSkills: "",
         additionalSkills: "",
         detailAddress: "",
-        status: "AWAITING_APPROVAL"
     };
     const [data, setData] = useState(initialData);
 
@@ -83,6 +83,7 @@ const JobForm = ({ operator }) => {
             setHasFillData(false);
             EnterpriseApi.getDetailPost(id)
                 .then((res) => {
+                    setStatus(res.status);
                     setData(prevData => ({
                         ...prevData,
                         title: res.title,
@@ -105,8 +106,7 @@ const JobForm = ({ operator }) => {
                         salaryRange: res.salaryRange || '',
                         campaignName: res.campaignName,
                         requiredSkills: res.requiredSkills,
-                        additionalSkills: res.additionalSkills,
-                        status: res.status
+                        additionalSkills: res.additionalSkills
                     }));
                 })
                 .catch((error) => {
@@ -738,17 +738,19 @@ const JobForm = ({ operator }) => {
                                     ) : null}
                                 </Grid>
                                 <Grid item>
-                                    <Button
-                                        disabled={(data.status === 'APPROVED' || data.status === 'AWAITING_APPROVAL')}
-                                        variant="contained"
-                                        sx={{ flex: 1, backgroundColor: '#E10E0E', color: 'white', '&:hover': { backgroundColor: '#C00C0C' } }}
-                                        onClick={() => {
-                                            setMgsConfirm("Bạn có muốn hạ tin đăng không?");
-                                            handleClickOpenConfirm();
-                                        }}
-                                    >
-                                        Hạ tin
-                                    </Button>
+                                    {(status !== 'NOT_APPROVED') && (operator != 'create') && (
+                                        <Button
+                                            variant="contained"
+                                            sx={{ flex: 1, backgroundColor: '#E10E0E', color: 'white', '&:hover': { backgroundColor: '#C00C0C' } }}
+                                            onClick={() => {
+                                                setMgsConfirm("Bạn có muốn hạ tin đăng không?");
+                                                handleClickOpenConfirm();
+                                            }}
+                                        >
+                                            Hạ tin
+                                        </Button>
+                                    )}
+
                                 </Grid>
 
                                 <Grid item>

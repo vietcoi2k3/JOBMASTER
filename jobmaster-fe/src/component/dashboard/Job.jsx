@@ -204,7 +204,8 @@ const Job = () => {
                                                     setMgsConfirm('Xác nhận tắt chiến dịch, tin đăng của chiến dịch cũng sẽ bị tắt?');
                                                     handleClickOpenConfirm();
                                                 } else {
-                                                    handleToggle(campaign);
+                                                    setCampaignDown(campaign);
+                                                    handleToggle();
                                                 }
                                             }}
                                         />

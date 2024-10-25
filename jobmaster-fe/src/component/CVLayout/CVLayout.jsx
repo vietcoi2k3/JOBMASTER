@@ -9,6 +9,8 @@ import pdf from "../../assets/uploads4cf7da69-ef39-43c6-89b7-34f26935000a_A43669
 import {useParams} from "react-router-dom";
 import EnterpriseApi from "../../api/EnterpriseApi";
 import CvEvaluationPopup from "./CvEvaluationPopup";
+import { STATIC_HOST} from '../../enviroment';
+import DownloadIcon from '@mui/icons-material/Download';
 
 const CVLayout = () => {
     const [open, setOpen] = useState(false);
@@ -47,7 +49,7 @@ const CVLayout = () => {
                     <div style={{ width: '100%', height: '100%' }}>
                         {
                             isLoading||<Viewer
-                                fileUrl={"http://159.223.69.16:8080/auth/download?url="+cvEntity.url}
+                                fileUrl={STATIC_HOST+"auth/download?url="+encodeURIComponent(cvEntity.url)}
                                 defaultScale={1.5}
                                 plugins={[]}
                             />

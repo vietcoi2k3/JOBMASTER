@@ -22,4 +22,5 @@ public class CVResponse {
     @Enumerated(EnumType.STRING)
     private StatusCVEnum status;
     private String url;
+
 }

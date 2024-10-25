@@ -61,6 +61,12 @@ const AuthApi = {
     saveMoney:(request)=>{
        const url = "auth/payment/vn-return"
         return axiosClient.get(url+request)
+    },
+    downloadCv:(id)=>{
+      const url = "auth/download-cv?id="+id;
+      return axiosClient.get(url, {
+        responseType: 'blob', 
+    });
     }
 
 };

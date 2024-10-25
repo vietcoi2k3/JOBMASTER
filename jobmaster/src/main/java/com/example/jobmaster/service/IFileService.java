@@ -14,4 +14,9 @@ public interface IFileService {
     public ResponseEntity<byte[]> getFile(String fileId) throws IOException;
 
     public byte[] getCertificate(String enterpriseId) throws IOException;
+
+    String getFileIdByCvId(String cvId);
+
+    byte[] downloadFile(String fileId) throws IOException;
+
 }

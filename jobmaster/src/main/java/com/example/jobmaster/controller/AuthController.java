@@ -16,6 +16,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
@@ -38,7 +43,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/auth")
-public class  AuthController {
+public class AuthController {
 
     @Autowired
     private FieldRepository fieldRepository;
@@ -70,20 +75,23 @@ public class  AuthController {
     @Autowired
     private IConsumerService iConsumerService;
 
+    @Autowired
+    private IFileService fileService;
+
 
     @PostMapping(value = "/login-by-goolge")
-    public ResponseEntity loginByGoogle(@RequestParam String token,HttpServletRequest httpServletRequest){
-        return userService.loginByGoogle(token,httpServletRequest);
+    public ResponseEntity loginByGoogle(@RequestParam String token, HttpServletRequest httpServletRequest) {
+        return userService.loginByGoogle(token, httpServletRequest);
     }
 
     @PostMapping(value = "/register-enterprise")
     public ResponseEntity registerEnterprise(@RequestBody RegisterRequest registerRequest) throws MessagingException {
-        return  ResponseEntity.ok(userService.registerEnterprise(registerRequest));
+        return ResponseEntity.ok(userService.registerEnterprise(registerRequest));
     }
 
     @PostMapping(value = "/login")
-    public ResponseEntity login(@RequestBody LoginRequest loginRequest,HttpServletRequest httpServletRequest){
-        return ResponseEntity.ok(userService.login(loginRequest,httpServletRequest));
+    public ResponseEntity login(@RequestBody LoginRequest loginRequest, HttpServletRequest httpServletRequest) {
+        return ResponseEntity.ok(userService.login(loginRequest, httpServletRequest));
     }
 
     @GetMapping("/confirm")
@@ -93,7 +101,7 @@ public class  AuthController {
 
     @GetMapping("/send-email")
     public ResponseEntity sendEmail(@RequestParam String email) throws MessagingException {
-        return  ResponseEntity.ok(userService.sendEmail(email));
+        return ResponseEntity.ok(userService.sendEmail(email));
     }
 
     @PostMapping("/upload")
@@ -110,9 +118,8 @@ public class  AuthController {
         // Gọi đến service và truyền thêm fileType để xử lý
         return ResponseEntity.ok(iFileUploadService.uploadFile(file.getBytes(), fileType));
     }
-
-    private static final String UPLOAD_DIR = "/uploads" + File.separator; // Đường dẫn sẽ trỏ đến thư mục đã mount
-
+    private static final String UPLOAD_DIR = "C:\\uploads\\"; // Đường dẫn sẽ trỏ đến thư mục đã mount
+//    private static final String UPLOAD_DIR = "/uploads" + File.separator; // Đường dẫn sẽ trỏ đến thư mục đã mount
     @Autowired
     private FileRepository fileRepository;
 
@@ -150,24 +157,28 @@ public class  AuthController {
     @GetMapping(value = "/get-file")
     public ResponseEntity getFile(@RequestParam String fileId) throws IOException {
         return iFileService.getFile(fileId);
-    };
+    }
+
+    ;
 
     @GetMapping(value = "/get-all-city")
     public ResponseEntity getAllCity() throws IOException {
         return ResponseEntity.ok(cityRepository.findAll());
-    };
+    }
+
+    ;
 
     @GetMapping(value = "/get-all-field")
-    public ResponseEntity getAllField(){
+    public ResponseEntity getAllField() {
         return ResponseEntity.ok(fieldRepository.findAll());
     }
 
     @GetMapping(value = "/get-all-position")
-    public ResponseEntity getAllPosition(){
+    public ResponseEntity getAllPosition() {
         return ResponseEntity.ok(positionRepository.findAll());
     }
 
-    @RequestMapping(value = "/get-list-post",method = RequestMethod.GET)
+    @RequestMapping(value = "/get-list-post", method = RequestMethod.GET)
     public ResponseEntity getListPost(
             @RequestParam(defaultValue = DefautlConstants.PAGE_SIZE) int pageSize,
             @RequestParam(defaultValue = DefautlConstants.PAGE_NO) int pageNumber,
@@ -175,17 +186,17 @@ public class  AuthController {
             @RequestParam(defaultValue = "") String address,
             @RequestParam(defaultValue = "") String field,
             @RequestParam(defaultValue = "") String packageName
-    ){
-        return ResponseEntity.ok(consumer.getListPost(pageNumber,pageSize,search,address,field));
+    ) {
+        return ResponseEntity.ok(consumer.getListPost(pageNumber, pageSize, search, address, field));
     }
 
-    @RequestMapping(value = "/get-detail-job",method = RequestMethod.GET)
-    public ResponseEntity getDetailJob(@RequestParam String postId){
+    @RequestMapping(value = "/get-detail-job", method = RequestMethod.GET)
+    public ResponseEntity getDetailJob(@RequestParam String postId) {
         return ResponseEntity.ok(postRepository.findById(postId).get());
     }
 
-    @RequestMapping(value = "/get-detail-company",method = RequestMethod.GET)
-    public ResponseEntity getDetailCompany(@RequestParam String campaignId){
+    @RequestMapping(value = "/get-detail-company", method = RequestMethod.GET)
+    public ResponseEntity getDetailCompany(@RequestParam String campaignId) {
         return ResponseEntity.ok(consumer.getDetailCompany(campaignId));
     }
 
@@ -193,7 +204,9 @@ public class  AuthController {
     @ResponseBody
     public ResponseEntity<Resource> downloadFile(@RequestParam String url) {
         try {
-            Path filePath = Paths.get("").resolve(url).normalize();
+            String decodedUrl = URLDecoder.decode(url, StandardCharsets.UTF_8.toString());
+            java.io.File dir = Paths.get(decodedUrl).toFile();
+            Path filePath =Paths.get(dir.getAbsolutePath());
             Resource resource = new UrlResource(filePath.toUri());
 
             if (resource.exists()) {
@@ -205,19 +218,43 @@ public class  AuthController {
             }
         } catch (MalformedURLException e) {
             return ResponseEntity.badRequest().build();
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    @RequestMapping(value = "/get-list-company",method = RequestMethod.GET)
+    @GetMapping("/download-cv")
+    @ResponseBody
+    public ResponseEntity<?> downloadCV(@RequestParam String id) {
+        String fileId = fileService.getFileIdByCvId(id);
+        try {
+            // Lấy mảng byte từ fileService
+            byte[] fileData = fileService.downloadFile(fileId);
+
+            String fileName = "cv.pdf"; // Thay đổi theo logic của bạn để lấy tên file thực tế
+
+            String contentType = "application/pdf"; // Thay đổi theo loại file tương ứng
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(contentType))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+                    .body(fileData);
+
+        } catch (IOException ex) {
+            return ResponseEntity.badRequest().body("Không thể tải file");
+        }
+    }
+
+    @RequestMapping(value = "/get-list-company", method = RequestMethod.GET)
     ResponseEntity getListCompany(
             @RequestParam(defaultValue = DefautlConstants.PAGE_SIZE) int pageSize,
             @RequestParam(defaultValue = DefautlConstants.PAGE_NO) int pageNumber
-    ){
-        return ResponseEntity.ok(iAdminService.getListEnterprise(pageNumber,pageSize));
+    ) {
+        return ResponseEntity.ok(iAdminService.getListEnterprise(pageNumber, pageSize));
     }
 
     @GetMapping(value = "/get-post-by-money")
-    public ResponseEntity getPostByMoney(){
+    public ResponseEntity getPostByMoney() {
         return ResponseEntity.ok(iConsumerService.getListByMoney());
     }
 

@@ -1,10 +1,14 @@
 package com.example.jobmaster.service.impl;
 
 
+import com.example.jobmaster.entity.CVEntity;
 import com.example.jobmaster.entity.FileEntity;
 import com.example.jobmaster.entity.UserEntity;
+import com.example.jobmaster.exception.NotFoundException;
+import com.example.jobmaster.repository.CVRepository;
 import com.example.jobmaster.repository.FileRepository;
 import com.example.jobmaster.service.IFileService;
+import com.example.jobmaster.until.constants.ExceptionMessage;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,6 +31,8 @@ public class FileServiceIml implements IFileService {
 
     @Autowired
     private FileRepository fileRepository;
+    @Autowired
+    private CVRepository cvRepository;
     @Override
     public FileEntity uploadFile(MultipartFile file, HttpServletRequest httpServletRequest) {
         if (file.isEmpty()) {
@@ -85,4 +91,25 @@ public class FileServiceIml implements IFileService {
         return this.getFile(fileEntity.getId()).getBody();
     }
 
-}
+    @Override
+    public String getFileIdByCvId(String cvId) {
+        CVEntity entity = cvRepository.findById(cvId)
+                .orElseThrow(()->new NotFoundException(ExceptionMessage.CV_NOT_FOUND));
+        return entity.getFileId();
+    }
+    public byte[] downloadFile(String fileId) throws IOException {
+        FileEntity fileEntity = fileRepository.findById(fileId).orElseThrow(() -> new RuntimeException("File not found: " + fileId));
+        Path filePath = Paths.get(fileEntity.getUrl());
+
+        // Kiểm tra xem tệp có tồn tại không
+        File file = filePath.toFile();
+        if (!file.exists()) {
+            throw new RuntimeException("File not found: " + fileId);
+        }
+
+        return Files.readAllBytes(filePath);
+
+    }
+
+
+    }
