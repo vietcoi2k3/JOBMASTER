@@ -4,6 +4,7 @@ import {Box, Card, CardContent, Typography, Grid, Chip} from '@mui/material';
 import {Work, LocationOn, AttachMoney} from '@mui/icons-material';
 import Consumer from "../../api/Consumer";
 import AuthApi from "../../api/AuthApi";
+import {useNavigate} from "react-router-dom";
 
 const JobSlider = () => {
     const [jobs, setJobs] = useState([]);
@@ -38,11 +39,18 @@ const JobSlider = () => {
         ],
     };
 
+    const navigate = useNavigate()
+    const handleJobSelect = (job) => {
+        navigate(`/job-detail`, { state: { job } }); // Điều hướng kèm dữ liệu job
+    };
+
+
     return (
         <Box sx={{ mt: 2, px: 2 }}>
             <Slider {...settings}>
                 {jobs.map((job, index) => (
-                    <Card key={index} sx={{ mx: 2, borderRadius: '20px', height: '100%' }}>
+                    <Card key={index} sx={{ mx: 2, borderRadius: '20px', height: '100%' ,cursor :'pointer'}}
+                          onClick={() => handleJobSelect(job)}>
                         <CardContent>
                             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                                 <img

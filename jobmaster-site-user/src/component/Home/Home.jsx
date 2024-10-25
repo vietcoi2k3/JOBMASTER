@@ -21,22 +21,22 @@ const Home = () => {
     const token = localStorage.getItem("access_token")
 
     return (
-        <Box sx={{ bgcolor: '#f0f2f5', minHeight: '100vh', p: 3 }}>
+        <Box sx={{ bgcolor: '#f0f2f5', minHeight: '100vh', p: 5 }}>
 
             <SliderHome/>
 
-            <Typography variant="h5" sx={{ mt: 2, fontWeight: 'bold' }}>
+            <Typography variant="h4" sx={{ mt: 2, fontWeight: 'bold' ,color:"#3758F9"}}>
                 Việc làm tốt nhất
             </Typography>
 
             <JobMoneySlider/>
-            <Typography variant="h5" sx={{ mt: 2, fontWeight: 'bold' }}>
+            <Typography variant="h4" sx={{ mt: 2, fontWeight: 'bold',color:"#3758F9" }}>
                 Công ty hàng đầu
             </Typography>
             <CompanySlider/>
 
             {token && <div><div>
-                <Typography variant="h5" sx={{ mt: 2, fontWeight: 'bold' }}>
+                <Typography variant="h4" sx={{ mt: 2, fontWeight: 'bold' ,color:"#3758F9"}}>
                     Việc phù hợp
                 </Typography>
             </div>

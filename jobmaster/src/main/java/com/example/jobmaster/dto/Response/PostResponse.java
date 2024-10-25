@@ -18,6 +18,7 @@ public class PostResponse {
     private String nameCam;
     private int quantityCv;
     private String salaryRange;
+    private String typeWorking;
     private int deadLine;
     private LocalDateTime modifiedAt;
     private String enterpriseId;
@@ -31,7 +32,10 @@ public class PostResponse {
     private String city;
     private String packageId;
     private boolean isLabel;
+    private String level;
+    private String experience;
+    private String gender;
+    private String timeWorking;
     private String campaignId;
     private String status;
-
 }

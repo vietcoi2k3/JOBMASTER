@@ -4,19 +4,7 @@ import { Card, CardContent, Typography, Box } from '@mui/material';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import AuthApi from "../../api/AuthApi";
-
-const companies = [
-    { name: 'BSS Group', location: 'Hà Nội', logo: '/images/bss-logo.png' },
-    { name: 'Lac Viet Corp', location: 'Hồ Chí Minh', logo: '/images/lacviet-logo.png' },
-    { name: 'FPT Software', location: 'Đà Nẵng', logo: '/images/fpt-logo.png' },
-    { name: 'Viettel Group', location: 'Hà Nội', logo: '/images/viettel-logo.png' },
-    { name: 'TMA Solutions', location: 'Hồ Chí Minh', logo: '/images/tma-logo.png' },
-    { name: 'BSS Group', location: 'Hà Nội', logo: '/images/bss-logo.png' },
-    { name: 'Lac Viet Corp', location: 'Hồ Chí Minh', logo: '/images/lacviet-logo.png' },
-    { name: 'FPT Software', location: 'Đà Nẵng', logo: '/images/fpt-logo.png' },
-    { name: 'Viettel Group', location: 'Hà Nội', logo: '/images/viettel-logo.png' },
-    { name: 'TMA Solutions', location: 'Hồ Chí Minh', logo: '/images/tma-logo.png' }
-];
+import {useNavigate} from "react-router-dom";
 
 const CompanySlider = () => {
     const [companies,setCompanies] = useState([])
@@ -47,11 +35,17 @@ const CompanySlider = () => {
         ],
     };
 
+    const navigate = useNavigate()
+    const handleNavigateToCompany = (company) => {
+        navigate(`/detail-company/${company.id}`);
+    };
+
     return (
         <Box sx={{ mt: 2 }}>
             <Slider {...settings}>
                 {companies.map((company, index) => (
-                    <Card key={index} sx={{ padding: 2,height : '110%',borderRadius :"30px" }}>
+                    <Card onClick = {()=>handleNavigateToCompany(company)}
+                        key={index} sx={{ padding: 2,height : '110%',borderRadius :"30px" ,cursor :'pointer'}}>
                         <CardContent>
                             <img
                                 src={company.logo}

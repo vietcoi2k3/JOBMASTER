@@ -85,8 +85,9 @@ public class AuthController {
     }
 
     @PostMapping(value = "/register-enterprise")
-    public ResponseEntity registerEnterprise(@RequestBody RegisterRequest registerRequest) throws MessagingException {
-        return ResponseEntity.ok(userService.registerEnterprise(registerRequest));
+
+    public ResponseEntity registerEnterprise(@RequestBody RegisterRequest registerRequest,HttpServletRequest httpServletRequest) throws MessagingException {
+        return  ResponseEntity.ok(userService.registerEnterprise(registerRequest,httpServletRequest));
     }
 
     @PostMapping(value = "/login")
@@ -100,8 +101,8 @@ public class AuthController {
     }
 
     @GetMapping("/send-email")
-    public ResponseEntity sendEmail(@RequestParam String email) throws MessagingException {
-        return ResponseEntity.ok(userService.sendEmail(email));
+    public ResponseEntity sendEmail(@RequestParam String email,HttpServletRequest httpServletRequest) throws MessagingException {
+        return  ResponseEntity.ok(userService.sendEmail(email,httpServletRequest));
     }
 
     @PostMapping("/upload")
@@ -256,6 +257,11 @@ public class AuthController {
     @GetMapping(value = "/get-post-by-money")
     public ResponseEntity getPostByMoney() {
         return ResponseEntity.ok(iConsumerService.getListByMoney());
+    }
+
+    @GetMapping(value = "/get-post-by-company/{id}")
+    public ResponseEntity getPostByCompany(@PathVariable String id){
+        return ResponseEntity.ok(iConsumerService.getPostByCompany(id));
     }
 
 }

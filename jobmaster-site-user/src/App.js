@@ -12,6 +12,7 @@ import Criteria from "./component/criteria/criteria";
 import CallBack from "./component/sign-up/CallBack";
 import VerifyEmail from "./component/sign-up/VerifyEmail";
 import EmailVerification from "./component/sign-up/EmailVerification";
+import JobDetails from "./component/ListJob/JobDetails";
 
 function AppContent() {
     // Lấy đường dẫn hiện tại
@@ -34,6 +35,8 @@ function AppContent() {
                     <Route path="/criteria" element={<Criteria />} />
                     <Route path="/callback" element={<CallBack />} />
                     <Route path="/verify-email" element={<EmailVerification />} />
+                    <Route path="/verify" element={<VerifyEmail />}/>
+                    <Route path="/job-detail" element={<JobDetails />}/>
                 </Routes>
             </div>
             {/* Chỉ hiển thị Footer nếu không phải là trang /login */}
