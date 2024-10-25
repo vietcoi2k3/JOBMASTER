@@ -215,6 +215,12 @@ public class EnterpriseController {
         return ResponseEntity.ok(iEnterpiseService.activatePackage(activatePackageRequest,httpServletRequest));
     }
 
+    @GetMapping("/get-all-package")
+    public ResponseEntity getAllPackage(){
+        return ResponseEntity.ok().body(iEnterpiseService.getAllPackage());
+    }
+
+
     @RequestMapping(value = "/get-money-history",method = RequestMethod.GET)
     public ResponseEntity getMoneyHistory(HttpServletRequest httpServletRequest){
         return ResponseEntity.ok(iEnterpiseService.getHistoryMoney(httpServletRequest));

@@ -95,6 +95,7 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
         UserEntity user = userRepository.findByUsername(username);
         campaignDTO.setEnterpriseId(user.getEnterpriseId());
         CampaignEntity campaignEntity =mapper.map(campaignDTO,CampaignEntity.class);
+        campaignEntity.setActive(true);
         return mapper.map(campaignRepository.save(campaignEntity),CampaignDTO.class) ;
     }
 
@@ -116,9 +117,12 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
             throw new IllegalArgumentException(ExceptionMessage.ENTERPRISE_NOT_ACTIVE);
         }
         CampaignEntity campaignEntity = campaignRepository.findById(postDTO.getCampaignId()).get();
-
         PostEntity postEntity = mapper.map(postDTO,PostEntity.class);
-        postEntity.setStatus(PostEnum.AWAITING_APPROVAL.name());
+        if (campaignEntity.isActive()){
+            postEntity.setStatus(PostEnum.AWAITING_APPROVAL.name());
+        }else {
+            postEntity.setStatus(PostEnum.NOT_APPROVED.name());
+        }
         PostDTO postDTO1 =mapper.map(postRepository.save(postEntity),PostDTO.class);
         postDTO1.setCampaignName(campaignEntity.getName());
         campaignEntity.setPostId(postDTO1.getId());
@@ -317,6 +321,11 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
     public List<PackageEntity> getListPackageByCampaign(String id) {
         List<PackageEntity> packageEntities = packageRepository.getPackageByCampaign(id);
         return packageEntities;
+    }
+
+    @Override
+    public List<PackageEntity> getAllPackage() {
+        return packageRepository.findAll();
     }
 
     @Override

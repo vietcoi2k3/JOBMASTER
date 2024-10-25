@@ -4,7 +4,7 @@ import EnterpriseApi from "../../api/EnterpriseApi";
 
 const CertificateBusiness = () => {
     const [open, setOpen] = useState(false);
-    const [fileEntity, setFileEntity] = useState({url:null});
+    const [fileEntity, setFileEntity] = useState({ url: null });
     const [status, setStatus] = useState("");
     const fileInputRef = useRef(null);
 
@@ -17,11 +17,11 @@ const CertificateBusiness = () => {
     };
 
     useEffect(() => {
-        EnterpriseApi.getStatus().then((e)=>setStatus(e));
+        EnterpriseApi.getStatus().then((e) => setStatus(e));
     }, []);
 
     useEffect(() => {
-        EnterpriseApi.getEnterprise().then((e)=>setFileEntity({...fileEntity,url:e.businessCertificate}));
+        EnterpriseApi.getEnterprise().then((e) => setFileEntity({ ...fileEntity, url: e.businessCertificate }));
     }, []);
 
     const handleFileChange = async (e) => {
@@ -44,12 +44,12 @@ const CertificateBusiness = () => {
             <Chip
                 label={
                     status === "WAITING_ACTIVE" ? "Chờ phê duyệt" :
-                        status === "APPROVED" ? "Đã phê duyệt" :
+                        status === "ACTIVE" ? "Đã phê duyệt" :
                             status === "INACTIVE" ? "Chưa cập nhật" : "Chưa cập nhật"
                 }
                 color={
                     status === "WAITING_ACTIVE" ? "warning" :
-                        status === "APPROVED" ? "success" :
+                        status === "ACTIVE" ? "success" :
                             status === "INACTIVE" ? "default" : "default"
                 }
                 className="mb-4"
@@ -58,7 +58,9 @@ const CertificateBusiness = () => {
                 <Typography variant="body1" className="mb-4">
                     Giấy đăng ký doanh nghiệp
                 </Typography>
-                <Button onClick={handleButtonClick}>
+                <Button
+                    disabled={status === 'WAITING_ACTIVE' || status === 'ACTIVE'}
+                    onClick={handleButtonClick}>
                     Chỉnh sửa
                 </Button>
             </div>
@@ -99,19 +101,24 @@ const CertificateBusiness = () => {
                     </label>
                 )}
             </div>
-            <Button
-                variant="contained"
-                color="primary"
-                className="w-full"
-                onClick={() => {
-                    console.log(fileEntity);
-                    EnterpriseApi.sendCertificate(fileEntity);
-                    setStatus("WAITING_ACTIVE");
-                    console.log(status);
-                }}
-            >
-                {status === "INACTIVE" ? "Gửi yêu cầu phê duyệt" : "Chờ phê duyệt"}
-            </Button>
+            {(status !== 'ACTIVE') && (
+                <Button
+                    variant="contained"
+                    color="primary"
+                    className="w-full"
+                    disabled={status === 'WAITING_ACTIVE'}
+                    onClick={() => {
+                        console.log(fileEntity);
+                        EnterpriseApi.sendCertificate(fileEntity);
+                        setStatus("WAITING_ACTIVE");
+                        console.log(status);
+                    }}
+                >
+                    {status === "INACTIVE" ? "Gửi yêu cầu phê duyệt" : "Chờ phê duyệt"}
+                </Button>
+            )
+
+            }
         </div>
     );
 }

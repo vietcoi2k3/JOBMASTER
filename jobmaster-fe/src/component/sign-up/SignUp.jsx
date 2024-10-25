@@ -103,8 +103,9 @@ const SignUp = () => {
 
       setLoading(true)
      AuthApi.registerEnterprise(formData).then(()=>{
-      let email = formData.email
-      navigate('/verify-email', { state: { email } });
+      let email = formData.email;
+      let password = formData.password;
+      navigate('/verify-email', { state: { email, password } });
      })
      .catch((error)=>{
         if(error.response.data==="Tài khoản đã tồn tại"){

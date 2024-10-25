@@ -146,8 +146,12 @@ const EnterpriseApi = {
     updateStatusCampaign(id){
         const url = "/enterprise/update-status-campaign"
         return axiosClient.put(url+"/"+id)
-    }
+    },
 
+    getAllPackage(){
+        const url = "/enterprise/get-all-package";
+        return axiosClient.get(url);
+    }
 
 }
 

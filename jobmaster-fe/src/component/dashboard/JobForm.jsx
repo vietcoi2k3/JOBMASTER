@@ -59,7 +59,7 @@ const JobForm = ({ operator }) => {
         requiredSkills: "",
         additionalSkills: "",
         detailAddress: "",
-        status: "WAITTING_APPROVED"
+        status: "AWAITING_APPROVAL"
     };
     const [data, setData] = useState(initialData);
 
@@ -739,7 +739,7 @@ const JobForm = ({ operator }) => {
                                 </Grid>
                                 <Grid item>
                                     <Button
-                                        disabled={(data.status === 'APPROVED' || data.status === 'WAITTING_APPROVED')}
+                                        disabled={(data.status === 'APPROVED' || data.status === 'AWAITING_APPROVAL')}
                                         variant="contained"
                                         sx={{ flex: 1, backgroundColor: '#E10E0E', color: 'white', '&:hover': { backgroundColor: '#C00C0C' } }}
                                         onClick={() => {

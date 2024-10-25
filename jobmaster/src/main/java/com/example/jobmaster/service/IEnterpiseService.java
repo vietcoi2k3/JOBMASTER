@@ -51,6 +51,8 @@ public interface IEnterpiseService {
 
     List<PackageEntity> getListPackageByCampaign(String id);
 
+    List<PackageEntity> getAllPackage();
+
     void updateStatusCampaign(String id);
     void updateCampaign(String id,CampaignDTO campaignDTO);
 
