@@ -67,7 +67,7 @@ const ApplyJobPopup = ({ open, onClose,postId }) => {
     return (
         <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
             <DialogTitle>
-                Ứng tuyển <strong>Nhân Viên Livestream Cho Joona Baby</strong>
+                {/*Ứng tuyển <strong>Nhân Viên Livestream Cho Joona Baby</strong>*/}
                 <IconButton
                     aria-label="close"
                     onClick={onClose}
@@ -85,29 +85,29 @@ const ApplyJobPopup = ({ open, onClose,postId }) => {
                     value={selectedCV}
                     onChange={(e) => setSelectedCV(e.target.value)}
                 >
-                    <FormControlLabel
-                        value="cv1"
-                        control={<Radio color="primary" />}
-                        label={
-                            <Box display="flex" alignItems="center">
-                                <Avatar
-                                    src="/path-to-cv-icon.png"
-                                    sx={{ width: 24, height: 24, mr: 1 }}
-                                />
-                                <Box>
-                                    <Typography>CV ứng tuyển gần nhất: Tester-Intern-PhamThiPhuong.pdf</Typography>
-                                    <Typography variant="body2" color="textSecondary">
-                                        Xem
-                                    </Typography>
-                                </Box>
-                            </Box>
-                        }
-                    />
-                    <FormControlLabel
-                        value="cv2"
-                        control={<Radio color="primary" />}
-                        label="Chọn CV khác trong thư viện CV của tôi"
-                    />
+                    {/*<FormControlLabel*/}
+                    {/*    value="cv1"*/}
+                    {/*    control={<Radio color="primary" />}*/}
+                    {/*    label={*/}
+                    {/*        <Box display="flex" alignItems="center">*/}
+                    {/*            <Avatar*/}
+                    {/*                src="/path-to-cv-icon.png"*/}
+                    {/*                sx={{ width: 24, height: 24, mr: 1 }}*/}
+                    {/*            />*/}
+                    {/*            <Box>*/}
+                    {/*                <Typography>CV ứng tuyển gần nhất: Tester-Intern-PhamThiPhuong.pdf</Typography>*/}
+                    {/*                <Typography variant="body2" color="textSecondary">*/}
+                    {/*                    Xem*/}
+                    {/*                </Typography>*/}
+                    {/*            </Box>*/}
+                    {/*        </Box>*/}
+                    {/*    }*/}
+                    {/*/>*/}
+                    {/*<FormControlLabel*/}
+                    {/*    value="cv2"*/}
+                    {/*    control={<Radio color="primary" />}*/}
+                    {/*    label="Chọn CV khác trong thư viện CV của tôi"*/}
+                    {/*/>*/}
                 </RadioGroup>
 
                 {/* Upload CV */}
@@ -137,9 +137,9 @@ const ApplyJobPopup = ({ open, onClose,postId }) => {
 
                 {/* Email và số điện thoại */}
                 <Box mt={2}>
-                    <Typography variant="h6" color="primary" gutterBottom>
-                        Họ và tên: Phạm Thị Phượng
-                    </Typography>
+                    {/*<Typography variant="h6" color="primary" gutterBottom>*/}
+                    {/*    Họ và tên: Phạm Thị Phượng*/}
+                    {/*</Typography>*/}
                     <TextField
                         label="Email"
                         fullWidth

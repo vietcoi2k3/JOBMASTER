@@ -108,7 +108,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     @Transactional
-    public TokenDTO registerEnterprise(RegisterRequest registerRequest) throws MessagingException {
+    public TokenDTO registerEnterprise(RegisterRequest registerRequest,HttpServletRequest httpServletRequest) throws MessagingException {
         if (userRepository.existsByUsername(registerRequest.getEmail())) {
             throw new RuntimeException("Tài khoản đã tồn tại");
         }
@@ -175,7 +175,7 @@ public class UserServiceImpl implements IUserService {
         user.setEnterpriseId(enterpriseEntity.getId());
         user = userRepository.save(user);
 
-        this.sendEmail(user.getUsername());
+        this.sendEmail(user.getUsername(),httpServletRequest);
 
         return TokenDTO.builder()
                 .userId(user.getId())
@@ -184,12 +184,14 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public String sendEmail(String email) throws MessagingException {
+    public String sendEmail(String email,HttpServletRequest httpServletRequest) throws MessagingException {
+        baseUrl = httpServletRequest.getHeader("Origin");
         UserEntity user = userRepository.findByUsername(email);
         VerifyTokenEntity token = new VerifyTokenEntity(user);
+        tokenRepository.save(token);
         // Gửi email xác thực
         String recipientName = user.getFullName();
-        String confirmationLink = baseUrl + "verify?token=" + token.getToken();
+        String confirmationLink = baseUrl + "/verify?token=" + token.getToken();
         String emailContent = buildEmailContent(recipientName, confirmationLink);
 
         this.sendEmail(user.getUsername(), "Xác thực email", emailContent);

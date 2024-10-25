@@ -16,17 +16,28 @@ import {
 import sliderimg from '../../assets/sliderimg.png'
 import {useParams} from "react-router-dom";
 import authApi from "../../api/AuthApi";
+import ApplyJobPopup from "../ListJob/ApplyJobPopup";
 
 const CompanyProfile = () => {
     const { id } = useParams();
     const [company,setCompany] = useState([])
-
+    const [listJob,setListJob] = useState([])
+    const [open, setOpen] = useState(false);
+    const [jobSelect ,setJobSelect] = useState(null)
     useEffect(() => {
         authApi.getDetailCompany(id).then((e)=>{
             setCompany(e)
         })
+        authApi.getPostByCompany(id).then((e)=>{
+            setListJob(e)
+        })
 
     }, [id]);
+
+     const handleSelect =(job)=>{
+         setJobSelect(job)
+         setOpen(true)
+     }
     return (
         <Box sx={{ maxWidth: 1200, margin: 'auto', padding: 2 }}>
             {/* Header */}
@@ -56,9 +67,9 @@ const CompanyProfile = () => {
                             />
                         </Grid>
                         <Grid item xs>
-                            <Typography variant="h5">{company.companyName}</Typography>
-                            <Button variant="contained" color="primary" sx={{ mt: 1 }}>
-                                Theo dõi công ty
+                            {/*<Typography variant="h5"></Typography>*/}
+                            <Button variant="contained" color="primary" sx={{ mt: 3,fontSize:20 }}>
+                                {company.companyName}
                             </Button>
                         </Grid>
                     </Grid>
@@ -94,20 +105,21 @@ const CompanyProfile = () => {
 
                 {/* Job Listings - 2 parts */}
                 <Grid item xs={12} md={4}>
+                    <ApplyJobPopup open={open} onClose={() => setOpen(false) } postId ={jobSelect?.id}/>
                     <Card sx={{ height: '100%' }}>
                         <CardContent>
                             <Typography variant="h6" gutterBottom>Việc làm đang tuyển dụng</Typography>
                             <List>
-                                {['IT Business Analyst', 'Tester', 'Developer Java'].map((job, index) => (
+                                {listJob.map((job, index) => (
                                     <React.Fragment key={job}>
                                         <ListItem>
                                             <ListItemText
-                                                primary={job}
-                                                secondary="Viettel - Hồ Chí Minh"
+                                                primary={job.title}
+                                                secondary={job.salaryRange}
                                             />
                                         </ListItem>
                                         <ListItem>
-                                            <Button variant="outlined" color="primary" fullWidth>Ứng tuyển</Button>
+                                            <Button variant="outlined" color="primary" fullWidth onClick={() => handleSelect(job)}> Ứng tuyển</Button>
                                         </ListItem>
                                         {index < 2 && <Divider />}
                                     </React.Fragment>

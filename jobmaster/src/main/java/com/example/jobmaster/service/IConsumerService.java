@@ -4,6 +4,7 @@ import com.example.jobmaster.dto.Response.CompanyResponse;
 import com.example.jobmaster.dto.Response.PageResponse;
 import com.example.jobmaster.dto.Response.PostResponse;
 import com.example.jobmaster.entity.CriteriaEntity;
+import com.example.jobmaster.entity.PostEntity;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.parameters.P;
 
@@ -21,4 +22,6 @@ public interface IConsumerService {
     CriteriaEntity getCriteria(HttpServletRequest httpServletRequest);
 
     List<PostResponse> getListByMoney();
+
+    List<PostEntity> getPostByCompany(String id);
 }

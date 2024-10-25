@@ -3,6 +3,7 @@ import Slider from 'react-slick';
 import {Box, Card, CardContent, Typography, Grid, Chip} from '@mui/material';
 import {Work, LocationOn, AttachMoney} from '@mui/icons-material';
 import Consumer from "../../api/Consumer";
+import {useNavigate} from "react-router-dom";
 
 const jobs = [
     { title: 'IT Business Analyst', company: 'BSS Group', location: 'Hà Nội, Hồ Chí Minh', salary: '3-4 triệu', isHot: true },
@@ -20,6 +21,11 @@ const JobSlider = () => {
         // Thay thế AuthApi.getListJobs() bằng API thực tế của bạn
         Consumer.getListCriteria().then((data) => setJobs(data));
     }, []);
+    const navigate = useNavigate()
+
+    const handleJobSelect = (job) => {
+        navigate(`/job-detail`, { state: { job } }); // Điều hướng kèm dữ liệu job
+    };
 
     const settings = {
         dots: true,
@@ -49,7 +55,8 @@ const JobSlider = () => {
         <Box sx={{ mt: 2, px: 2 }}>
             <Slider {...settings}>
                 {jobs.map((job, index) => (
-                    <Card key={index} sx={{ mx: 2, borderRadius: '20px', height: '100%' }}>
+                    <Card key={index} sx={{ mx: 2, borderRadius: '20px', height: '100%' ,cursor :'pointer'}}
+                          onClick={() => handleJobSelect(job)}>
                         <CardContent>
                             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                                 <img

@@ -39,45 +39,81 @@ const SearchBar = () => {
             justifyContent="space-between"
             alignItems="center"
             p={2}
-            bgcolor="#f0f2f5"
-
+            sx={{
+                background: 'linear-gradient(90deg, #3f51b5, #1a237e)', // Gradient từ xanh nhạt sang xanh đậm
+            }}
+            paddingX="20%"
+            boxShadow="0px 4px 12px rgba(0, 0, 0, 0.1)" // Hiệu ứng đổ bóng
         >
-            {/* Search Input */}
+            {/* Input tìm kiếm */}
             <TextField
                 variant="outlined"
                 placeholder="Nhập từ khóa theo tên việc làm, tên công ty"
                 size="small"
                 fullWidth
-                onChange={handleSearchChange} // gọi hàm khi giá trị thay đổi
+                onChange={handleSearchChange}
                 InputProps={{
                     startAdornment: (
-                        <IconButton>
-                            <SearchIcon />
+                        <IconButton edge="start">
+                            <SearchIcon sx={{ color: '#3f51b5' }} />
                         </IconButton>
                     ),
                 }}
-                sx={{ flexGrow: 1, marginRight: 2 ,backgroundColor:"#ffffff"}}
+                sx={{
+                    flexGrow: 1,
+                    marginRight: 2,
+                    backgroundColor: '#ffffff',
+                    borderRadius: 2,
+                    '& fieldset': {
+                        border: '2px solid #3f51b5', // Border màu xanh đậm
+                    },
+                    '&:hover fieldset': {
+                        borderColor: '#1a237e', // Hover đổi màu border
+                    },
+                }}
             />
 
-            {/* Search Button */}
+            {/* Nút Tìm kiếm */}
             <Button
-                onClick = {()=>handleSearch()}
+                onClick={handleSearch}
                 variant="outlined"
-                sx={{ whiteSpace: 'nowrap', marginRight: 2, color: "#3f51b5", borderColor: "#3f51b5" ,backgroundColor:"#ffffff" }}
+                sx={{
+                    whiteSpace: 'nowrap',
+                    marginRight: 2,
+                    color: '#ffffff', // Màu chữ xanh đậm
+                    borderColor: '#1a237e', // Màu viền xanh đậm
+                    backgroundColor: '#3758F9', // Nền xanh nhạt
+                    padding: '8px 16px', // Thêm padding cho nút
+                    borderRadius: 2,
+                    '&:hover': {
+                        backgroundColor: '#bbdefb', // Nền xanh nhạt hơn khi hover
+                        borderColor: '#0d47a1', // Viền xanh đậm hơn khi hover
+                    },
+                }}
             >
                 Tìm kiếm
             </Button>
 
-            {/* Location Dropdown */}
+            {/* Dropdown Địa điểm */}
             <TextField
                 select
-                label="Chọn địa điểm"
                 size="small"
                 variant="outlined"
-                sx={{ marginRight: 2, minWidth: 150 ,backgroundColor:"#ffffff"}}
+                sx={{
+                    marginRight: 2,
+                    minWidth: 150,
+                    backgroundColor: '#ffffff',
+                    borderRadius: 2,
+                    '& fieldset': {
+                        border: '2px solid #3f51b5',
+                    },
+                    '&:hover fieldset': {
+                        borderColor: '#1a237e',
+                    },
+                }}
                 onChange={setPositionSelect}
                 InputProps={{
-                    startAdornment: <LocationOnIcon sx={{ marginRight: 1 }} />,
+                    startAdornment: <LocationOnIcon sx={{ marginRight: 1, color: '#3f51b5' }} />,
                 }}
             >
                 {locations.map((option) => (
@@ -87,30 +123,26 @@ const SearchBar = () => {
                 ))}
             </TextField>
 
-            {/*<TextField*/}
-            {/*    select*/}
-            {/*    label="Chọn địa điểm"*/}
-            {/*    variant="outlined"*/}
-            {/*    onChange={(e)=>setPositionSelect(e.target.value)}*/}
-            {/*>*/}
-            {/*    {city.map((item) => (*/}
-            {/*        <MenuItem key={item.id} value={item.province_name}>*/}
-            {/*            {item.province_name}*/}
-            {/*        </MenuItem>*/}
-            {/*    ))}*/}
-            {/*</TextField>*/}
-
-            {/* Category Dropdown */}
+            {/* Dropdown Lĩnh vực */}
             <TextField
                 select
                 size="small"
-                label="Chọn lĩnh vực"
                 variant="outlined"
-                sx={{ minWidth: 150,backgroundColor:"#ffffff" }}
-                InputProps={{
-                    startAdornment: <WorkOutlineIcon sx={{ marginRight: 1 }} />,
+                sx={{
+                    minWidth: 150,
+                    backgroundColor: '#ffffff',
+                    borderRadius: 2,
+                    '& fieldset': {
+                        border: '2px solid #3f51b5',
+                    },
+                    '&:hover fieldset': {
+                        borderColor: '#1a237e',
+                    },
                 }}
                 onChange={setFieldSelect}
+                InputProps={{
+                    startAdornment: <WorkOutlineIcon sx={{ marginRight: 1, color: '#3f51b5' }} />,
+                }}
             >
                 {categories.map((option) => (
                     <MenuItem key={option.id} value={option.name}>

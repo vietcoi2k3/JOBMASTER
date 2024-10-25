@@ -99,6 +99,11 @@ const AuthApi = {
     getPostByMoney:()=>{
         const url = "auth/get-post-by-money"
         return axiosClient.get(url)
+    },
+
+    getPostByCompany:(id)=>{
+        const url = "auth/get-post-by-company/"
+        return axiosClient.get(url+id)
     }
 
 }

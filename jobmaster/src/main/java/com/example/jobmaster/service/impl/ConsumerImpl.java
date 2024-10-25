@@ -126,6 +126,9 @@ public class ConsumerImpl implements IConsumerService {
      ) {
         UserEntity user = userRepository.findByUsername(jwtUntil.getUsernameFromRequest(httpServletRequest));
         UserInfoEntity userInfoEntity = userInfoRepository.findById(user.getUserInfoId()).get();
+        if (userInfoEntity.getCriteriaId()==null){
+            return new ArrayList<>();
+        }
         CriteriaEntity criteriaEntity = criteriaRepository.findById(userInfoEntity.getCriteriaId()).get();
 
         String field = criteriaEntity.getField();
@@ -138,7 +141,13 @@ public class ConsumerImpl implements IConsumerService {
 
     public List<PostResponse> getListPostCriteria(String field, String position, String experience,
                                                 String typeWorking, String city) {
-        StringBuilder queryBuilder = new StringBuilder("SELECT p FROM PostEntity p WHERE ");
+        StringBuilder queryBuilder = new StringBuilder(
+                "SELECT p FROM PostEntity p " +
+                        "LEFT JOIN CampaignEntity ce ON p.campaignId = ce.id " +
+                        "LEFT JOIN PackageCampaign pc ON ce.id = pc.campaignId " +
+                        "WHERE ce.isActive = TRUE AND p.status = 'APPROVED' AND "
+        );
+//        StringBuilder queryBuilder = new StringBuilder("SELECT p FROM PostEntity p WHERE ");
         List<String> conditions = new ArrayList<>();
 
         // Sinh các điều kiện động
@@ -174,6 +183,11 @@ public class ConsumerImpl implements IConsumerService {
             postResponse.setId(x.getId());
             postResponse.setQuantityCv(x.getQuantity());
             postResponse.setTitle(x.getTitle());
+            postResponse.setTimeWorking(x.getTimeWorking());
+            postResponse.setGender(x.getGender());
+            postResponse.setLevel(x.getLevel());
+            postResponse.setExperience(x.getExperience());
+            postResponse.setTypeWorking(x.getTypeWorking());
             postResponse.setCity(x.getCity());
             postResponse.setNameCam(x.getTitle());
             postResponse.setDeadLine((int) ChronoUnit.DAYS.between(x.getDeadline(), LocalDateTime.now())*-1);
@@ -243,6 +257,11 @@ public class ConsumerImpl implements IConsumerService {
             postResponse.setTitle(x.getTitle());
             postResponse.setCity(x.getCity());
             postResponse.setNameCam(x.getTitle());
+            postResponse.setTimeWorking(x.getTimeWorking());
+            postResponse.setGender(x.getGender());
+            postResponse.setLevel(x.getLevel());
+            postResponse.setExperience(x.getExperience());
+            postResponse.setTypeWorking(x.getTypeWorking());
             postResponse.setDeadLine((int) ChronoUnit.DAYS.between(x.getDeadline(), LocalDateTime.now())*-1);
             postResponse.setSalaryRange(x.getSalaryRange());
             postResponse.setDescription(x.getDescription());
@@ -256,5 +275,10 @@ public class ConsumerImpl implements IConsumerService {
             listResult.add(postResponse);
         }
         return listResult;
+    }
+
+    @Override
+    public List<PostEntity> getPostByCompany(String id) {
+        return postRepository.getPostByCompany(id);
     }
 }
