@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import {
     Box,
     Button,
@@ -8,41 +8,22 @@ import {
     Grid,
     Modal,
     TextField,
-    Typography,
+    Typography, Pagination
 } from "@mui/material";
 import AuthApi from "../../api/AuthApi";
 import EnterpriseApi from "../../api/EnterpriseApi";
 
-// Dữ liệu mẫu cho giao dịch
-const transactions = [
-    {
-        amount: "+5,000,000 đ",
-        balanceAfter: "7,500,000 đ",
-        description: "Nạp tiền vào ví JobMaster",
-        timestamp: "18:43 12/10/2024",
-        color: "green",
-    },
-    {
-        amount: "+2,500,000 đ",
-        balanceAfter: "2,500,000 đ",
-        description: "Nạp tiền vào ví JobMaster",
-        timestamp: "18:43 12/10/2024",
-        color: "green",
-    },
-    {
-        amount: "-2,500,000 đ",
-        balanceAfter: "0 đ",
-        description: "Sử dụng dịch vụ Master Max",
-        timestamp: "18:43 12/10/2024",
-        color: "red",
-    },
-];
+
 
 export default function TransactionHistory() {
     const [open, setOpen] = useState(false); // Trạng thái mở/đóng popup
     const [amount, setAmount] = useState(""); // Lưu số tiền nhập vào
-    const [data,setData] = useState([])
-    const [transaction,setTransaction] = useState([])
+    const [data, setData] = useState({
+        totalMoney:0,
+        historyMoneyList:[]
+    })
+    const [pageNumber, setPageNumber] = useState(1);
+    const [totalPage, setTotalPage] = useState(0);
     // Xử lý đóng/mở popup
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -65,11 +46,11 @@ export default function TransactionHistory() {
     };
     useEffect(() => {
 
-        EnterpriseApi.getHistory().then((e)=>{
+        EnterpriseApi.getHistory(pageNumber).then((e) => {
             setData(e)
-            setTransaction(e.historyMoneyList)
+            setTotalPage(e.totalPages)
         })
-    }, []);
+    }, [pageNumber]);
 
     // Xử lý nhập số tiền
     const handleChange = (event) => {
@@ -82,7 +63,7 @@ export default function TransactionHistory() {
             sx={{
                 minHeight: "100vh",
                 padding: "20px",
-                minWidth:"70%",
+                minWidth: "70%",
                 margin: "auto",
             }}
         >
@@ -100,7 +81,7 @@ export default function TransactionHistory() {
             >
                 <Typography>Tài khoản của bạn</Typography>
                 <Typography variant="h4" sx={{ fontWeight: "bold" }}>
-                    {formatVND(data.totalMoney)} {/* Chuyển đổi và hiển thị tiền tệ VND */}
+                    {data.totalMoney.toLocaleString('vi-VN')+"VND"} {/* Chuyển đổi và hiển thị tiền tệ VND */}
                 </Typography>
                 <Button
                     variant="contained"
@@ -115,8 +96,8 @@ export default function TransactionHistory() {
                 Biến động số dư
             </Typography>
 
-            <Box>
-                {transaction.map((transaction, index) => (
+            <Box sx={{ maxHeight: "300px", overflowY: "auto" }}>
+                {data.historyMoneyList.map((transaction, index) => (
                     <Card
                         key={index}
                         sx={{
@@ -127,32 +108,59 @@ export default function TransactionHistory() {
                     >
                         <CardContent>
                             <Grid container spacing={2} alignItems="center">
-                                <Grid item xs={8}>
-                                    <Typography
-                                        sx={{
-                                            color: transaction.addMoney ? "green" : "red", // Xanh nếu isAdd là true, đỏ nếu false
-                                            fontWeight: "bold",
-                                        }}
-                                    >
-                                        {transaction.addMoney ? "+" : "-"}{formatVND(transaction.amount)}
+                                <Grid item xs={12}>
+                                    <Grid container>
+                                        <Grid item xs={6}>
+                                            <Typography
+                                            variant="h5"
+                                                sx={{
+                                                    color: transaction.isAddMoney ? "green" : "red", // Xanh nếu isAdd là true, đỏ nếu false
+                                                    fontWeight: "bold",
+                                                    
+                                                }}
+                                            >
+                                                {transaction.isAddMoney ? "+" : "-"}{transaction.amount.toLocaleString('vi-VN')+"VND"}
+                                            </Typography>
+                                        </Grid>
+                                        <Grid item xs={6} textAlign="right">
+                                            <Typography variant="body2" color="textSecondary">
+                                                {transaction.timestamp}
+                                            </Typography>
+                                        </Grid>
+                                    </Grid>
+                                    <Typography variant="h6" color="textSecondary">
+                                        Số dư sau giao dịch: {transaction.balanceAfter.toLocaleString('vi-VN')+"VND"}
                                     </Typography>
-                                    <Typography variant="body2" color="textSecondary">
-                                        Số dư sau giao dịch: {formatVND(transaction.balanceAfter)}
-                                    </Typography>
-                                    <Typography variant="body2" color="textSecondary">
+                                    <Typography variant="h6" color="textSecondary">
                                         {transaction.descriptions}
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={4} textAlign="right">
                                     <Typography variant="body2" color="textSecondary">
-
+                                        {/* Các thông tin bổ sung nếu có */}
                                     </Typography>
                                 </Grid>
                             </Grid>
                         </CardContent>
+
+
                     </Card>
                 ))}
             </Box>
+            <Pagination
+                onChange={(event, page) => setPageNumber(page)}
+                page={pageNumber}
+                count={totalPage}
+                color="primary"
+                sx={{
+                    width: '100%',
+                    backgroundColor: '#ffff',
+                    marginTop: 1,
+                    '& .MuiPagination-ul': {
+                        justifyContent: 'center'
+                    }
+                }}
+            />
 
             {/* Modal Popup */}
             <Modal open={open} onClose={handleClose}>

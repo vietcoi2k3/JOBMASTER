@@ -20,6 +20,7 @@ import ViewCV from "./component/dashboard/ViewCV";
 import CVLayout from "./component/CVLayout/CVLayout";
 import History from "./component/user-profile/History";
 import PaymentSuccess from "./component/user-profile/PaymentSuccess";
+import News from './component/dashboard/News';
 
 function App() {
 
@@ -27,6 +28,7 @@ function App() {
     <Routes>
       <Route path="/dashboard" element={<MiniDrawer />}>
         <Route index element={<SideBarProfile />} />
+        <Route path="news" element={<News />} />
         <Route path="profile" element={<SideBarProfile />}>
           <Route path='change-password' element={<ChangePassword />} />
           <Route path="certificate" element={<CertificateBusiness />} />

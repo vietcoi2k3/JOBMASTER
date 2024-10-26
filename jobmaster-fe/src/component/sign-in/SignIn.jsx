@@ -26,7 +26,7 @@ const LoginComponent = () => {
   useEffect(() => {
     const isLoggedIn = localStorage.getItem('access_token');
     if (isLoggedIn) {
-      navigate('/dashboard');
+      navigate('/dashboard/news');
     }
   }, [navigate]);
   const handleCloseNotification = () => {
@@ -64,7 +64,7 @@ const LoginComponent = () => {
       setLoading(true)
       AuthApi.login(formData).then((e) => {
         localStorage.setItem("access_token", e.token)
-        navigate("/dashboard");
+        navigate("/dashboard/news");
       })
         .catch((e) => {
           if (e.response.data === "Tài khoản không tồn tại") {

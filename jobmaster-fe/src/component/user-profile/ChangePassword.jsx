@@ -4,6 +4,8 @@ import PersonIcon from "@mui/icons-material/Person";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import BusinessIcon from "@mui/icons-material/Business";
 import Notification from "../notification/Notification";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import {
     TextField,
     Button,
@@ -12,7 +14,7 @@ import {
     Checkbox,
     FormControlLabel,
     Grid,
-    InputAdornment
+    InputAdornment,IconButton
 } from "@mui/material";
 import userApi from "../../api/UserApi";
 
@@ -26,6 +28,9 @@ const ChangePassword = () => {
         message: '',
         type: 'success'
     });
+    const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const handleSubmit = (e) => {
         e.preventDefault();
         if (newPassword !== confirmPassword) {
@@ -70,15 +75,7 @@ const ChangePassword = () => {
             <Typography variant="h5" gutterBottom sx={{ marginBottom: 2, textAlign: 'center' }}>
                 Thay đổi mật khẩu
             </Typography>
-            <Box
-                sx={{
-                    width: '100%', // Chiếm hết chiều rộng
-                    margin: '20px auto', // Margin để căn giữa box
-                    padding: '20px',
-                    border: '1px solid #ccc',
-                    borderRadius: '8px'
-                }}
-            >
+            <Box sx={{ width: '100%', margin: '20px auto', padding: '20px', border: '1px solid #ccc', borderRadius: '8px' }}>
                 <form onSubmit={handleSubmit}>
                     <Grid container spacing={2} sx={{ marginBottom: 2 }}>
                         <Grid item xs={12}>
@@ -89,11 +86,23 @@ const ChangePassword = () => {
                                 <Grid item xs={7}>
                                     <TextField
                                         fullWidth
-                                        type="password"
+                                        type={showCurrentPassword ? "text" : "password"}
                                         variant="outlined"
                                         value={currentPassword}
                                         onChange={(e) => setCurrentPassword(e.target.value)}
                                         placeholder="Nhập mật khẩu hiện tại"
+                                        InputProps={{
+                                            endAdornment: (
+                                                <InputAdornment position="end">
+                                                    <IconButton
+                                                        onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                                                        edge="end"
+                                                    >
+                                                        {showCurrentPassword ? <VisibilityOff /> : <Visibility />}
+                                                    </IconButton>
+                                                </InputAdornment>
+                                            )
+                                        }}
                                     />
                                 </Grid>
                             </Grid>
@@ -107,11 +116,23 @@ const ChangePassword = () => {
                                 <Grid item xs={7}>
                                     <TextField
                                         fullWidth
-                                        type="password"
+                                        type={showNewPassword ? "text" : "password"}
                                         variant="outlined"
                                         value={newPassword}
                                         onChange={(e) => setNewPassword(e.target.value)}
                                         placeholder="Nhập mật khẩu mới"
+                                        InputProps={{
+                                            endAdornment: (
+                                                <InputAdornment position="end">
+                                                    <IconButton
+                                                        onClick={() => setShowNewPassword(!showNewPassword)}
+                                                        edge="end"
+                                                    >
+                                                        {showNewPassword ? <VisibilityOff /> : <Visibility />}
+                                                    </IconButton>
+                                                </InputAdornment>
+                                            )
+                                        }}
                                     />
                                 </Grid>
                             </Grid>
@@ -125,39 +146,31 @@ const ChangePassword = () => {
                                 <Grid item xs={7}>
                                     <TextField
                                         fullWidth
-                                        type="password"
+                                        type={showConfirmPassword ? "text" : "password"}
                                         variant="outlined"
                                         value={confirmPassword}
                                         onChange={(e) => setConfirmPassword(e.target.value)}
                                         placeholder="Nhập lại mật khẩu"
+                                        InputProps={{
+                                            endAdornment: (
+                                                <InputAdornment position="end">
+                                                    <IconButton
+                                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                                        edge="end"
+                                                    >
+                                                        {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                                                    </IconButton>
+                                                </InputAdornment>
+                                            )
+                                        }}
                                     />
                                 </Grid>
                             </Grid>
                         </Grid>
+
                         <Grid item xs={12}>
                             <Grid container spacing={2} alignItems="center">
-                                <Grid item xs={5}>
-                                    <Typography></Typography>
-                                </Grid>
-                                {/* <Grid item xs={7}>
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                checked={logoutAll}
-                                                onChange={(e) => setLogoutAll(e.target.checked)}
-                                                color="primary"
-                                            />
-                                        }
-                                        label="Thoát tất cả các phiên đăng nhập hiện tại"
-                                    />
-                                </Grid> */}
-                            </Grid>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Grid container spacing={2} alignItems="center">
-                                <Grid item xs={5}>
-                                    <Typography></Typography>
-                                </Grid>
+                                <Grid item xs={5} />
                                 <Grid item xs={7}>
                                     <Box sx={{ display: 'flex', justifyContent: 'flex-start', marginTop: 1 }}>
                                         <Button onClick={cancelChange} variant="outlined" color="secondary" sx={{ marginRight: 1 }}>

@@ -27,7 +27,7 @@ const Job = () => {
     const [openServicePopup, setOpenServicePopup] = useState(false);
     const [mgsConfirm, setMgsConfirm] = useState('');
     const [services, setServices] = useState([]);
-    const [campaignDown,setCampaignDown] = useState();
+    const [campaignDownId,setCampaignDownId] = useState();
     const [selectedServices, setSelectedServices] = useState([]);
     const [openPaymentPopup, setOpenPaymentPopup] = useState(false); // Popup xác nhận thanh toán
     const [totalAmount, setTotalAmount] = useState(0); // Tổng số tiền
@@ -112,7 +112,8 @@ const Job = () => {
         }
     };
     const handleToggle = () => {
-        EnterpriseApi.updateStatusCampaign(campaignDown.id)
+        console.log(campaignDownId+"----------------")
+        EnterpriseApi.updateStatusCampaign(campaignDownId)
             .then((res) => {
                 getList();
                 setNotification({
@@ -134,7 +135,7 @@ const Job = () => {
     };
     const handleConfirm = () => {
         handleToggle();
-        
+        setOpenConfirm(false);
     };
     return (
 
@@ -196,16 +197,15 @@ const Job = () => {
                                         </IconButton>
                                         <Switch
                                             checked={campaign.isActive}
-                                            onChange={(event) => {
-                                                const isChecked = event.target.checked;
-                                                setCampaignDown(campaign);
+                                            onClick={(event) => {
+                                                setCampaignDownId(campaign.id);
                                                 // Chỉ bật popup khi chuyển từ mở (true) sang tắt (false)
-                                                if (!isChecked && campaign.isActive) {
+                                                if (campaign.isActive) {
                                                     setMgsConfirm('Xác nhận tắt chiến dịch, tin đăng của chiến dịch cũng sẽ bị tắt?');
                                                     handleClickOpenConfirm();
                                                 } else {
-                                                    setCampaignDown(campaign);
-                                                    handleToggle();
+                                                    setMgsConfirm('Kích hoạt chiến dịch');
+                                                    handleClickOpenConfirm();
                                                 }
                                             }}
                                         />

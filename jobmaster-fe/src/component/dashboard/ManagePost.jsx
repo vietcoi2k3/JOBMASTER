@@ -22,7 +22,8 @@ import EnterpriseApi from "../../api/EnterpriseApi";
 import EuroIcon from '@mui/icons-material/Euro';
 import SearchIcon from '@mui/icons-material/Search';
 import Notification from "../notification/Notification";
-import JobPostingDialog from "../share/JobPostingDialog";
+import ConfirmDialog from '../share/ConfirmDialog';
+import NotificationDialog from "../share/NotificationDialog";
 
 
 export default function ManagePost() {
@@ -33,6 +34,10 @@ export default function ManagePost() {
     const [loading, setLoading] = useState(false);
     const [search, setSearch] = useState('');
     const [status, setStatus] = useState("ALL");
+    const [openConfirm, setOpenConfirm] = useState(false);
+    const [postId,setPostId] = useState();
+    const [openNoti, setOpenNoti] = useState(false);
+const [mgsConfirm, setMgsConfirm] = useState('');
     const [notification, setNotification] = React.useState({
         open: false,
         message: '',
@@ -59,11 +64,52 @@ export default function ManagePost() {
             .catch()
             .finally(() => setLoading(false))
     }
+    const handleClickOpenConfirm = () => {
+        setOpenConfirm(true);
+    };
+    const handleConfirm = () => {
+        handleResetStatus();
+    };
+    const handleResetStatus = () => {
+        EnterpriseApi.resetPostStatus(postId)
+            .then((res) => {
+                setNotification({
+                    open: true,
+                    message: "Hạ tin đăng thành công",
+                    type: "success"
+                })
+                getList();
+            })
+            .catch((error) => {
+                setNotification({
+                    open: true,
+                    message: error,
+                    type: "error"
+                })
+            })
+    }
+    const handleCloseNoti = () => {
+        setOpenNoti(false);
+      };
+    const checkStatus = () => {
+        EnterpriseApi.getStatus()
+          .then((res) => {
+            if (res !== 'ACTIVE') {
+              setOpenNoti(true);
+            }else{
+               navigate("/dashboard/job-form/create");
+            }
+          })
+          .catch((error) => {
+            console.error("Error fetching status:", error); // bắt lỗi khi fetch status
+        });
+          
+      }
     return (
         <div className="p-6 w-full">
             <div className="flex justify-between items-center mb-4">
                 <h1 className="text-xl font-semibold">Tin đăng tuyển</h1>
-                <button onClick={() => navigate("/dashboard/job-form/create")} className="bg-primary text-accent py-2 px-4 rounded border-sidebar">+ Thêm tin tuyển dụng</button>
+                <button onClick={checkStatus} className="bg-primary text-accent py-2 px-4 rounded border-sidebar">+ Thêm tin tuyển dụng</button>
             </div>
             <Notification
                 open={notification.open}
@@ -160,7 +206,12 @@ export default function ManagePost() {
                                                 <Edit />
                                             </IconButton>
                                         </Tooltip>
-                                        <Tooltip title="Hạ tin">
+                                        <Tooltip title="Hạ tin"
+                                        onClick={() => {
+                                            setMgsConfirm("Bạn có muốn hạ tin đăng không?");
+                                            setPostId(post.id);
+                                            handleClickOpenConfirm();
+                                        }}>
                                         <Switch 
                                         disabled ={post.status === 'NOT_APPROVED'}
                                          checked={post.status === 'AWAITING_APPROVAL' || post.status === 'APPROVED'} />
@@ -188,6 +239,18 @@ export default function ManagePost() {
                     }
                 }}
             />
+            <ConfirmDialog
+                open={openConfirm}
+                onClose={setOpenConfirm}
+                title="Xác nhận"
+                message={mgsConfirm}
+                onConfirm={handleConfirm}
+            />
+            <NotificationDialog
+          open={openNoti}
+          onClose={handleCloseNoti}
+          message="Doanh nghiệp chưa kích hoạt"
+        />
         </div>
     );
 }    

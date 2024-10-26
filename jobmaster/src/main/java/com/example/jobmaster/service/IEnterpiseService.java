@@ -1,8 +1,6 @@
 package com.example.jobmaster.service;
 
-import com.example.jobmaster.dto.CampaignDTO;
-import com.example.jobmaster.dto.EnterpriseDTO;
-import com.example.jobmaster.dto.PostDTO;
+import com.example.jobmaster.dto.*;
 import com.example.jobmaster.dto.Request.ActivatePackageRequest;
 import com.example.jobmaster.dto.Response.*;
 import com.example.jobmaster.entity.*;
@@ -48,7 +46,7 @@ public interface IEnterpiseService {
 
     String activatePackage(ActivatePackageRequest activatePackageRequest, HttpServletRequest httpServletRequest);
 
-    HistoryResponse getHistoryMoney(HttpServletRequest httpServletRequest);
+    HistoryResponse getHistoryMoney(int pageSize,int pageNumber,HttpServletRequest httpServletRequest);
 
     List<PackageEntity> getListPackageByCampaign(String id);
 
@@ -58,4 +56,7 @@ public interface IEnterpiseService {
     void updateCampaign(String id,CampaignDTO campaignDTO);
 
     List<CampaignResponse> getAllCampaign(HttpServletRequest httpServletRequest);
+
+    NewsInfoDTO getNewsInfo(String token);
+    List<NewsChartDTO> getNewsChart(String token);
 }
