@@ -1,8 +1,6 @@
 package com.example.jobmaster.service.impl;
 
-import com.example.jobmaster.dto.CampaignDTO;
-import com.example.jobmaster.dto.EnterpriseDTO;
-import com.example.jobmaster.dto.PostDTO;
+import com.example.jobmaster.dto.*;
 import com.example.jobmaster.dto.Request.ActivatePackageRequest;
 import com.example.jobmaster.dto.Response.*;
 import com.example.jobmaster.entity.*;
@@ -17,11 +15,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class EnterpriseServiceImpl implements IEnterpiseService {
@@ -244,7 +244,7 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
     @Override
     public PageResponse getListCv(int pageNumber, int pageSize, String postId, String status) {
         pageNumber--;
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("modified_at").descending());
         StatusCVEnum enumStatus = convertToEnum(status);
         Page<CVEntity> cvEntityPage = cvRepository.getListCv(postId, enumStatus, pageable);
 
@@ -318,12 +318,14 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
     }
 
     @Override
-    public HistoryResponse getHistoryMoney(HttpServletRequest httpServletRequest) {
+    public HistoryResponse getHistoryMoney(int pageSize,int pageNumber,HttpServletRequest httpServletRequest) {
         UserEntity user = userRepository.findByUsername(jwtUntil.getUsernameFromRequest(httpServletRequest));
-        List<HistoryMoney> historyMoneyList = historyPaymentRepository.findAllByUserIdOrderByCreatedAtDesc(user.getId());
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<HistoryMoney> historyMoneyPage = historyPaymentRepository.findAllByUserIdOrderByCreatedAtDesc(user.getId(),pageable);
         return HistoryResponse.builder()
-                .historyMoneyList(historyMoneyList)
+                .historyMoneyList(historyMoneyPage.getContent())
                 .totalMoney(user.getBalance())
+                .totalPages(historyMoneyPage.getTotalPages())
                 .build();
     }
 
@@ -367,4 +369,66 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
         System.out.println(user.getEnterpriseId());
         return campaignRepository.getListCampaignForPost(user.getEnterpriseId());
     }
+
+    @Override
+    public NewsInfoDTO getNewsInfo(String token) {
+        String username = jwtUntil.getUsernameFromToken(token.substring(7));
+        String enterpriseId = userRepository.getEnterpriseIdByUsername(username);
+        return NewsInfoDTO.builder()
+                .campaignOpening(campaignRepository.countCampaignOpening(enterpriseId))
+                .postDisplaying(postRepository.countPostDisplaying(enterpriseId))
+                .newCv(cvRepository.countCvOpening(enterpriseId))
+                .workCv(cvRepository.countWorkCv(enterpriseId))
+                .build();
+    }
+
+    @Override
+    public List<NewsChartDTO> getNewsChart(String token) {
+        String username = jwtUntil.getUsernameFromToken(token.substring(7));
+        String enterpriseId = userRepository.getEnterpriseIdByUsername(username);
+        LocalDate twelveMonthsAgo = LocalDate.now().minusMonths(12).withDayOfMonth(1);
+        java.sql.Date sqlDate = java.sql.Date.valueOf(twelveMonthsAgo);
+        List<NewsChart> newsCharts = cvRepository.getNewsChart(enterpriseId,sqlDate);
+        return this.getCompleteNewsChart(newsCharts);
+    }
+
+    private List<NewsChartDTO> getCompleteNewsChart(List<NewsChart> originalData) {
+        // Tạo Map để lưu kết quả theo cặp (năm, tháng) cho dễ kiểm tra
+        Map<String, NewsChart> dataMap = originalData.stream()
+                .collect(Collectors.toMap(dto -> dto.getYear() + "-" + dto.getMonth(), dto -> dto));
+
+        List<NewsChartDTO> completeData = new ArrayList<>();
+        Calendar cal = Calendar.getInstance();
+        int currentMonth = cal.get(Calendar.MONTH) + 1;
+        int currentYear = cal.get(Calendar.YEAR);
+        for (int i = 0; i < 12; i++) {
+            int month = currentMonth - i;
+            int year = currentYear;
+            if (month <= 0) {
+                month += 12;
+                year -= 1;
+            }
+            String key = year + "-" + month;
+            NewsChartDTO dto;
+            // Nếu đã có dữ liệu, lấy từ `dataMap`; nếu không, tạo một DTO mới với giá trị mặc định
+            if (dataMap.containsKey(key)) {
+                dto = new NewsChartDTO();
+                dto.setYear(Integer.parseInt(dataMap.get(key).getYear()));
+                dto.setMonth(Integer.parseInt(dataMap.get(key).getMonth()));
+                dto.setTotalCandidate(dataMap.get(key).getTotalCandidate());
+                dto.setOfferedCv(dataMap.get(key).getOfferedCv());
+            } else {
+                dto = new NewsChartDTO();
+                dto.setYear(year);
+                dto.setMonth(month);
+                dto.setTotalCandidate(0);
+                dto.setOfferedCv(0);
+            }
+            completeData.add(dto);
+        }
+        // Sắp xếp dữ liệu theo năm và tháng để đảm bảo thứ tự
+        completeData.sort(Comparator.comparing(NewsChartDTO::getYear).thenComparing(NewsChartDTO::getMonth));
+        return completeData;
+    }
+
 }

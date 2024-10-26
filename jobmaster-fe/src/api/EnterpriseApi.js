@@ -128,8 +128,8 @@ const EnterpriseApi = {
         return axiosClient.put(url, data)
     },
 
-    getHistory() {
-        const url = "/enterprise/get-money-history"
+    getHistory(pageNumber) {
+        const url = "/enterprise/get-money-history?pageNumber="+pageNumber;
         return axiosClient.get(url)
     },
 
@@ -151,7 +151,16 @@ const EnterpriseApi = {
     getAllPackage(){
         const url = "/enterprise/get-all-package";
         return axiosClient.get(url);
+    },
+    getNewsInfo(){
+        const url = "/enterprise/get-news-info";
+        return axiosClient.get(url);
+    },
+    getNewsChart(){
+        const url = "enterprise/get-news-chart";
+        return axiosClient.get(url);
     }
+
 
 }
 

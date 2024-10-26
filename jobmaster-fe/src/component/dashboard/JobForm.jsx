@@ -30,7 +30,7 @@ const JobForm = ({ operator }) => {
     const [openConfirm, setOpenConfirm] = useState(false);
     const [mgsConfirm, setMgsConfirm] = useState('');
     const [hasFillData, setHasFillData] = useState(true);
-    const [status,setStatus] = useState();
+    const [status, setStatus] = useState();
     const [notification, setNotification] = React.useState({
         open: false,
         message: '',
@@ -64,6 +64,7 @@ const JobForm = ({ operator }) => {
     const [data, setData] = useState(initialData);
 
     useEffect(() => {
+        checkStatus();
         getProvince();
         EnterpriseApi.getAllPosition().then((e) => {
             setListPosition(e)
@@ -119,6 +120,21 @@ const JobForm = ({ operator }) => {
                 .then(() => setHasFillData(true));
         }
     }, [id])
+    const checkStatus = () => {
+        EnterpriseApi.getStatus()
+            .then((res) => {
+                if (res !== 'ACTIVE') {
+                    localStorage.removeItem('access-token');
+                    navigate('/');
+                }
+    })
+            .catch((error) => {
+                localStorage.removeItem('access-token');
+                navigate('/');
+                console.error("Error fetching status:", error); // bắt lỗi khi fetch status
+            });
+
+    }
     const handleResetStatus = () => {
         setLoading(true);
         EnterpriseApi.resetPostStatus(id)
@@ -347,7 +363,7 @@ const JobForm = ({ operator }) => {
                                     </InputLabel>
                                     <TextField
                                         error={Boolean(errors.campaignId)}
-                                        disabled={!canEdit}
+                                        disabled={operator==='update'}
                                         select
                                         fullWidth
                                         labelId="campaign-label"
@@ -362,7 +378,7 @@ const JobForm = ({ operator }) => {
                                         }}
                                         value={data.campaignId
                                             ? (listCampaign.find(campaign => campaign.id === data.campaignId)?.name || data.campaignName)
-                                            : ''
+                                            : data.campaignName
                                         }
                                     >
                                         {listCampaign.map((campaign, index) => (

@@ -223,8 +223,11 @@ public class EnterpriseController {
 
 
     @RequestMapping(value = "/get-money-history",method = RequestMethod.GET)
-    public ResponseEntity getMoneyHistory(HttpServletRequest httpServletRequest){
-        return ResponseEntity.ok(iEnterpiseService.getHistoryMoney(httpServletRequest));
+    public ResponseEntity getMoneyHistory(
+            @RequestParam(defaultValue = DefautlConstants.PAGE_SIZE) int pageSize,
+            @RequestParam(defaultValue = DefautlConstants.PAGE_NO) int pageNumber,
+            HttpServletRequest httpServletRequest){
+        return ResponseEntity.ok(iEnterpiseService.getHistoryMoney(pageSize,pageNumber,httpServletRequest));
     }
 
     @RequestMapping(value = "/get-package-by-campaign/{id}",method = RequestMethod.GET)
@@ -232,5 +235,13 @@ public class EnterpriseController {
         return ResponseEntity.ok(iEnterpiseService.getListPackageByCampaign(id));
     }
 
+    @GetMapping("/get-news-info")
+    public ResponseEntity getNewsInfo(@RequestHeader("Authorization") String token){
+        return ResponseEntity.ok().body(iEnterpiseService.getNewsInfo(token));
+    }
+    @GetMapping("/get-news-chart")
+    public ResponseEntity getNewsChart(@RequestHeader("Authorization") String token){
+        return ResponseEntity.ok().body(iEnterpiseService.getNewsChart(token));
+    }
 
 }

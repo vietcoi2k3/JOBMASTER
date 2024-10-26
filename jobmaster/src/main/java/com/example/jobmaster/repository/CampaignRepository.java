@@ -33,6 +33,7 @@ public interface CampaignRepository extends JpaRepository<CampaignEntity,String>
         OR LOWER(p.position) LIKE LOWER(CONCAT('%', :search, '%')))
         AND c.enterprise_id = :enterpriseId
         group by c.id, p.id
+        order by c.modified_at desc
         """, nativeQuery = true)
     Page<CampaignResponse> getListCampaign(@Param("search") String search, @Param("enterpriseId") String enterpriseId, Pageable pageable);
 
@@ -65,4 +66,6 @@ public interface CampaignRepository extends JpaRepository<CampaignEntity,String>
     List<CampaignResponse> getListCampaignForPost(@Param("enterpriseId") String enterpriseId);
 
 
+    @Query("select count(c) from CampaignEntity c where c.enterpriseId =:enterpriseId And c.isActive=true")
+    Integer countCampaignOpening(@Param("enterpriseId") String enterpriseId);
 }

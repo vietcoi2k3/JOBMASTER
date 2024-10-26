@@ -28,17 +28,18 @@ import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 import { Outlet } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import DynamicFeedIcon from '@mui/icons-material/DynamicFeed';
-
+import EnterpriseApi from "../../api/EnterpriseApi";
+import NotificationDialog from "../share/NotificationDialog";
+import AssessmentIcon from '@mui/icons-material/Assessment';
 const drawerWidth = 240;
 const icons = [
+  AssessmentIcon,
   SettingsIcon,
   WorkOutlinedIcon,
   DynamicFeedIcon,
   LocalAtmIcon
 ];
 // Sử dụng state để lưu trữ chỉ số được chọn
-
-
 
 
 const openedMixin = (theme) => ({
@@ -135,18 +136,21 @@ export default function MiniDrawer() {
   };
   const handleIndex = (index) => {
     if (index === 0) {
-      navigate("/dashboard")
+      navigate("/dashboard/news")
     }
     if (index === 1) {
-      navigate("/dashboard/job")
+      navigate("/dashboard")
     }
     if (index === 2) {
-      navigate("/dashboard/manage-post")
+      navigate("/dashboard/job")
     }
     if (index === 3) {
+      navigate("/dashboard/manage-post")
+    }
+    if (index === 4) {
       navigate("/dashboard/service")
     }
-
+    
     setHighlightedIndex(index)
   }
   const handleDrawerOpen = () => {
@@ -156,6 +160,24 @@ export default function MiniDrawer() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+  const [openNoti, setOpenNoti] = useState(false);
+  const handleCloseNoti = () => {
+    setOpenNoti(false);
+  };
+  const checkStatus = () => {
+    EnterpriseApi.getStatus()
+      .then((res) => {
+        if (res !== 'ACTIVE') {
+          setOpenNoti(true);
+        }else{
+          window.location.href = "/dashboard/job-form/create";
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching status:", error); // bắt lỗi khi fetch status
+    });
+      
+  }
 
   return (
     <Box sx={{ display: "flex", backgroundColor: '#E5E5E5', padding: '100px' }}>
@@ -180,7 +202,7 @@ export default function MiniDrawer() {
             <img src={logo} alt="" width={210} />
             <div className="flex items-center">
               <Button
-                onClick={() => { window.location.href = "/dashboard/job-form/create" }}
+                onClick={checkStatus}
                 size="small"
                 className="h-1/2"
                 variant="contained"
@@ -239,7 +261,7 @@ export default function MiniDrawer() {
       <Drawer variant="permanent" open={open} >
         <Divider />
         <List>
-          {["Cài đặt tài khoản ", "Chiến dịch tuyển dụng", "Quản lí tin đăng", "Dịch vụ"].map((text, index) => (
+          {["Bản tin","Cài đặt tài khoản ", "Chiến dịch tuyển dụng", "Quản lí tin đăng", "Dịch vụ"].map((text, index) => (
             <ListItem
               key={text} disablePadding sx={{ display: "block" }}>
               <ListItemButton
@@ -296,9 +318,14 @@ export default function MiniDrawer() {
         </List>
         <Divider />
       </Drawer>
+      <NotificationDialog
+          open={openNoti}
+          onClose={handleCloseNoti}
+          message="Doanh nghiệp chưa kích hoạt"
+        />
+      <Outlet>
+      </Outlet>
 
-      <Outlet />
-      
     </Box>
   );
 }

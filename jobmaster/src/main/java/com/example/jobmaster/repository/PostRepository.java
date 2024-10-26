@@ -12,7 +12,7 @@ import java.util.List;
 
 @Repository
 public interface PostRepository extends JpaRepository<PostEntity,String> {
-    @Query("SELECT c FROM PostEntity c WHERE c.title LIKE %:search% AND (:status is null or c.status = :status) AND c.campaignId IN :campaignId ")
+    @Query("SELECT c FROM PostEntity c WHERE c.title LIKE %:search% AND (:status is null or c.status = :status) AND c.campaignId IN :campaignId order by c.modifiedAt desc ")
     Page<PostEntity> getListCampaign(@Param("search") String search,@Param("status") String status, @Param("campaignId") List<String> campaignId, Pageable pageable);
 
     @Query("SELECT c FROM PostEntity c " +
@@ -40,5 +40,7 @@ public interface PostRepository extends JpaRepository<PostEntity,String> {
     @Query("SELECT c FROM PostEntity c INNER JOIN CampaignEntity ce ON c.campaignId = ce.id " +
             "WHERE ce.enterpriseId =:enterpriseId")
     List<PostEntity> getPostByCompany(@Param("enterpriseId") String enterpriseId);
+    @Query("select count(p) from PostEntity p join CampaignEntity c on p.campaignId = c.id where c.enterpriseId=:enterpriseId and p.status ='APPROVED'")
+    Integer countPostDisplaying(String enterpriseId);
 
 }

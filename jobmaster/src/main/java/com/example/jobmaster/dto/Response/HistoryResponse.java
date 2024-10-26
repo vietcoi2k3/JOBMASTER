@@ -16,5 +16,6 @@ import java.util.List;
 public class HistoryResponse {
     private BigDecimal totalMoney;
     private List<HistoryMoney> historyMoneyList;
+    private int totalPages;
 
 }
