@@ -13,7 +13,7 @@ import {
     Divider
 } from '@mui/material';
 // import { Work } from 'lucide-react';
-import sliderimg from '../../assets/sliderimg.png'
+import sliderimg from '../../assets/companyLogo.png'
 import {useParams} from "react-router-dom";
 import authApi from "../../api/AuthApi";
 import ApplyJobPopup from "../ListJob/ApplyJobPopup";
