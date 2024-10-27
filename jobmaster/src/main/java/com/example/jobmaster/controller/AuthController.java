@@ -264,4 +264,10 @@ public class AuthController {
         return ResponseEntity.ok(iConsumerService.getPostByCompany(id));
     }
 
+    @GetMapping(value = "/get-role")
+    public ResponseEntity getRole(@RequestHeader("Authorization") String token){
+        return ResponseEntity.ok().body(userService.getRole(token));
+    }
+
+
 }

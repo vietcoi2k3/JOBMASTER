@@ -285,11 +285,7 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
     @Override
     public List<PackageEntity> getListPackage(String campaignId) {
         List<String> packageId = packageCampaignRepository.getListIdPackage(campaignId);
-        List<PackageEntity> packageEntities = packageRepository.findAll();
-        for (String a : packageId
-        ) {
-            packageEntities.removeIf(x -> x.getId().equals(a));
-        }
+        List<PackageEntity> packageEntities = packageRepository.findAllById(packageId);
         return packageEntities;
     }
 

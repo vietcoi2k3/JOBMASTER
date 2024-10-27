@@ -5,9 +5,12 @@ import com.example.jobmaster.dto.Request.LoginRequest;
 import com.example.jobmaster.dto.Request.RegisterRequest;
 import com.example.jobmaster.dto.TokenDTO;
 import com.example.jobmaster.dto.UserDTO;
+import com.example.jobmaster.entity.RoleEntity;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 /**
  * Class: UserService
@@ -28,8 +31,10 @@ public interface IUserService {
 
     public TokenDTO login(LoginRequest loginRequest, HttpServletRequest httpServletRequest);
 
-    public UserDTO getUserByToken(String token);
-    public UserDTO updateUser(String id, UserDTO userDTO);
-    public void updatePassword(String token, ChangePasswordRequest changePasswordRequest);
+    UserDTO getUserByToken(String token);
+    UserDTO updateUser(String id, UserDTO userDTO);
+    void updatePassword(String token, ChangePasswordRequest changePasswordRequest);
+
+    List<RoleEntity> getRole(String token);
 
 }
