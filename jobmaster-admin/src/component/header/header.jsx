@@ -1,11 +1,13 @@
 // src/components/Header.js
-import React from 'react';
+import React, { useEffect } from 'react';
 import { AppBar, Toolbar, Typography, Tabs, Tab, Avatar, Box, IconButton, Menu, MenuItem } from '@mui/material';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import imgLogo from '../../assets/img.png'
 import {useNavigate} from "react-router-dom";
+import { useUser  } from '../../context/UserProvider';
 const Header = () => {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const { user } = useUser();
     // Trạng thái để kiểm tra tab đang được chọn
     const [value, setValue] = React.useState(0);
 
@@ -26,7 +28,10 @@ const Header = () => {
     const handleMenuClose = () => {
         setAnchorEl(null);
     };
-
+    const logOut =()=>{
+        localStorage.removeItem('access_token');
+        navigate('/')
+    }
     return (
         <AppBar position="static" color="inherit" elevation={0}>
             <Toolbar>
@@ -69,7 +74,7 @@ const Header = () => {
                         onClick={handleMenuOpen}
                     />
                     <Typography variant="body1" sx={{ ml: 1 }}>
-                        Phạm Phương
+                        {user.username}
                     </Typography>
                 </Box>
 
@@ -88,7 +93,7 @@ const Header = () => {
                     }}
                 >
                     <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-                    <MenuItem onClick={handleMenuClose}>Logout</MenuItem>
+                    <MenuItem onClick={()=>{logOut(); handleMenuClose()}}>Logout</MenuItem>
                 </Menu>
             </Toolbar>
         </AppBar>

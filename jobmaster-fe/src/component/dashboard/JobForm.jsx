@@ -86,30 +86,7 @@ const JobForm = ({ operator }) => {
             EnterpriseApi.getDetailPost(id)
                 .then((res) => {
                     setStatus(res.status);
-                    setData(prevData => ({
-                        ...prevData,
-                        title: res.title,
-                        field: res.field,
-                        position: res.position,
-                        deadline: res.deadline,
-                        quantity: res.quantity,
-                        city: res.city,
-                        district: res.district,
-                        detailAddress: res.detailAddress,
-                        typeWorking: res.typeWorking,
-                        level: res.level,
-                        experience: res.experience,
-                        timeWorking: res.timeWorking,
-                        description: res.description,
-                        required: res.required,
-                        interest: res.interest,
-                        gender: res.gender,
-                        campaignId: res.campaignId,
-                        salaryRange: res.salaryRange,
-                        campaignName: res.campaignName,
-                        requiredSkills: res.requiredSkills,
-                        additionalSkills: res.additionalSkills
-                    }));
+                    setData(res);
                 })
                 .catch((error) => {
                     setNotification({
@@ -122,7 +99,7 @@ const JobForm = ({ operator }) => {
                     setHasFillData(true)
                 });
         }
-    }, [])
+    }, [id])
     useEffect(()=>{
         if(data.city&&listCity){
             console.log(listCity.find(e=>e.province_name===data.city)+"4444444444444")
@@ -282,19 +259,22 @@ const JobForm = ({ operator }) => {
         };
     };
 
-    const handleChange = (e) => {
+    const handleChange = (e) => { 
         if (hasFillData) {
-            console.log(data)
-            setData({
-                ...data,
-                [e.target.name]: e.target.value
-            })
-            if (e.target.name === 'city') {
-                const selectedProvince = listCity.find(province => province.province_name === e.target.value);
-                if (selectedProvince) {
-                    getDistrict(selectedProvince.province_id);
-                } else {
-                    setListDistrict([]);
+            const newValue = e.target.value;
+            if (data[e.target.name] !== newValue) { // Chỉ cập nhật nếu giá trị khác
+                console.log(data);
+                setData({
+                    ...data,
+                    [e.target.name]: newValue
+                });
+                if (e.target.name === 'city') {
+                    const selectedProvince = listCity.find(province => province.province_name === newValue);
+                    if (selectedProvince) {
+                        getDistrict(selectedProvince.province_id);
+                    } else {
+                        setListDistrict([]);
+                    }
                 }
             }
         }
@@ -362,7 +342,7 @@ const JobForm = ({ operator }) => {
                                         name="title"
                                         placeholder="Tiêu đề tin"
                                         required
-                                        disabled={operator === 'detail'}
+                                        InputProps={{ readOnly: operator === 'detail' }}
                                         error={Boolean(errors.title)}
                                     />
                                 </Grid>
@@ -373,7 +353,7 @@ const JobForm = ({ operator }) => {
                                     </InputLabel>
                                     <TextField
                                         error={Boolean(errors.campaignId)}
-                                        disabled={operator === 'detail'}
+                                        InputProps={{ readOnly: operator === 'detail' }}
                                         select
                                         fullWidth
                                         labelId="campaign-label"
@@ -406,7 +386,7 @@ const JobForm = ({ operator }) => {
                                     </InputLabel>
                                     <TextField
                                         error={Boolean(errors.position)}
-                                        disabled={operator === 'detail'}
+                                        InputProps={{ readOnly: operator === 'detail' }}
                                         labelId="position-label"
                                         select
                                         fullWidth
@@ -427,7 +407,7 @@ const JobForm = ({ operator }) => {
                                     </InputLabel>
                                     <TextField
                                         error={Boolean(errors.field)}
-                                        disabled={operator === 'detail'}
+                                        InputProps={{ readOnly: operator === 'detail' }}
                                         labelId="field-label"
                                         select
                                         fullWidth
@@ -447,7 +427,7 @@ const JobForm = ({ operator }) => {
                                         Hạn nộp hồ sơ <span style={{ color: 'red' }}>*</span>
                                     </InputLabel>
                                     <TextField
-                                        disabled={operator === 'detail'}
+                                        InputProps={{ readOnly: operator === 'detail' }}
                                         fullWidth
                                         labelId="deadline-label"
                                         type="date"
@@ -465,7 +445,7 @@ const JobForm = ({ operator }) => {
                                     </InputLabel>
                                     <TextField
                                         error={Boolean(errors.quantity)}
-                                        disabled={operator === 'detail'}
+                                        InputProps={{ readOnly: operator === 'detail' }}
                                         fullWidth
                                         labelId="quantity-label"
                                         type="number"
@@ -487,7 +467,7 @@ const JobForm = ({ operator }) => {
                                     </InputLabel>
                                     <TextField
                                         error={Boolean(errors.city)}
-                                        disabled={operator === 'detail'||!listDistrict}
+                                        InputProps={{ readOnly: operator === 'detail'||!listDistrict}}
                                         labelId="city-label"
                                         select
                                         fullWidth
@@ -509,7 +489,7 @@ const JobForm = ({ operator }) => {
                                         Chọn quận/huyện <span style={{ color: 'red' }}>*</span>
                                     </InputLabel>
                                     <TextField
-                                        disabled={operator === 'detail'|| !data.city}
+                                        InputProps={{ readOnly: operator === 'detail'|| !data.city }}
                                         labelId="district-label"
                                         select
                                         fullWidth
@@ -531,7 +511,7 @@ const JobForm = ({ operator }) => {
                                         Địa chỉ chi tiết <span style={{ color: 'red' }}>*</span>
                                     </InputLabel>
                                     <TextField
-                                        disabled={operator === 'detail'}
+                                        InputProps={{ readOnly: operator === 'detail' }}
                                         fullWidth
                                         labelId="detail-address-label"
                                         name="detailAddress"
@@ -553,7 +533,7 @@ const JobForm = ({ operator }) => {
                                     </InputLabel>
                                     <TextField
                                         error={Boolean(errors.typeWorking)}
-                                        disabled={operator === 'detail'}
+                                        InputProps={{ readOnly: operator === 'detail' }}
                                         select
                                         labelId="type-working-label"
                                         fullWidth
@@ -574,7 +554,7 @@ const JobForm = ({ operator }) => {
                                     </InputLabel>
                                     <TextField
                                         error={Boolean(errors.level)}
-                                        disabled={operator === 'detail'}
+                                        InputProps={{ readOnly: operator === 'detail' }}
                                         labelId="level-label"
                                         select
                                         fullWidth
@@ -600,7 +580,7 @@ const JobForm = ({ operator }) => {
                                     </InputLabel>
                                     <TextField
                                         error={Boolean(errors.experience)}
-                                        disabled={operator === 'detail'}
+                                        InputProps={{ readOnly: operator === 'detail' }}
                                         labelId="experience-label"
                                         select
                                         fullWidth
@@ -626,7 +606,7 @@ const JobForm = ({ operator }) => {
                                     </InputLabel>
                                     <TextField
                                         error={Boolean(errors.salaryRange)}
-                                        disabled={operator === 'detail'}
+                                        InputProps={{ readOnly: operator === 'detail' }}
                                         fullWidth
                                         labelId="salary-range-label"
                                         name="salaryRange"
@@ -644,7 +624,7 @@ const JobForm = ({ operator }) => {
                                     </InputLabel>
                                     <TextField
                                         error={Boolean(errors.timeWorking)}
-                                        disabled={operator === 'detail'}
+                                        InputProps={{ readOnly: operator === 'detail' }}
                                         fullWidth
                                         labelId="time-working-label"
                                         value={data.timeWorking}
@@ -665,7 +645,7 @@ const JobForm = ({ operator }) => {
                                         Mô tả công việc
                                     </InputLabel>
                                     <ReactQuill
-                                        readOnly={operator === 'detail'} 
+                                        InputProps={{ readOnly: operator === 'detail' }}
                                         theme="snow"
                                         placeholder="Mô tả công việc"
                                         style={{

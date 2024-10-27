@@ -114,12 +114,12 @@ export default function TransactionHistory() {
                                             <Typography
                                                 variant="h5"
                                                 sx={{
-                                                    color: transaction.isAddMoney ? "green" : "red", // Xanh nếu isAdd là true, đỏ nếu false
+                                                    color: transaction.addMoney ? "green" : "red", // Xanh nếu isAdd là true, đỏ nếu false
                                                     fontWeight: "bold",
 
                                                 }}
                                             >
-                                                {transaction.isAddMoney ? "+" : "-"}{transaction.amount.toLocaleString('vi-VN') + "VND"}
+                                                {transaction.addMoney ? "+" : "-"}{transaction.amount.toLocaleString('vi-VN') + "VND"}
                                             </Typography>
                                         </Grid>
                                         <Grid item xs={6} textAlign="right">
@@ -139,7 +139,7 @@ export default function TransactionHistory() {
                                         Số dư sau giao dịch: {transaction.balanceAfter.toLocaleString('vi-VN') + "VND"}
                                     </Typography>
                                     <Typography variant="h6" color="textSecondary">
-                                        {transaction.descriptions}
+                                        {(transaction.addMoney)?'Nap tiền vào ví JobMaster':transaction.descriptions}
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={4} textAlign="right">

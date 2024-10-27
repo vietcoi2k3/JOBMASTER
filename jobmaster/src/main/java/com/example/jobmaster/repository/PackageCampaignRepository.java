@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface PackageCampaignRepository extends JpaRepository<PackageCampaign,String> {
 
-    @Query("SELECT c FROM PackageCampaign c WHERE c.campaignId =:campaignId GROUP BY c.packageId")
+    @Query("SELECT c.packageId FROM PackageCampaign c WHERE c.campaignId =:campaignId GROUP BY c.packageId")
     List<String> getListIdPackage(@Param("campaignId") String campaignId);
 
     boolean existsByCampaignIdAndPackageId(String campaignId,String packageId);

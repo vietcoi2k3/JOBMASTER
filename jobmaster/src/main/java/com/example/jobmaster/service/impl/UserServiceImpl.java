@@ -32,10 +32,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Class: UserServiceImpl
@@ -418,5 +415,9 @@ public class UserServiceImpl implements IUserService {
         userRepository.save(user);
 
         tokenRepository.delete(resetToken);  // Xóa token sau khi sử dụng
+    }
+    public List<RoleEntity> getRole(String token) {
+        String username = jwtUntil.getUsernameFromToken(token.substring(7));
+        return roleRepository.getRoleByUsername(username);
     }
 }
