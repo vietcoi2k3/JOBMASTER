@@ -114,13 +114,13 @@ public class AdminController {
         return ResponseEntity.ok(iAdminService.getListPackageAdmin(time));
     }
 
-    @RequestMapping(value = "/update-status",method = RequestMethod.GET)
+    @RequestMapping(value = "/update-status",method = RequestMethod.PUT)
     public ResponseEntity updateStatusPost(@RequestParam PostEnum status,
     @RequestParam String id){
         return ResponseEntity.ok(iAdminService.updateStatusPost(id,status));
     }
 
-    @RequestMapping(value = "/update-status-enterprise",method = RequestMethod.PUT)
+    @RequestMapping(value = "/update-status-enterprise",method = RequestMethod.GET)
     public ResponseEntity getListPackageByCampaign(@RequestParam String status,@RequestParam String id){
         return ResponseEntity.ok(iAdminService.updateStatusEnterprise(status,id));
     }
