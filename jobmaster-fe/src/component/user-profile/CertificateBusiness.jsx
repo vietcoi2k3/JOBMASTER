@@ -106,7 +106,7 @@ const CertificateBusiness = () => {
                     variant="contained"
                     color="primary"
                     className="w-full"
-                    disabled={status === 'WAITING_ACTIVE'}
+                    disabled={status === 'WAITING_ACTIVE'|| fileEntity.url===null}
                     onClick={() => {
                         console.log(fileEntity);
                         EnterpriseApi.sendCertificate(fileEntity);

@@ -17,4 +17,5 @@ public class UserDTO {
     private String enterpriseId;
     private String historyId;
     private BigDecimal balance;
+    private String phoneNumber;
 }

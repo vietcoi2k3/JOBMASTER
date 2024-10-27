@@ -323,6 +323,7 @@ public class UserServiceImpl implements IUserService {
                 .username(userEntity.getUsername())
                 .gender(userEntity.getGender())
                 .fullName(userEntity.getFullName())
+                .phoneNumber(userEntity.getPhoneNumber())
                 .build();
     }
 
@@ -332,6 +333,7 @@ public class UserServiceImpl implements IUserService {
                 .orElseThrow(() -> new NotFoundException(ExceptionMessage.USER_NOT_FOUND));
         userEntity.setGender(userDTO.getGender());
         userEntity.setFullName(userDTO.getFullName());
+        userEntity.setPhoneNumber(userDTO.getPhoneNumber());
         if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()) {
             userEntity.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         }

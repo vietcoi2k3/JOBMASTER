@@ -32,7 +32,7 @@ public interface CampaignRepository extends JpaRepository<CampaignEntity,String>
         WHERE (LOWER(c.name) LIKE LOWER(CONCAT('%', :search, '%')) 
         OR LOWER(p.position) LIKE LOWER(CONCAT('%', :search, '%')))
         AND c.enterprise_id = :enterpriseId
-        group by c.id, p.id
+        group by c.id
         order by c.modified_at desc
         """, nativeQuery = true)
     Page<CampaignResponse> getListCampaign(@Param("search") String search, @Param("enterpriseId") String enterpriseId, Pageable pageable);

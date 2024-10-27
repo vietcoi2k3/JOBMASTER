@@ -28,6 +28,7 @@ public class UserEntity extends BaseEntity implements UserDetails {
     //username = email
     private String username;
     private String password;
+    private String phoneNumber;
     private String fullName;
     private String googleId;
     private String gender;
