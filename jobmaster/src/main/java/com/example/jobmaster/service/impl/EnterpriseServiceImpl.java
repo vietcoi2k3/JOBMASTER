@@ -144,7 +144,11 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
         newCampaignEntity.setPostId(postEntity.getId());
         campaignRepository.save(newCampaignEntity);
         mapper.map(postDTO, postEntity);
-        postEntity.setStatus(PostEnum.AWAITING_APPROVAL.name());
+        if(newCampaignEntity.isActive()){
+            postEntity.setStatus(PostEnum.AWAITING_APPROVAL.name());
+        }else {
+            postEntity.setStatus(PostEnum.NOT_APPROVED.name());
+        }
         return mapper.map(postRepository.save(postEntity), PostDTO.class);
     }
 
@@ -244,7 +248,7 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
     @Override
     public PageResponse getListCv(int pageNumber, int pageSize, String postId, String status) {
         pageNumber--;
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("modified_at").descending());
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
         StatusCVEnum enumStatus = convertToEnum(status);
         Page<CVEntity> cvEntityPage = cvRepository.getListCv(postId, enumStatus, pageable);
 

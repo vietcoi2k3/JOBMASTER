@@ -27,6 +27,7 @@ public interface CVRepository extends JpaRepository<CVEntity,String> {
         join CampaignEntity c on p.id = c.postId
         where c.enterpriseId = :enterpriseId
         and DATE(cv.createdAt) = current date 
+        order by cv.createdAt
 """)
     Integer countCvOpening(String enterpriseId);
 

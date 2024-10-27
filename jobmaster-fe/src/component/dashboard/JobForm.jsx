@@ -16,7 +16,6 @@ import ConfirmDialog from '../share/ConfirmDialog';
 const JobForm = ({ operator }) => {
     const params = useParams();
     const id = operator === 'create' ? null : params.id;
-    const [canEdit, setCanEdit] = useState(operator !== 'detail');
     const navigate = useNavigate();
     const [listCity, setListCity] = useState([]);
     const [listDistrict, setListDistrict] = useState([]);
@@ -24,8 +23,6 @@ const JobForm = ({ operator }) => {
     const [listCampaign, setListCampaign] = useState([])
     const [listPosition, setListPosition] = useState([])
     const [listField, setListField] = useState([])
-    const [pageNumber, setPagenumber] = useState(1)
-    const location = useLocation();
     const [errors, setErrors] = useState({});
     const [openConfirm, setOpenConfirm] = useState(false);
     const [mgsConfirm, setMgsConfirm] = useState('');
@@ -40,8 +37,8 @@ const JobForm = ({ operator }) => {
         title: "",
         field: "",
         position: "",
-        deadline: null,
-        quantity: 0,
+        deadline: "",
+        quantity: "",
         city: "",
         district: "",
         typeWorking: "",
@@ -76,7 +73,7 @@ const JobForm = ({ operator }) => {
     }, [])
     useEffect(() => {
         EnterpriseApi.getAllCampaign().then((e) => setListCampaign(e))
-    }, [pageNumber])
+    }, [])
     useEffect(() => {
         if (id === null) {
             setData(initialData);
@@ -93,8 +90,8 @@ const JobForm = ({ operator }) => {
                         deadline: res.deadline,
                         quantity: res.quantity,
                         city: res.city,
-                        district: res.district || '',
-                        detailAddress: res.detailAddress || '',
+                        district: res.district,
+                        detailAddress: res.detailAddress,
                         typeWorking: res.typeWorking,
                         level: res.level,
                         experience: res.experience,
@@ -104,7 +101,7 @@ const JobForm = ({ operator }) => {
                         interest: res.interest,
                         gender: res.gender,
                         campaignId: res.campaignId,
-                        salaryRange: res.salaryRange || '',
+                        salaryRange: res.salaryRange,
                         campaignName: res.campaignName,
                         requiredSkills: res.requiredSkills,
                         additionalSkills: res.additionalSkills
@@ -119,7 +116,7 @@ const JobForm = ({ operator }) => {
                 })
                 .then(() => setHasFillData(true));
         }
-    }, [id])
+    }, [])
     const checkStatus = () => {
         EnterpriseApi.getStatus()
             .then((res) => {
@@ -127,7 +124,7 @@ const JobForm = ({ operator }) => {
                     localStorage.removeItem('access-token');
                     navigate('/');
                 }
-    })
+            })
             .catch((error) => {
                 localStorage.removeItem('access-token');
                 navigate('/');
@@ -170,7 +167,7 @@ const JobForm = ({ operator }) => {
             return;
         }
         setLoading(true)
-        if (id !== null) {
+        if (operator === 'update') {
             EnterpriseApi.updatePost(id, data)
                 .then((res) => {
                     setNotification({
@@ -187,7 +184,7 @@ const JobForm = ({ operator }) => {
                         type: "error"
                     }))
                 .finally(() => setLoading(false))
-        } else {
+        } else if (operator === 'create') {
             EnterpriseApi.addPost(data)
                 .then((res) => {
                     setNotification({
@@ -205,7 +202,7 @@ const JobForm = ({ operator }) => {
                     }))
                 .finally(() => setLoading(false))
         }
-
+        setLoading(false);
 
     }
     const validateData = (data) => {
@@ -284,7 +281,6 @@ const JobForm = ({ operator }) => {
                 if (selectedProvince) {
                     getDistrict(selectedProvince.province_id);
                 } else {
-                    // Nếu không tìm thấy tỉnh thành, đặt lại danh sách quận/huyện về mảng rỗng
                     setListDistrict([]);
                 }
             }
@@ -352,7 +348,7 @@ const JobForm = ({ operator }) => {
                                         name="title"
                                         placeholder="Tiêu đề tin"
                                         required
-                                        disabled={!canEdit}
+                                        disabled={operator === 'detail'}
                                         error={Boolean(errors.title)}
                                     />
                                 </Grid>
@@ -363,7 +359,7 @@ const JobForm = ({ operator }) => {
                                     </InputLabel>
                                     <TextField
                                         error={Boolean(errors.campaignId)}
-                                        disabled={operator==='update'}
+                                        disabled={operator === 'detail'}
                                         select
                                         fullWidth
                                         labelId="campaign-label"
@@ -395,7 +391,7 @@ const JobForm = ({ operator }) => {
                                     </InputLabel>
                                     <TextField
                                         error={Boolean(errors.position)}
-                                        disabled={!canEdit}
+                                        disabled={operator === 'detail'}
                                         labelId="position-label"
                                         select
                                         fullWidth
@@ -416,7 +412,7 @@ const JobForm = ({ operator }) => {
                                     </InputLabel>
                                     <TextField
                                         error={Boolean(errors.field)}
-                                        disabled={!canEdit}
+                                        disabled={operator === 'detail'}
                                         labelId="field-label"
                                         select
                                         fullWidth
@@ -436,7 +432,7 @@ const JobForm = ({ operator }) => {
                                         Hạn nộp hồ sơ <span style={{ color: 'red' }}>*</span>
                                     </InputLabel>
                                     <TextField
-                                        disabled={!canEdit}
+                                        disabled={operator === 'detail'}
                                         fullWidth
                                         labelId="deadline-label"
                                         type="date"
@@ -454,7 +450,7 @@ const JobForm = ({ operator }) => {
                                     </InputLabel>
                                     <TextField
                                         error={Boolean(errors.quantity)}
-                                        disabled={!canEdit}
+                                        disabled={operator === 'detail'}
                                         fullWidth
                                         labelId="quantity-label"
                                         type="number"
@@ -476,7 +472,7 @@ const JobForm = ({ operator }) => {
                                     </InputLabel>
                                     <TextField
                                         error={Boolean(errors.city)}
-                                        disabled={!canEdit}
+                                        disabled={operator === 'detail'||!listDistrict}
                                         labelId="city-label"
                                         select
                                         fullWidth
@@ -498,7 +494,7 @@ const JobForm = ({ operator }) => {
                                         Chọn quận/huyện <span style={{ color: 'red' }}>*</span>
                                     </InputLabel>
                                     <TextField
-                                        disabled={!canEdit || !listDistrict}
+                                        disabled={operator === 'update'|| !data.city}
                                         labelId="district-label"
                                         select
                                         fullWidth
@@ -520,7 +516,7 @@ const JobForm = ({ operator }) => {
                                         Địa chỉ chi tiết <span style={{ color: 'red' }}>*</span>
                                     </InputLabel>
                                     <TextField
-                                        disabled={!canEdit}
+                                        disabled={operator === 'detail'}
                                         fullWidth
                                         labelId="detail-address-label"
                                         name="detailAddress"
@@ -542,7 +538,7 @@ const JobForm = ({ operator }) => {
                                     </InputLabel>
                                     <TextField
                                         error={Boolean(errors.typeWorking)}
-                                        disabled={!canEdit}
+                                        disabled={operator === 'detail'}
                                         select
                                         labelId="type-working-label"
                                         fullWidth
@@ -563,7 +559,7 @@ const JobForm = ({ operator }) => {
                                     </InputLabel>
                                     <TextField
                                         error={Boolean(errors.level)}
-                                        disabled={!canEdit}
+                                        disabled={operator === 'detail'}
                                         labelId="level-label"
                                         select
                                         fullWidth
@@ -589,7 +585,7 @@ const JobForm = ({ operator }) => {
                                     </InputLabel>
                                     <TextField
                                         error={Boolean(errors.experience)}
-                                        disabled={!canEdit}
+                                        disabled={operator === 'detail'}
                                         labelId="experience-label"
                                         select
                                         fullWidth
@@ -615,7 +611,7 @@ const JobForm = ({ operator }) => {
                                     </InputLabel>
                                     <TextField
                                         error={Boolean(errors.salaryRange)}
-                                        disabled={!canEdit}
+                                        disabled={operator === 'detail'}
                                         fullWidth
                                         labelId="salary-range-label"
                                         name="salaryRange"
@@ -633,7 +629,7 @@ const JobForm = ({ operator }) => {
                                     </InputLabel>
                                     <TextField
                                         error={Boolean(errors.timeWorking)}
-                                        disabled={!canEdit}
+                                        disabled={operator === 'detail'}
                                         fullWidth
                                         labelId="time-working-label"
                                         value={data.timeWorking}
@@ -654,7 +650,7 @@ const JobForm = ({ operator }) => {
                                         Mô tả công việc
                                     </InputLabel>
                                     <ReactQuill
-                                        disabled={!canEdit}
+                                        readOnly={operator === 'detail'} 
                                         theme="snow"
                                         placeholder="Mô tả công việc"
                                         style={{
@@ -672,7 +668,7 @@ const JobForm = ({ operator }) => {
                                         Yêu cầu ứng viên
                                     </InputLabel>
                                     <ReactQuill
-                                        disabled={!canEdit}
+                                        readOnly={operator === 'detail'} 
                                         theme="snow"
                                         placeholder="Yêu cầu ứng viên"
                                         style={{
@@ -690,7 +686,7 @@ const JobForm = ({ operator }) => {
                                         Quyền lợi ứng viên
                                     </InputLabel>
                                     <ReactQuill
-                                        disabled={!canEdit}
+                                        readOnly={operator === 'detail'} 
                                         theme="snow"
                                         placeholder="Quyền lợi ứng viên"
                                         style={{
@@ -708,7 +704,7 @@ const JobForm = ({ operator }) => {
                                         Kỹ năng cần có
                                     </InputLabel>
                                     <ReactQuill
-                                        disabled={!canEdit}
+                                        readOnly={operator === 'detail'} 
                                         theme="snow"
                                         placeholder="Kỹ năng cần có"
                                         style={{
@@ -726,7 +722,7 @@ const JobForm = ({ operator }) => {
                                         Kỹ năng nên có
                                     </InputLabel>
                                     <ReactQuill
-                                        disabled={!canEdit}
+                                        readOnly={operator === 'detail'} 
                                         theme="snow"
                                         placeholder="Kỹ năng nên có"
                                         style={{
@@ -754,7 +750,7 @@ const JobForm = ({ operator }) => {
                                     ) : null}
                                 </Grid>
                                 <Grid item>
-                                    {(status !== 'NOT_APPROVED') && (operator != 'create') && (
+                                    {(status !== 'NOT_APPROVED') && (operator !== 'create') && (
                                         <Button
                                             variant="contained"
                                             sx={{ flex: 1, backgroundColor: '#E10E0E', color: 'white', '&:hover': { backgroundColor: '#C00C0C' } }}
@@ -768,6 +764,22 @@ const JobForm = ({ operator }) => {
                                     )}
 
                                 </Grid>
+
+                                {operator==="detail" &&(
+                                    <Grid item>
+                                   
+                                        <Button
+                                            variant="contained"
+                                            sx={{ flex: 1, backgroundColor: '#3758F9', color: 'white' }}
+                                            onClick={() => {
+                                                navigate('/dashboard/job-form/update/'+id);
+                                            }}
+                                        >
+                                            Chỉnh sửa
+                                        </Button>
+
+                                </Grid>
+                                )}
 
                                 <Grid item>
                                     <Button
