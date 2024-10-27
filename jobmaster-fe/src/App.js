@@ -38,9 +38,9 @@ function App() {
           <Route path="history" element={<History />} />
         </Route>
         <Route path="job" element={<Job />} />
-        <Route path="job-form/detail/:id" element={<JobForm operator={'detail'}/>} />
-        <Route path="job-form/update/:id" element={<JobForm operator={'update'}/>} />
-        <Route path="job-form/create" element={<JobForm operator={'create'}/>} />
+        <Route path="job-form/detail/:id" element={<JobForm operator={'detail'} />} />
+        <Route path="job-form/update/:id" element={<JobForm operator={'update'} />} />
+        <Route path="job-form/create" element={<JobForm operator={'create'} />} />
         <Route path="service" element={<ServiceList />} />
         <Route path="manage-post" element={<ManagePost />} />
         <Route path="view-cv/:id" element={<ViewCV />} />

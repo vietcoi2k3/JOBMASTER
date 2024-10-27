@@ -9,7 +9,16 @@ import {
     MenuItem,
     Grid,
     IconButton,
-    CircularProgress
+    CircularProgress,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    TableSortLabel,
+    Checkbox,
+    Paper,
+    Typography, Table
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
@@ -22,16 +31,47 @@ const RecruitmentPopup = ({ onSuccess, createStep, campaign }) => {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [notification, setNotification] = useState({ open: false, message: '', type: '' });
+    const [packages,setPackages]= useState([]);
+    const [selected, setSelected] = useState([]);
     const [data, setData] = useState({
-        name: ""
+        name: "",
+        packages: [],
     });
 
+    const getAllPackages=()=>{
+        EnterpriseApi.getAllPackage()
+        .then((res) => {
+            setPackages(res);
+        }).catch((e) => console.log(e));
+    }
+    const getPackageOfCampaign=(id)=>{
+        EnterpriseApi.getListService(id)
+            .then((res) => setData({
+                name: campaign.name,
+                packages: res
+            }))
+            .catch(console.error);
+    }
+    const handleSelect = (packageC) => {
+        setData((prevData) => {
+            const isSelected = prevData.packages?.includes(packageC);
+            const newPackages = isSelected
+                ? prevData.packages?.filter((item) => item !== packageC) // Xóa ID nếu đã chọn
+                : [...prevData.packages, packageC]; // Thêm ID nếu chưa chọn
+
+            return {
+                ...prevData,
+                packages: newPackages
+            };
+        });
+    };
     const handleClickOpen = () => {
         setOpen(true);
-        if(createStep){
-            setData({name:""});
-        }else{
-            setData({name:campaign.name});
+        getAllPackages();
+        if (createStep) {
+            setData({ name: "",packages:[] });
+        } else {
+            getPackageOfCampaign(campaign.id);
         }
     };
 
@@ -132,6 +172,35 @@ const RecruitmentPopup = ({ onSuccess, createStep, campaign }) => {
                             </Grid>
                         </Grid>
                     </LocalizationProvider>
+                    <Paper sx={{ mt: 2 }}>
+                        <TableContainer>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell align="center">STT</TableCell>
+                                        <TableCell align="left">Tên dịch vụ</TableCell>
+                                        <TableCell align="right">Giá tiền</TableCell>
+                                        <TableCell align="center">Chọn</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {packages.map((service, index) => (
+                                        <TableRow key={service.id}>
+                                            <TableCell align="center">{index + 1}</TableCell>
+                                            <TableCell align="left">{service.name}</TableCell>
+                                            <TableCell align="right">{service.price.toLocaleString('vi-VN')} VND</TableCell>
+                                            <TableCell align="center">
+                                                <Checkbox
+                                                    checked={data.packages.includes(service)} // Sử dụng data.packageIds
+                                                    onChange={() => handleSelect(service)}
+                                                />
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </Paper>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} variant="outlined" color="secondary">
