@@ -114,7 +114,7 @@ public class AdminController {
         return ResponseEntity.ok(iAdminService.getListPackageAdmin(time));
     }
 
-    @RequestMapping(value = "/update-status",method = RequestMethod.PUT)
+    @RequestMapping(value = "/update-status",method = RequestMethod.GET)
     public ResponseEntity updateStatusPost(@RequestParam PostEnum status,
     @RequestParam String id){
         return ResponseEntity.ok(iAdminService.updateStatusPost(id,status));
