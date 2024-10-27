@@ -60,10 +60,10 @@ public interface CampaignRepository extends JpaRepository<CampaignEntity,String>
         LEFT JOIN cventity cv ON p.id = cv.post_id
         WHERE
          c.enterprise_id = :enterpriseId
-        AND c.post_id IS NULL
+        AND (c.post_id IS NULL or p.id =:campaignId)
         group by c.id, p.id
         """, nativeQuery = true)
-    List<CampaignResponse> getListCampaignForPost(@Param("enterpriseId") String enterpriseId);
+    List<CampaignResponse> getListCampaignForPost(@Param("enterpriseId") String enterpriseId, String campaignId);
 
 
     @Query("select count(c) from CampaignEntity c where c.enterpriseId =:enterpriseId And c.isActive=true")

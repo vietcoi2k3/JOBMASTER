@@ -53,9 +53,11 @@ const EnterpriseApi = {
         return axiosClient.get(url + "?" + params.toString());
     },
 
-    getAllCampaign(){
-        const url = "/enterprise/get-list-campaign-post"
-        return axiosClient.get(url);
+    getAllCampaign(campaignId) {
+        const url = "/enterprise/get-list-campaign-post";
+        return axiosClient.get(url, {
+            params: campaignId ? { campaignId } : undefined
+        });
     },
 
     addPost(data) {

@@ -122,10 +122,10 @@ public class EnterpriseController {
 
     @GetMapping(value = "/get-list-campaign-post")
     public ResponseEntity getListCampaignForPost(
-
-            HttpServletRequest httpServletRequest
+            HttpServletRequest httpServletRequest,
+            @RequestParam(value = "campaignId",required = false) String campaignId
     ){
-        return ResponseEntity.ok(iEnterpiseService.getAllCampaign(httpServletRequest));
+        return ResponseEntity.ok(iEnterpiseService.getAllCampaign(httpServletRequest,campaignId));
     }
 
     @PostMapping(value = "/add-new-post")
