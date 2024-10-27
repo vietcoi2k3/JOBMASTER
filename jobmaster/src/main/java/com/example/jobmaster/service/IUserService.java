@@ -32,4 +32,10 @@ public interface IUserService {
     public UserDTO updateUser(String id, UserDTO userDTO);
     public void updatePassword(String token, ChangePasswordRequest changePasswordRequest);
 
+    public void sendResetPasswordEmail(String email, HttpServletRequest request) throws MessagingException;
+
+    public void validatePasswordResetToken(String token) throws MessagingException;
+
+    public void resetPassword(String token, String newPassword);
+
 }

@@ -104,6 +104,11 @@ const AuthApi = {
     getPostByCompany:(id)=>{
         const url = "auth/get-post-by-company/"
         return axiosClient.get(url+id)
+    },
+
+    forgotPassword:(email)=>{
+        const url = "auth/forgot-password?email="
+        return axiosClient.get(url+email)
     }
 
 }

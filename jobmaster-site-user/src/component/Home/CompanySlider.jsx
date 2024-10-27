@@ -15,7 +15,7 @@ const CompanySlider = () => {
     }, []);
     const settings = {
         dots: true, // Hiển thị các dấu chấm phân trang
-        infinite: false, // Vòng lặp vô tận
+        infinite: true, // Vòng lặp vô tận
         speed: 500, // Tốc độ chuyển trang (ms)
         slidesToShow: 5, // Số lượng slide hiển thị cùng lúc
         slidesToScroll: 4, // Số lượng slide cuộn mỗi lần

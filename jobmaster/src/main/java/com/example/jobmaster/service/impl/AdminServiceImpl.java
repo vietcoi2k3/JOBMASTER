@@ -9,6 +9,7 @@ import com.example.jobmaster.enumration.Time;
 import com.example.jobmaster.repository.*;
 import com.example.jobmaster.security.jwt.JWTUntil;
 import com.example.jobmaster.service.IAdminService;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class AdminServiceImpl implements IAdminService {
@@ -48,6 +50,9 @@ public class AdminServiceImpl implements IAdminService {
 
     @Autowired
     private JWTUntil jwtUntil;
+
+    @Autowired
+    private VerifyTokenRepository tokenRepository;
 
     @Override
     public List<FieldEntity> getListField(String code, String name) {

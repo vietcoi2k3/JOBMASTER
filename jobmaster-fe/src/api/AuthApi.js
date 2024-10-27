@@ -67,6 +67,11 @@ const AuthApi = {
       return axiosClient.get(url, {
         responseType: 'blob', 
     });
+    },
+
+    forgotPassword:(email)=>{
+        const url = "auth/forgot-password?email="
+        return axiosClient.post(url+email)
     }
 
 };

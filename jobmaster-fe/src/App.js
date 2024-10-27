@@ -21,6 +21,7 @@ import CVLayout from "./component/CVLayout/CVLayout";
 import History from "./component/user-profile/History";
 import PaymentSuccess from "./component/user-profile/PaymentSuccess";
 import News from './component/dashboard/News';
+import ForgotPassword from "./component/forgot-password/ForgotPassword";
 
 function App() {
 
@@ -51,6 +52,7 @@ function App() {
       <Route path="/verify" element={<VerifyEmail />} />
       <Route path="/verify-email" element={<EmailVerification />} />
       <Route path="/payment-success" element={<PaymentSuccess />} />
+        <Route path="/forgot-pass" element={<ForgotPassword />} />
       <Route path="/" element={<LoginComponent />} />
     </Routes>
   );

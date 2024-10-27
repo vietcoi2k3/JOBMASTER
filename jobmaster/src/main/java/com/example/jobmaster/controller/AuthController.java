@@ -2,6 +2,7 @@ package com.example.jobmaster.controller;
 
 import com.example.jobmaster.dto.Request.LoginRequest;
 import com.example.jobmaster.dto.Request.RegisterRequest;
+import com.example.jobmaster.dto.Request.ResetPasswordRequest;
 import com.example.jobmaster.entity.FileEntity;
 import com.example.jobmaster.entity.UserEntity;
 import com.example.jobmaster.repository.*;
@@ -98,6 +99,50 @@ public class AuthController {
     @GetMapping("/confirm")
     public ResponseEntity confirmEmail(@RequestParam("token") String token) {
         return ResponseEntity.ok(userService.confirmToken(token));
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(@RequestParam String email, HttpServletRequest request)
+            throws MessagingException {
+        userService.sendResetPasswordEmail(email, request);
+        return ResponseEntity.ok("Email đặt lại mật khẩu đã được gửi.");
+    }
+
+    // 2. Xác nhận token từ email
+    @GetMapping("/reset-password/confirm")
+    public ResponseEntity<String> confirmResetToken(@RequestParam("token") String token) throws MessagingException {
+        userService.validatePasswordResetToken(token);
+
+        String htmlResponse = """
+        <div style="font-family: Arial, sans-serif; text-align: center; margin-top: 50px;">
+            <h1 style="color: #4CAF50;">Mật khẩu đã được đặt lại thành công! 🎉</h1>
+            <p style="font-size: 18px; color: #555;">
+                Vui lòng kiểm tra email của bạn để lấy mật khẩu mới và đăng nhập vào hệ thống.
+            </p>
+            <a  style="
+                display: inline-block; 
+                margin-top: 20px; 
+                padding: 10px 20px; 
+                background-color: #4CAF50; 
+                color: white; 
+                text-decoration: none; 
+                border-radius: 5px;
+            ">
+                Vui lòng check mail
+            </a>
+        </div>
+    """;
+
+        return ResponseEntity.ok()
+                .header("Content-Type", "text/html; charset=UTF-8")
+                .body(htmlResponse);
+    }
+
+    // 3. Đặt lại mật khẩu mới
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordRequest request) {
+        userService.resetPassword(request.getToken(), request.getNewPassword());
+        return ResponseEntity.ok("Đặt lại mật khẩu thành công.");
     }
 
     @GetMapping("/send-email")

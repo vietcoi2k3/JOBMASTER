@@ -13,19 +13,20 @@ import CallBack from "./component/sign-up/CallBack";
 import VerifyEmail from "./component/sign-up/VerifyEmail";
 import EmailVerification from "./component/sign-up/EmailVerification";
 import JobDetails from "./component/ListJob/JobDetails";
+import ForgotPassword from "./component/forgot-password/ForgotPassword";
 
 function AppContent() {
     // Lấy đường dẫn hiện tại
     const location = useLocation();
 
     // Kiểm tra xem có phải trang /login hay không
-    const isLoginPage = location.pathname === '/login' || location.pathname==='/sign-up' || location.pathname ==='/verify-email';
+    const isLoginPage = location.pathname === '/login' || location.pathname==='/sign-up' || location.pathname ==='/hihi/forgot-pass';
 
     return (
         <>
             {/* Chỉ hiển thị Header nếu không phải là trang /login */}
             {!isLoginPage && <Header />}
-            <div style={{ minHeight: '80vh', backgroundColor: '#e8edf2' }}> {/* Đặt màu nền */}
+            <div style={{ minHeight: '100vh', backgroundColor: '#e8edf2' }}> {/* Đặt màu nền */}
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/list-job" element={<JobBoard />} />
@@ -37,6 +38,7 @@ function AppContent() {
                     <Route path="/verify-email" element={<EmailVerification />} />
                     <Route path="/verify" element={<VerifyEmail />}/>
                     <Route path="/job-detail" element={<JobDetails />}/>
+                    <Route path="/hihi/forgot-pass" element={<ForgotPassword />}/>
                 </Routes>
             </div>
             {/* Chỉ hiển thị Footer nếu không phải là trang /login */}

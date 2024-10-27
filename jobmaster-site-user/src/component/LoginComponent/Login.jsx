@@ -176,7 +176,13 @@ const Login = () => {
                 </Box>
 
 
-                <Typography variant="body2" color="primary" align="right" sx={{ marginBottom: '20px' }}>
+                <Typography
+                    variant="body2"
+                    color="primary"
+                    align="right"
+                    sx={{ marginBottom: '20px', cursor: 'pointer' }} // Thêm con trỏ để hiển thị biểu tượng tay
+                    onClick={() => navigate("/hihi/forgot-pass")} // Sửa onClick đúng cú pháp
+                >
                     Quên mật khẩu?
                 </Typography>
 

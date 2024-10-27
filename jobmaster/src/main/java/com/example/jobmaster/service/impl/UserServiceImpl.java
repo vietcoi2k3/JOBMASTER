@@ -356,4 +356,65 @@ public class UserServiceImpl implements IUserService {
         }
         userRepository.save(userEntity);
     }
+
+    @Override
+    public void sendResetPasswordEmail(String email, HttpServletRequest request) throws MessagingException {
+        UserEntity user = userRepository.findByUsername(email);
+        VerifyTokenEntity token = new VerifyTokenEntity(user);
+        tokenRepository.save(token);
+
+        tokenRepository.save(token);
+        String resetUrl = request.getRequestURL().toString().replace("/forgot-password", "")
+                + "/reset-password/confirm?token=" + token.getToken();
+
+        String content = "<p>Xin chào,</p>"
+                + "<p>Bạn đã yêu cầu đặt lại mật khẩu. Vui lòng nhấp vào liên kết bên dưới để đặt lại mật khẩu:</p>"
+                + "<a href=\"" + resetUrl + "\">Đặt lại mật khẩu</a>"
+                + "<p>Nếu bạn không yêu cầu thao tác này, hãy bỏ qua email này.</p>";
+
+        this.sendEmail(email, "Đặt lại mật khẩu", content);
+
+    }
+
+    @Override
+    public void validatePasswordResetToken(String token) throws MessagingException {
+        VerifyTokenEntity resetToken = tokenRepository.findByToken(token);
+        if (resetToken == null) {
+            throw new RuntimeException("Token không chính xác.");
+        }
+
+        UserEntity user = resetToken.getUser();
+        String newPassword = generateRandomPassword();
+        user.setPassword(passwordEncoder.encode(newPassword)); // Hash mật khẩu mới
+        userRepository.save(user);
+
+        String content = "<p>Xin chào,</p>"
+                + "<p>Mật khẩu của bạn đã được đặt lại thành công. Đây là mật khẩu mới của bạn:</p>"
+                + "<p><b>" + newPassword + "</b></p>"
+                + "<p>Vui lòng đăng nhập và thay đổi mật khẩu này ngay lập tức.</p>";
+
+
+        this.sendEmail(user.getUsername(), "Mật khẩu đã được đặt lại", content);
+        tokenRepository.delete(resetToken);
+    }
+
+    // Hàm tạo mật khẩu ngẫu nhiên
+    private String generateRandomPassword() {
+        return UUID.randomUUID().toString().replace("-", "").substring(0, 10);
+    }
+
+
+    @Override
+    public void resetPassword(String token, String newPassword) {
+        VerifyTokenEntity resetToken = tokenRepository.findByToken(token);
+        if (resetToken == null) {
+            throw new RuntimeException("Token ko chinh xac");
+        }
+
+        UserEntity user = resetToken.getUser();
+        user.setPassword(passwordEncoder.encode(token));  // Cần mã hóa mật khẩu ở đây
+        userRepository.save(user);
+
+        tokenRepository.delete(resetToken);  // Xóa token sau khi sử dụng
+    }
 }
