@@ -119,8 +119,8 @@ public class AuthController {
         // Gọi đến service và truyền thêm fileType để xử lý
         return ResponseEntity.ok(iFileUploadService.uploadFile(file.getBytes(), fileType));
     }
-    private static final String UPLOAD_DIR = "C:\\uploads\\"; // Đường dẫn sẽ trỏ đến thư mục đã mount
-//    private static final String UPLOAD_DIR = "/uploads" + File.separator; // Đường dẫn sẽ trỏ đến thư mục đã mount
+//    private static final String UPLOAD_DIR = "C:\\uploads\\"; // Đường dẫn sẽ trỏ đến thư mục đã mount
+    private static final String UPLOAD_DIR = "/uploads" + File.separator; // Đường dẫn sẽ trỏ đến thư mục đã mount
     @Autowired
     private FileRepository fileRepository;
 

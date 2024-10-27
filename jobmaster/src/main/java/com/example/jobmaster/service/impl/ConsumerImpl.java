@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ConsumerImpl implements IConsumerService {
@@ -63,8 +64,16 @@ public class ConsumerImpl implements IConsumerService {
         System.out.println(listResult.size());
         for (PostEntity x: postEntities.getContent()
              ) {
-            CampaignEntity campaignEntity = campaignRepository.findById(x.getCampaignId()).get();
-            EnterpriseEntity enterprise = enterpriseRepository.findById(campaignEntity.getEnterpriseId()).get();
+            Optional<CampaignEntity> campaignOpt = campaignRepository.findById(x.getCampaignId());
+            if (campaignOpt.isEmpty()||!campaignOpt.isPresent()) {
+                continue;
+            }
+            CampaignEntity campaignEntity = campaignOpt.get();
+            Optional<EnterpriseEntity> enterpriseEntityOptional = enterpriseRepository.findById(campaignEntity.getEnterpriseId());
+            if (enterpriseEntityOptional.isEmpty()||!enterpriseEntityOptional.isPresent()) {
+                continue;
+            }
+            EnterpriseEntity enterprise = enterpriseEntityOptional.get();
             PostResponse postResponse = new PostResponse();
             postResponse.setId(x.getId());
             postResponse.setQuantityCv(x.getQuantity());
@@ -177,8 +186,16 @@ public class ConsumerImpl implements IConsumerService {
 
         for (PostEntity x: postEntities
         ) {
-            CampaignEntity campaignEntity = campaignRepository.findById(x.getCampaignId()).get();
-            EnterpriseEntity enterprise = enterpriseRepository.findById(campaignEntity.getEnterpriseId()).get();
+            Optional<CampaignEntity> campaignOpt = campaignRepository.findById(x.getCampaignId());
+            if (campaignOpt.isEmpty()||!campaignOpt.isPresent()) {
+                continue;
+            }
+            CampaignEntity campaignEntity = campaignOpt.get();
+            Optional<EnterpriseEntity> enterpriseEntityOptional = enterpriseRepository.findById(campaignEntity.getEnterpriseId());
+            if (enterpriseEntityOptional.isEmpty()||!enterpriseEntityOptional.isPresent()) {
+                continue;
+            }
+            EnterpriseEntity enterprise = enterpriseEntityOptional.get();
             PostResponse postResponse = new PostResponse();
             postResponse.setId(x.getId());
             postResponse.setQuantityCv(x.getQuantity());
@@ -247,32 +264,42 @@ public class ConsumerImpl implements IConsumerService {
         List<PostEntity> postEntities = postRepository.getListPostByMoney();
         List<PostResponse> listResult = new ArrayList<>();
 
-        for (PostEntity x: postEntities
-        ) {
-            CampaignEntity campaignEntity = campaignRepository.findById(x.getCampaignId()).get();
-            EnterpriseEntity enterprise = enterpriseRepository.findById(campaignEntity.getEnterpriseId()).get();
-            PostResponse postResponse = new PostResponse();
-            postResponse.setId(x.getId());
-            postResponse.setQuantityCv(x.getQuantity());
-            postResponse.setTitle(x.getTitle());
-            postResponse.setCity(x.getCity());
-            postResponse.setNameCam(x.getTitle());
-            postResponse.setTimeWorking(x.getTimeWorking());
-            postResponse.setGender(x.getGender());
-            postResponse.setLevel(x.getLevel());
-            postResponse.setExperience(x.getExperience());
-            postResponse.setTypeWorking(x.getTypeWorking());
-            postResponse.setDeadLine((int) ChronoUnit.DAYS.between(x.getDeadline(), LocalDateTime.now())*-1);
-            postResponse.setSalaryRange(x.getSalaryRange());
-            postResponse.setDescription(x.getDescription());
-            postResponse.setInterest(x.getInterest());
-            postResponse.setRequired(x.getRequired());
-            postResponse.setLogoCompany(enterprise.getLogo());
-            postResponse.setEnterpriseId(enterprise.getId());
-            postResponse.setNameCompany(enterprise.getCompanyName());
-            postResponse.setScales(enterprise.getScale());
-            postResponse.setLabel(packageCampaignRepository.existsByCampaignIdAndPackageId(campaignEntity.getId(),"TA01"));
-            listResult.add(postResponse);
+        if (postEntities.size()>0){
+            for (PostEntity x: postEntities
+            ) {
+                Optional<CampaignEntity> campaignOpt = campaignRepository.findById(x.getCampaignId());
+                if (campaignOpt.isEmpty()||!campaignOpt.isPresent()) {
+                    continue;
+                }
+                CampaignEntity campaignEntity = campaignOpt.get();
+                Optional<EnterpriseEntity> enterpriseEntityOptional = enterpriseRepository.findById(campaignEntity.getEnterpriseId());
+                if (enterpriseEntityOptional.isEmpty()||!enterpriseEntityOptional.isPresent()) {
+                    continue;
+                }
+                EnterpriseEntity enterprise = enterpriseEntityOptional.get();
+                PostResponse postResponse = new PostResponse();
+                postResponse.setId(x.getId());
+                postResponse.setQuantityCv(x.getQuantity());
+                postResponse.setTitle(x.getTitle());
+                postResponse.setCity(x.getCity());
+                postResponse.setNameCam(x.getTitle());
+                postResponse.setTimeWorking(x.getTimeWorking());
+                postResponse.setGender(x.getGender());
+                postResponse.setLevel(x.getLevel());
+                postResponse.setExperience(x.getExperience());
+                postResponse.setTypeWorking(x.getTypeWorking());
+                postResponse.setDeadLine((int) ChronoUnit.DAYS.between(x.getDeadline(), LocalDateTime.now())*-1);
+                postResponse.setSalaryRange(x.getSalaryRange());
+                postResponse.setDescription(x.getDescription());
+                postResponse.setInterest(x.getInterest());
+                postResponse.setRequired(x.getRequired());
+                postResponse.setLogoCompany(enterprise.getLogo());
+                postResponse.setEnterpriseId(enterprise.getId());
+                postResponse.setNameCompany(enterprise.getCompanyName());
+                postResponse.setScales(enterprise.getScale());
+                postResponse.setLabel(packageCampaignRepository.existsByCampaignIdAndPackageId(campaignEntity.getId(),"TA01"));
+                listResult.add(postResponse);
+            }
         }
         return listResult;
     }

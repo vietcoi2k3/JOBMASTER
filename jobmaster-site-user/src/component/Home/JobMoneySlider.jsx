@@ -58,7 +58,15 @@ const JobSlider = () => {
                                     alt={job.title}
                                     style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '50%', marginRight: '10px' }}
                                 />
-                                <Typography variant="h6" component="div">
+                                <Typography variant="h6" component="div"  gutterBottom
+                                            sx={{
+                                                display: 'inline-block',
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                whiteSpace: 'nowrap',
+                                                maxWidth: '350px',
+                                                verticalAlign: 'middle'
+                                            }}>
                                     {job.title+"  "}
                                     {job.label&& <Chip
                                         label={"Hot"}
