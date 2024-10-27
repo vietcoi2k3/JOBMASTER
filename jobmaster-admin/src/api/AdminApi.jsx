@@ -120,7 +120,7 @@ const AdminApi =  {
 
     updateStatusEnterprise(status,id){
         const url = "/admin/update-status-enterprise";
-        return axiosClient.get(url, {
+        return axiosClient.put(url, {
             params: {
                 status: status,
                 id: id,
