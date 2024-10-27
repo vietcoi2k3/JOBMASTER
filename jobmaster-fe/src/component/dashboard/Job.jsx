@@ -27,7 +27,7 @@ const Job = () => {
     const [openServicePopup, setOpenServicePopup] = useState(false);
     const [mgsConfirm, setMgsConfirm] = useState('');
     const [services, setServices] = useState([]);
-    const [campaignDownId,setCampaignDownId] = useState();
+    const [campaignDownId, setCampaignDownId] = useState();
     const [selectedServices, setSelectedServices] = useState([]);
     const [openPaymentPopup, setOpenPaymentPopup] = useState(false); // Popup xác nhận thanh toán
     const [totalAmount, setTotalAmount] = useState(0); // Tổng số tiền
@@ -47,6 +47,7 @@ const Job = () => {
         getList();
     }, [pageNumber]);
 
+    
     const getList = () => {
         setLoading(true);
         EnterpriseApi.getListCampaign(search, pageNumber)
@@ -96,9 +97,23 @@ const Job = () => {
             campaignId: camId,
             packageId: packageIds
         }
-        EnterpriseApi.activateService(data).then((e) => {
-            console.log(e)
-        })
+        EnterpriseApi.activateService(data)
+            .then((res) => {
+                setNotification({
+                    open: true,
+                    message: 'Thanh toán thành công',
+                    type: "success"
+                })
+            })
+            .catch((error) => {
+                setNotification({
+                    open: true,
+                    message: 'Số dư không đủ',
+                    type: "error"
+                })
+            }).then((e) => {
+                console.log(e)
+            })
         setOpenPaymentPopup(false); // Đóng popup thanh toán
         setSelectedServices([]); // Reset dịch vụ đã chọn
     };
@@ -112,7 +127,7 @@ const Job = () => {
         }
     };
     const handleToggle = () => {
-        console.log(campaignDownId+"----------------")
+        console.log(campaignDownId + "----------------")
         EnterpriseApi.updateStatusCampaign(campaignDownId)
             .then((res) => {
                 getList();
@@ -187,13 +202,14 @@ const Job = () => {
                             data.map((campaign, index) => (
                                 <TableRow key={index}>
                                     <TableCell align="center">{campaign.name}</TableCell>
-                                    <TableCell align="center">{campaign.quantity ? campaign.quantity : 0}</TableCell>
+                                    <TableCell align="center">{campaign.cvQuantity ? campaign.cvQuantity : 0}</TableCell>
                                     <TableCell align="center">
                                         <IconButton>
                                             <EuroIcon onClick={() => { fetchServices(campaign.id); setOpenServicePopup(true); }} />
                                         </IconButton>
                                         <IconButton>
-                                            <RecruitmentPopup onSuccess={handleReload} createStep={false} campaign={campaign} />
+                                            <RecruitmentPopup
+                                             onSuccess={handleReload} createStep={false} campaign={campaign} />
                                         </IconButton>
                                         <Switch
                                             checked={campaign.isActive}
@@ -282,7 +298,7 @@ const Job = () => {
                 onClose={setOpenConfirm}
                 title="Xác nhận"
                 message={mgsConfirm}
-                onConfirm={()=>handleConfirm()}
+                onConfirm={() => handleConfirm()}
             />
         </div>
     );

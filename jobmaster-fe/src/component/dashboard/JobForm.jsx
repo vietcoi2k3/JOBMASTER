@@ -780,22 +780,6 @@ const JobForm = ({ operator }) => {
 
                                 </Grid>
 
-                                {operator==="detail" &&(
-                                    <Grid item>
-                                   
-                                        <Button
-                                            variant="contained"
-                                            sx={{ flex: 1, backgroundColor: '#3758F9', color: 'white' }}
-                                            onClick={() => {
-                                                navigate('/dashboard/job-form/update/'+id);
-                                            }}
-                                        >
-                                            Chỉnh sửa
-                                        </Button>
-
-                                </Grid>
-                                )}
-
                                 <Grid item>
                                     <Button
                                         variant="contained"

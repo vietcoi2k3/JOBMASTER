@@ -20,6 +20,7 @@ function UserProfile() {
     username: '',
     fullName: '',
     gender: '',
+    phoneNumber:''
   });
   const [notification, setNotification] = React.useState({
     open: false,
@@ -102,8 +103,10 @@ function UserProfile() {
             fullWidth
             label="Số điện thoại"
             variant="outlined"
-            value="0333482008"
+            value={userInfo.phoneNumber}
             className="bg-white"
+            name = "phoneNumber"
+            onChange={handleChange}
           />
         </div>
 
