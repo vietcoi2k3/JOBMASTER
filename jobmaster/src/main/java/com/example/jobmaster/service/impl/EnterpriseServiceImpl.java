@@ -324,8 +324,8 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
     @Override
     public HistoryResponse getHistoryMoney(int pageSize,int pageNumber,HttpServletRequest httpServletRequest) {
         UserEntity user = userRepository.findByUsername(jwtUntil.getUsernameFromRequest(httpServletRequest));
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        Page<HistoryMoney> historyMoneyPage = historyPaymentRepository.findAllByUserIdOrderByCreatedAtDesc(user.getId(),pageable);
+        Pageable pageable = PageRequest.of(--pageNumber, pageSize);
+        Page<HistoryMoney> historyMoneyPage = historyPaymentRepository.findAllByUserId(user.getId(),pageable);
         return HistoryResponse.builder()
                 .historyMoneyList(historyMoneyPage.getContent())
                 .totalMoney(user.getBalance())
@@ -367,11 +367,11 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
     }
 
     @Override
-    public List<CampaignResponse> getAllCampaign(HttpServletRequest httpServletRequest) {
+    public List<CampaignResponse> getAllCampaign(HttpServletRequest httpServletRequest,String campaignId) {
         String username = jwtUntil.getUsernameFromRequest(httpServletRequest);
         UserEntity user = userRepository.findByUsername(username);
         System.out.println(user.getEnterpriseId());
-        return campaignRepository.getListCampaignForPost(user.getEnterpriseId());
+        return campaignRepository.getListCampaignForPost(user.getEnterpriseId(),campaignId);
     }
 
     @Override

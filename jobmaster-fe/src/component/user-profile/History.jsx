@@ -19,8 +19,8 @@ export default function TransactionHistory() {
     const [open, setOpen] = useState(false); // Trạng thái mở/đóng popup
     const [amount, setAmount] = useState(""); // Lưu số tiền nhập vào
     const [data, setData] = useState({
-        totalMoney:0,
-        historyMoneyList:[]
+        totalMoney: 0,
+        historyMoneyList: []
     })
     const [pageNumber, setPageNumber] = useState(1);
     const [totalPage, setTotalPage] = useState(0);
@@ -81,7 +81,7 @@ export default function TransactionHistory() {
             >
                 <Typography>Tài khoản của bạn</Typography>
                 <Typography variant="h4" sx={{ fontWeight: "bold" }}>
-                    {data.totalMoney.toLocaleString('vi-VN')+"VND"} {/* Chuyển đổi và hiển thị tiền tệ VND */}
+                    {data.totalMoney.toLocaleString('vi-VN') + "VND"} {/* Chuyển đổi và hiển thị tiền tệ VND */}
                 </Typography>
                 <Button
                     variant="contained"
@@ -112,24 +112,31 @@ export default function TransactionHistory() {
                                     <Grid container>
                                         <Grid item xs={6}>
                                             <Typography
-                                            variant="h5"
+                                                variant="h5"
                                                 sx={{
                                                     color: transaction.isAddMoney ? "green" : "red", // Xanh nếu isAdd là true, đỏ nếu false
                                                     fontWeight: "bold",
-                                                    
+
                                                 }}
                                             >
-                                                {transaction.isAddMoney ? "+" : "-"}{transaction.amount.toLocaleString('vi-VN')+"VND"}
+                                                {transaction.isAddMoney ? "+" : "-"}{transaction.amount.toLocaleString('vi-VN') + "VND"}
                                             </Typography>
                                         </Grid>
                                         <Grid item xs={6} textAlign="right">
                                             <Typography variant="body2" color="textSecondary">
-                                                {transaction.timestamp}
+                                                {new Date(transaction.createdAt).toLocaleString("vi-VN", {
+                                                    hour: "2-digit",
+                                                    minute: "2-digit",
+                                                    day: "2-digit",
+                                                    month: "2-digit",
+                                                    year: "numeric",
+                                                    hour12: false
+                                                }).replace(',', ' ')}
                                             </Typography>
                                         </Grid>
                                     </Grid>
                                     <Typography variant="h6" color="textSecondary">
-                                        Số dư sau giao dịch: {transaction.balanceAfter.toLocaleString('vi-VN')+"VND"}
+                                        Số dư sau giao dịch: {transaction.balanceAfter.toLocaleString('vi-VN') + "VND"}
                                     </Typography>
                                     <Typography variant="h6" color="textSecondary">
                                         {transaction.descriptions}

@@ -72,8 +72,12 @@ const JobForm = ({ operator }) => {
 
     }, [])
     useEffect(() => {
-        EnterpriseApi.getAllCampaign().then((e) => setListCampaign(e))
-    }, [])
+        if (id) { // kiểm tra nếu id khác null hoặc undefined
+            EnterpriseApi.getAllCampaign(id).then((e) => setListCampaign(e));
+        } else {
+            EnterpriseApi.getAllCampaign().then((e) => setListCampaign(e));
+        }
+    }, [id]);
     useEffect(() => {
         if (id === null) {
             setData(initialData);
@@ -114,9 +118,18 @@ const JobForm = ({ operator }) => {
                         type: "error"
                     });
                 })
-                .then(() => setHasFillData(true));
+                .then(() => {
+                    setHasFillData(true)
+                });
         }
     }, [])
+    useEffect(()=>{
+        if(data.city&&listCity){
+            console.log(listCity.find(e=>e.province_name===data.city)+"4444444444444")
+            getDistrict(listCity.find(e=>e.province_name===data.city).province_id);
+
+        }
+    },[data.city]);
     const checkStatus = () => {
         EnterpriseApi.getStatus()
             .then((res) => {
@@ -286,6 +299,7 @@ const JobForm = ({ operator }) => {
             }
         }
     }
+    
     const getDistrict = (provinceId) => {
         // Gọi API để lấy danh sách quận/huyện
         Province.getDistrictByProvince(provinceId)
@@ -372,9 +386,10 @@ const JobForm = ({ operator }) => {
                                                 campaignId: selectedCampaign?.id || null // kiểm tra nếu không tìm thấy
                                             });
                                         }}
-                                        value={data.campaignId
-                                            ? (listCampaign.find(campaign => campaign.id === data.campaignId)?.name || data.campaignName)
-                                            : data.campaignName
+                                        value={
+                                            data.campaignId
+                                                ? listCampaign.find(campaign => campaign.id === data.campaignId)?.name || data.campaignName || "Không tìm thấy tên"
+                                                : data.campaignName
                                         }
                                     >
                                         {listCampaign.map((campaign, index) => (
@@ -494,7 +509,7 @@ const JobForm = ({ operator }) => {
                                         Chọn quận/huyện <span style={{ color: 'red' }}>*</span>
                                     </InputLabel>
                                     <TextField
-                                        disabled={operator === 'update'|| !data.city}
+                                        disabled={operator === 'detail'|| !data.city}
                                         labelId="district-label"
                                         select
                                         fullWidth
