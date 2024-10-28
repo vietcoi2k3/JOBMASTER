@@ -74,7 +74,7 @@ const Header = () => {
                         onClick={handleMenuOpen}
                     />
                     <Typography variant="body1" sx={{ ml: 1 }}>
-                        {user.username}
+                        hihi
                     </Typography>
                 </Box>
 
