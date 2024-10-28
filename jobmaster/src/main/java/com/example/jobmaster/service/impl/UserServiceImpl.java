@@ -32,10 +32,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Class: UserServiceImpl
@@ -91,10 +88,30 @@ public class UserServiceImpl implements IUserService {
             UserEntity user = userRepository.findByUsername(response.getEmail());
             String origin = httpServletRequest.getHeader("Origin");
             if (origin.equals("http://localhost:3001")&&user.getUserInfoId()==null){
-                throw new IllegalArgumentException("Tài khoản không hợp lệ");
+                UserInfoEntity userInfoEntity = new UserInfoEntity();
+                userInfoEntity.setUserId(user.getId());
+                userInfoEntity = userInfoRepository.save(userInfoEntity);
+
+                user.setUserInfoId(userInfoEntity.getId());
+                RoleEntity roleEntity = roleRepository.findById(2)
+                        .orElseThrow(() -> new RuntimeException("Role not found"));
+
+                Set<RoleEntity> roleEntities = new HashSet<>(Arrays.asList(roleEntity));
+                user.setRoles(roleEntities);
+                user=userRepository.save(user);
             }
             if (origin.equals("http://localhost:3000")&&user.getEnterpriseId()==null){
-                throw new IllegalArgumentException("Tài khoản không hợp lệ");
+                EnterpriseEntity enterprise = new EnterpriseEntity();
+                enterprise.setUserId(user.getId());
+                enterprise = enterpriseRepository.save(enterprise);
+
+                user.setEnterpriseId(enterprise.getId());
+                RoleEntity roleEntity = roleRepository.findById(1)
+                        .orElseThrow(() -> new RuntimeException("Role not found"));
+
+                Set<RoleEntity> roleEntities = new HashSet<>(Arrays.asList(roleEntity));
+                user.setRoles(roleEntities);
+                user=userRepository.save(user);
             }
             return ResponseEntity.ok(this.loginByGoogle(user));
         } else {

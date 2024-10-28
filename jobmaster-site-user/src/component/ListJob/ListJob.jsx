@@ -76,7 +76,14 @@ const JobDetails = ({ job }) => {
                     <Typography variant="body2">{job.address}</Typography>
                     <Typography variant="body2" fontWeight="bold">{job.salaryRange}/tháng</Typography>
                 </div>
-                <Button variant="contained" color="primary" size="small" onClick={() => setOpen(true)}>Ứng tuyển</Button>
+                <Button variant="contained" color="primary" size="small"  onClick={() => {
+                    if (localStorage.getItem("access_token") === null) {
+                        // Nếu chưa đăng nhập, điều hướng đến /login
+                        navigate('/login');
+                        return
+                    }
+                    setOpen(true)
+                }}>Ứng tuyển</Button>
             </div>
             <Divider style={{margin: '12px 0'}}/>
             <Typography variant="subtitle1" fontWeight="bold">Mô tả công việc</Typography>

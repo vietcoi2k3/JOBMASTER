@@ -53,7 +53,7 @@ const Header = () => {
                 <Box>
                     <Button color="inherit" component={Link} to="/">Việc làm</Button>
                     <Button color="inherit" onClick={handleCriteriaClick}>Tiêu chí</Button>
-                    <Button color="inherit" component={Link} to="/blog">Blog</Button>
+                    <Button color="inherit"  onClick={() => window.location.href = "http://localhost:3000"}>Đăng tuyển</Button>
                 </Box>
                 {token === null ? (
                     <>

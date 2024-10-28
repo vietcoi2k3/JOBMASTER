@@ -125,7 +125,7 @@ const JobForm = ({ operator }) => {
     }, [])
     useEffect(()=>{
         if(data.city&&listCity){
-            console.log(listCity.find(e=>e.province_name===data.city)+"4444444444444")
+            // console.log(listCity.find(e=>e.province_name===data.city)+"4444444444444")
             getDistrict(listCity.find(e=>e.province_name===data.city).province_id);
 
         }

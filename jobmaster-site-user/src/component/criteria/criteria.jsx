@@ -155,11 +155,14 @@ export default function Criteria() {
                     onChange={handleCompanySizeChange}
                     fullWidth
                 >
-                    {["Chưa có kinh nghiệm", "Dưới 1 năm", "1 năm", "2 năm", "3 năm", "4 năm", "5 năm", "Trên 5 năm"].map((size) => (
-                        <MenuItem key={size} value={size}>
-                            {size}
-                        </MenuItem>
-                    ))}
+                    <MenuItem value="Nhân viên">Nhân viên</MenuItem>
+                    <MenuItem value="Trưởng nhóm">Trưởng nhóm</MenuItem>
+                    <MenuItem value="Trưởng/ Phó phòng">Trưởng/ Phó phòng</MenuItem>
+                    <MenuItem value="Trưởng chi nhánh">Trưởng chi nhánh</MenuItem>
+                    <MenuItem value="Quản lý/ Giám sát">Quản lý/ Giám sát</MenuItem>
+                    <MenuItem value="Phó giám đốc">Phó giám đốc</MenuItem>
+                    <MenuItem value="Giám đốc">Giám đốc</MenuItem>
+                    <MenuItem value="Thực tập sinh">Thực tập sinh</MenuItem>
                 </TextField>
 
                 {/* Nút lưu */}

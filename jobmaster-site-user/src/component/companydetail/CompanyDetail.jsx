@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 // import { Work } from 'lucide-react';
 import sliderimg from '../../assets/companyLogo.png'
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import authApi from "../../api/AuthApi";
 import ApplyJobPopup from "../ListJob/ApplyJobPopup";
 
@@ -24,6 +24,7 @@ const CompanyProfile = () => {
     const [listJob,setListJob] = useState([])
     const [open, setOpen] = useState(false);
     const [jobSelect ,setJobSelect] = useState(null)
+    const navigate = useNavigate()
     useEffect(() => {
         authApi.getDetailCompany(id).then((e)=>{
             setCompany(e)
@@ -35,6 +36,14 @@ const CompanyProfile = () => {
     }, [id]);
 
      const handleSelect =(job)=>{
+
+             if (localStorage.getItem("access_token") === null) {
+                 // Nếu chưa đăng nhập, điều hướng đến /login
+                 navigate('/login');
+                 return
+             }
+             setOpen(true)
+
          setJobSelect(job)
          setOpen(true)
      }

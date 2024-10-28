@@ -102,7 +102,7 @@ const Login = () => {
     }
 
     return (
-        <div className='flex flex-row-reverse'>
+        <div className='flex flex-row-reverse bg-white'>
             <div>
                 <Notification
                     open={notification.open}

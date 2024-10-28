@@ -121,7 +121,7 @@ public class ConsumerImpl implements IConsumerService {
             return criteriaEntity;
         }
         CriteriaEntity criteriaUpdate = criteriaRepository.findById(userInfoEntity.getCriteriaId()).get();
-        criteriaUpdate.setScales(criteriaEntity.getScales());
+        criteriaUpdate.setLevel(criteriaEntity.getLevel());
         criteriaUpdate.setCity(criteriaEntity.getCity());
         criteriaUpdate.setExperience(criteriaEntity.getExperience());
         criteriaUpdate.setField(criteriaEntity.getField());
@@ -145,11 +145,12 @@ public class ConsumerImpl implements IConsumerService {
         String experience = criteriaEntity.getExperience();
         String typeWorking = criteriaEntity.getTypeWorking();
         String city = criteriaEntity.getCity();
-        return getListPostCriteria(field,position,experience,typeWorking,city);
+        String level = criteriaEntity.getLevel();
+        return getListPostCriteria(field,position,experience,typeWorking,city,level);
     }
 
     public List<PostResponse> getListPostCriteria(String field, String position, String experience,
-                                                String typeWorking, String city) {
+                                                String typeWorking, String city,String level) {
         StringBuilder queryBuilder = new StringBuilder(
                 "SELECT p FROM PostEntity p " +
                         "LEFT JOIN CampaignEntity ce ON p.campaignId = ce.id " +
@@ -165,6 +166,7 @@ public class ConsumerImpl implements IConsumerService {
         if (experience != null) conditions.add("p.experience = :experience");
         if (typeWorking != null) conditions.add("p.typeWorking = :typeWorking");
         if (city != null) conditions.add("p.city = :city");
+        if (level != null) conditions.add("p.level = :level");
 
         // Tạo tất cả tổ hợp có thể xảy ra (từ 3 điều kiện trở lên)
         List<String> combinations = generateCombinations(conditions, 3);
@@ -181,6 +183,7 @@ public class ConsumerImpl implements IConsumerService {
         if (experience != null) query.setParameter("experience", experience);
         if (typeWorking != null) query.setParameter("typeWorking", typeWorking);
         if (city != null) query.setParameter("city", city);
+        if (level != null) query.setParameter("level", level);
         List<PostEntity> postEntities = query.getResultList();
         List<PostResponse> listResult = new ArrayList<>();
 

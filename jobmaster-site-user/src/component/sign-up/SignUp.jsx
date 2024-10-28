@@ -33,7 +33,7 @@ const SignUp = () => {
 
   const handleLogin = () => {
     const clientId = "421794227239-vvm5o77fkd4qsendqmr4movhv6kmqt3m.apps.googleusercontent.com";
-    const redirectUri = "http://localhost:3000/callback";
+    const redirectUri = "http://localhost:3001/callback";
     const scope = "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email";
     const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}`;
     window.location.href = authUrl;
@@ -72,7 +72,7 @@ const SignUp = () => {
   };
 
   return (
-      <div className="overflow-hidden">
+      <div className="overflow-hidden bg-white">
         {loading ? (
             <CircularProgress className="flex justify-center items-center" />
         ) : (
@@ -81,7 +81,7 @@ const SignUp = () => {
               <div className="overflow-auto scrollable-content p-12 h-screen">
                 <Notification open={notification.open} onClose={() => setNotification({ open: false, message: '' })} message={notification.message} />
                 <img src={logo} alt="" width={200} />
-                <h2 className="text-primary font-black text-2xl">Đăng kí tài khoản nhà tuyển dụng</h2>
+                <h2 className="text-primary font-black text-2xl">Đăng kí để tìm việc</h2>
                 <div className="p-4">
                   <Snackbar open={open} autoHideDuration={6000} onClose={() => setOpen(false)} anchorOrigin={{ vertical: "top", horizontal: "center" }}>
                     <Alert onClose={() => setOpen(false)} severity="warning">

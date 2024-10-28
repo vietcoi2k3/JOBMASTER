@@ -28,7 +28,7 @@ const JobDetails = () => {
     const { state } = useLocation();
     const { job } = state || {};
     const navigate = useNavigate();
-
+    const token = localStorage.getItem("access_token")
     const handleNavigateToCompany = () => {
         navigate(`/detail-company/${job.enterpriseId}`);
     };
@@ -81,7 +81,16 @@ const JobDetails = () => {
                             size="large"
                             fullWidth
                             sx={{ mb: 3 }}
-                            onClick={() => setOpen(true)}
+                            onClick={() => {
+                                if (token === null) {
+                                    // Nếu chưa đăng nhập, điều hướng đến /login
+                                    navigate('/login');
+                                    return
+                                }
+                                setOpen(true)
+                            }
+                        }
+
                         >
                             Ứng tuyển ngay
                         </Button>

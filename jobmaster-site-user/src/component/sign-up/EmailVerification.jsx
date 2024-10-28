@@ -1,4 +1,4 @@
-import React ,{useState}from 'react';
+import React, {useEffect, useState} from 'react';
 import { Button, Typography, Box } from '@mui/material';
 import verifyemail from "../../assets/verifyemail.png";
 import SendIcon from '@mui/icons-material/Send';
@@ -9,6 +9,10 @@ const EmailVerification = () => {
   const { email } = location.state || {}; // Lấy email từ state
   const [disabled, setDisabled] = useState(false);
   const [timer, setTimer] = useState(0);
+
+  useEffect(() => {
+    AuthApi.sendEmail(email).then().catch()
+  }, []);
   const handleClick = () => {
     AuthApi.sendEmail(email)
     setDisabled(true);
