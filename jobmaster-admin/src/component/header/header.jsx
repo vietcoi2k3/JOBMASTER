@@ -30,6 +30,7 @@ const Header = () => {
     };
     const logOut =()=>{
         localStorage.removeItem('access_token');
+        localStorage.removeItem('username');
         navigate('/')
     }
     return (
@@ -74,7 +75,7 @@ const Header = () => {
                         onClick={handleMenuOpen}
                     />
                     <Typography variant="body1" sx={{ ml: 1 }}>
-                        hihi
+                        {user.username}
                     </Typography>
                 </Box>
 

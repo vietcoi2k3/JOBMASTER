@@ -10,7 +10,7 @@ import AccountTable from "./component/Account/AccountTable";
 import TabSetting from "./component/Setting/Tab";
 import ManageCertificate from "./component/MangeCertificate/ManageCertificate";
 
-import Campaign from "./component/post/Post";
+import Campaign from "./component/campaign/Campaign";
 import Post from "./component/post/Post";
 import ServiceList from "./component/Service/ServiceList";
 import JobInfoView from "./component/post/DetailPost";

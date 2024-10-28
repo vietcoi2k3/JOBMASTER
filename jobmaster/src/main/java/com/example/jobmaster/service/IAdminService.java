@@ -1,9 +1,6 @@
 package com.example.jobmaster.service;
 
-import com.example.jobmaster.dto.Response.EnterpriseResponse;
-import com.example.jobmaster.dto.Response.PackageResponse;
-import com.example.jobmaster.dto.Response.PageResponse;
-import com.example.jobmaster.dto.Response.UserInfoResponse;
+import com.example.jobmaster.dto.Response.*;
 import com.example.jobmaster.entity.*;
 import com.example.jobmaster.enumration.Time;
 import jakarta.mail.MessagingException;
@@ -15,11 +12,11 @@ public interface IAdminService {
     List<FieldEntity> getListField(String code,String name);
     PageResponse<UserInfoResponse> getListCandidate(int pageSize, int pageNumber);
     PageResponse<EnterpriseResponse> getListAdmin(int pageSize, int pageNumber);
-    PageResponse<EnterpriseEntity> getListCertificate(int pageSize, int pageNumber);
-    PageResponse<CampaignEntity> getListCampaign(int pageSize, int pageNumber, String search);
+    PageResponse<EnterpriseManagement> getListCertificate(int pageSize, int pageNumber, String status, String username);
+    PageResponse<CampaignManagement> getListCampaign(int pageSize, int pageNumber, String campaignName, String tax);
 
    List<PackageResponse> getListPackageAdmin( Time time);
-   PageResponse<PostEntity> getListPost(int pageSize,int pageNumber);
+   PageResponse<PostManagement> getListPost(int pageSize, int pageNumber, String postName, String tax);
 
    PostEntity getDetailPost(String id);
 
@@ -31,5 +28,5 @@ public interface IAdminService {
 
     PageResponse<EnterpriseResponse> getListCompany(int pageSize, int pageNumber);
 
-
+    CampaignEntity updateStatusCampaign(String campaignId, boolean status);
 }

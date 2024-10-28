@@ -52,9 +52,9 @@ const LoginComponent = () => {
               setErrorMessage('Tài khoản hoặc mật khẩu không chính xác');
             } else {
               localStorage.setItem('access_token', res.token);
-              navigate('/post');
               AuthApi.getUserByToken()
-              .then((user)=>setUser(user));
+              .then((user)=>localStorage.setItem('username',user.username));
+              navigate('/post');
             }
           })
           .catch((e) => { setErrorMessage('Tài khoản hoặc mật khẩu không chính xác') })

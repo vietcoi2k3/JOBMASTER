@@ -1,5 +1,6 @@
 package com.example.jobmaster.repository;
 
+import com.example.jobmaster.dto.Response.EnterpriseManagement;
 import com.example.jobmaster.dto.Response.EnterpriseResponse;
 import com.example.jobmaster.entity.EnterpriseEntity;
 import org.springframework.data.domain.Page;
@@ -27,9 +28,19 @@ public interface EnterpriseRepository extends JpaRepository<EnterpriseEntity,Str
             "FROM EnterpriseEntity c INNER JOIN UserEntity u ON c.userId = u.id")
     Page<EnterpriseResponse> getListAdmin(Pageable pageable);
 
-    @Query("SELECT c " +
-            "FROM EnterpriseEntity c")
-    Page<EnterpriseEntity> getListCertificate(Pageable pageable);
+    @Query("""
+        select e.companyName as enterpriseName,
+        u.username as username,
+        e.address as address,
+        e.isActive as status,
+        e.businessCertificate as businessCertificate,
+        e.id as id
+        from EnterpriseEntity e 
+        join UserEntity u on u.id = e.userId
+        where (:status IS NULL OR :status = '' OR e.isActive = :status) and (:username is null or u.username LIKE CONCAT('%', :username, '%') )
+        order by e.createdAt desc 
+""")
+    Page<EnterpriseManagement> getListCertificate(String status, String username, Pageable pageable);
 
     @Query("SELECT c " +
             "FROM EnterpriseEntity c " +

@@ -37,11 +37,13 @@ const AdminApi =  {
         });
     },
 
-    getListCertificate(pageNumber) {
+    getListCertificate(pageNumber,status,username) {
         const url = "/admin/get-list-certificate";
         return axiosClient.get(url, {
             params: {
                 pageNumber: pageNumber,
+                status:status,
+                username:username
             },
         });
     },
@@ -55,15 +57,26 @@ const AdminApi =  {
         });
     },
 
-    getListPost(pageNumber) {
+    getListPost(pageNumber,postName,tax) {
         const url = "/admin/get-list-post";
         return axiosClient.get(url, {
             params: {
                 pageNumber: pageNumber,
+                postName:postName,
+                tax:tax
             },
         });
     },
-
+    getListCampaign(pageNumber,campaignName,tax) {
+        const url = "/admin/get-list-campaign";
+        return axiosClient.get(url, {
+            params: {
+                pageNumber: pageNumber,
+                campaignName:campaignName,
+                tax:tax
+            },
+        });
+    },
     getListPackage(time){
         const url = "/admin/get-list-package-admin"
         return axiosClient.get(url, {

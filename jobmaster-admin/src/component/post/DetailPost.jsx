@@ -31,7 +31,7 @@ const JobInfoView = () => {
     };
 
     const handleReject = () => {
-        AdminApi.updateStatusPost("APPROVED",id).then((e)=>{
+        AdminApi.updateStatusPost("NOT_APPROVED",id).then((e)=>{
             navigate("/post")
         })
     };

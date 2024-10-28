@@ -1,5 +1,6 @@
 package com.example.jobmaster.repository;
 
+import com.example.jobmaster.dto.Response.CampaignManagement;
 import com.example.jobmaster.dto.Response.CampaignResponse;
 import com.example.jobmaster.entity.CampaignEntity;
 import org.springframework.data.domain.Page;
@@ -40,8 +41,20 @@ public interface CampaignRepository extends JpaRepository<CampaignEntity,String>
     @Query("SELECT c.id FROM CampaignEntity c WHERE c.enterpriseId=:enterpriseId and c.id IS NOT NULL")
     List<String> getListIdCampaign(@Param("enterpriseId") String enterpriseId);
 
-    @Query("SELECT c FROM CampaignEntity c WHERE c.name  LIKE %:search% ")
-    Page<CampaignEntity> getListCampaignAdmin(@Param("search") String search, Pageable pageable);
+    @Query("""
+        select 
+            c.id as id,
+            c.name as campaignName,
+            e.companyName as enterpriseName,
+            e.tax as tax,
+            c.isActive as status
+        from CampaignEntity c 
+        join EnterpriseEntity e on e.id = c.enterpriseId
+        where ( :campaignName is null or c.name is null or c.name LIKE CONCAT('%', :campaignName, '%')) 
+                and (:tax is null or e.tax is null or e.tax LIKE CONCAT('%', :tax, '%'))
+        order by c.createdAt desc 
+""")
+    Page<CampaignManagement> getListCampaignAdmin(@Param("campaignName") String campaignName, String tax, Pageable pageable);
 
     @Query(value = """ 
         SELECT c.id AS id, 

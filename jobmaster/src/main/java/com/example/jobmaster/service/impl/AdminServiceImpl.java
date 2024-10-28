@@ -1,14 +1,13 @@
 package com.example.jobmaster.service.impl;
 
-import com.example.jobmaster.dto.Response.EnterpriseResponse;
-import com.example.jobmaster.dto.Response.PackageResponse;
-import com.example.jobmaster.dto.Response.PageResponse;
-import com.example.jobmaster.dto.Response.UserInfoResponse;
+import com.example.jobmaster.dto.Response.*;
 import com.example.jobmaster.entity.*;
 import com.example.jobmaster.enumration.Time;
+import com.example.jobmaster.exception.NotFoundException;
 import com.example.jobmaster.repository.*;
 import com.example.jobmaster.security.jwt.JWTUntil;
 import com.example.jobmaster.service.IAdminService;
+import com.example.jobmaster.until.constants.ExceptionMessage;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +21,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -80,21 +80,22 @@ public class AdminServiceImpl implements IAdminService {
     }
 
     @Override
-    public PageResponse<EnterpriseEntity> getListCertificate(int pageSize, int pageNumber) {
+    public PageResponse<EnterpriseManagement> getListCertificate(int pageSize, int pageNumber, String status, String username) {
         pageNumber--;
         Pageable pageable = PageRequest.of(pageNumber,pageSize);
-        Page<EnterpriseEntity> page = enterpriseRepository.getListCertificate(pageable);
-        return PageResponse.<EnterpriseEntity>builder()
+        Page<EnterpriseManagement> page = enterpriseRepository.getListCertificate(status,username,pageable);
+        return PageResponse.<EnterpriseManagement>builder()
                 .data(page.getContent())
+                .totalPage(page.getTotalPages())
                 .build();
     }
 
     @Override
-    public PageResponse<CampaignEntity> getListCampaign(int pageSize, int pageNumber, String search) {
+    public PageResponse<CampaignManagement> getListCampaign(int pageSize, int pageNumber, String campaignName, String tax) {
         pageNumber--;
         Pageable pageable = PageRequest.of(pageNumber,pageSize);
-        Page<CampaignEntity> page = campaignRepository.getListCampaignAdmin(search,pageable);
-        return PageResponse.<CampaignEntity>builder()
+        Page<CampaignManagement> page = campaignRepository.getListCampaignAdmin(campaignName,tax,pageable);
+        return PageResponse.<CampaignManagement>builder()
                 .data(page.getContent())
                 .totalPage(page.getTotalPages())
                 .build();
@@ -144,11 +145,11 @@ public class AdminServiceImpl implements IAdminService {
     }
 
     @Override
-    public PageResponse<PostEntity> getListPost(int pageNumber,int pageSize) {
+    public PageResponse<PostManagement> getListPost(int pageNumber,int pageSize,String postName, String tax) {
         pageNumber--;
         Pageable pageable = PageRequest.of(pageNumber,pageSize);
-        Page<PostEntity> page = postRepository.getListPostAdmin(pageable);
-        return PageResponse.<PostEntity>builder()
+        Page<PostManagement> page = postRepository.getListPostAdmin(postName,tax,pageable);
+        return PageResponse.<PostManagement>builder()
                 .data(page.getContent())
                 .totalPage(page.getTotalPages())
                 .build();
@@ -186,7 +187,19 @@ public class AdminServiceImpl implements IAdminService {
         return null;
     }
 
-
-
-
+    @Override
+    public CampaignEntity updateStatusCampaign(String campaignId, boolean status) {
+        CampaignEntity campaignEntity = campaignRepository.findById(campaignId)
+                .orElseThrow(()->new NotFoundException(ExceptionMessage.CAMPAIGN_NOT_FOUND));
+        campaignEntity.setActive(status);
+        campaignRepository.save(campaignEntity);
+        if(campaignEntity.getPostId()!=null){
+            Optional<PostEntity> postEntity = postRepository.findById(campaignEntity.getPostId());
+            if(postEntity.isPresent()){
+                postEntity.get().setStatus(PostEnum.NOT_APPROVED.name());
+                postRepository.save(postEntity.get());
+            }
+        }
+        return campaignEntity;
+    }
 }

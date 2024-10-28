@@ -15,20 +15,26 @@ import {
     Dialog,
     DialogTitle,
     DialogContent,
-    DialogActions,
+    DialogActions, MenuItem, FormControl, InputLabel, Select
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import AddIcon from '@mui/icons-material/Add';
 import AdminApi from "../../api/AdminApi";
-
+const statusOptions = {
+    ACTIVE: 'Hoạt động',
+    WAITING_ACTIVE: 'Chờ kích hoạt',
+    INACTIVE: 'Không hoạt động'
+};
 function ManageCertificate() {
     const [pageNumber, setPageNumber] = useState(1);
     const [candidate, setCandidate] = useState([]);
     const [totalPages, setTotalPages] = useState(1);
     const [open, setOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null); // Lưu thông tin giấy phép được chọn
-
+    const [status, setStatus] = useState('');
+    const [username, setUsername] = useState('');
+    const listStatus = ['ACTIVE', 'WAITING_ACTIVE', 'INACTIVE']
     const getStatusInfo = (status) => {
         switch (status) {
             case 'ACTIVE':
@@ -43,7 +49,8 @@ function ManageCertificate() {
     };
 
     const handleClickOpen = (item) => {
-        setSelectedItem(item); // Lưu thông tin của item được bấm
+        setSelectedItem(item);
+        console.log(selectedItem) // Lưu thông tin của item được bấm
         setOpen(true);
     };
 
@@ -53,17 +60,25 @@ function ManageCertificate() {
     };
 
     const fetch = async () => {
-        const response = await AdminApi.getListCertificate(pageNumber);
+        const response = await AdminApi.getListCertificate(pageNumber, status, username);
         setCandidate(response.data);
-        setTotalPages(response.totalPages);
+        setTotalPages(response.totalPage);
     };
 
     useEffect(() => {
         fetch();
-    }, [pageNumber]);
+    }, [pageNumber, status]);
 
     const handlePageChange = (event, value) => {
         setPageNumber(value);
+    };
+    const handleChange = (event) => {
+        setStatus(event.target.value);
+    };
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            fetch();
+        }
     };
 
     return (
@@ -71,16 +86,29 @@ function ManageCertificate() {
             <Box sx={{ bgcolor: '#ffffff', padding: 1 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                     <Box sx={{ display: 'flex', gap: 2 }}>
-                        <TextField label="Tên lĩnh vực" variant="outlined" size="small" />
-                        <TextField label="Mã lĩnh vực" variant="outlined" size="small" />
+                        <FormControl variant="outlined" size="small" sx={{ minWidth: 200, marginLeft: 2 }}>
+                            <InputLabel>Trạng thái</InputLabel>
+                            <Select
+                                value={status}
+                                onChange={handleChange}
+                                label="Trạng thái"
+                            >
+                                <MenuItem value="">
+                                    Tất cả
+                                </MenuItem>
+                                {Object.entries(statusOptions).map(([key, value]) => (
+                                    <MenuItem key={key} value={key}>
+                                        {value} {/* Hiển thị tên tiếng Việt */}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                        <TextField
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            onKeyDown={handleKeyPress}
+                            label="Tài khoản" variant="outlined" size="small" />
                     </Box>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        startIcon={<AddIcon />}
-                    >
-                        Thêm mới
-                    </Button>
                 </Box>
             </Box>
 
@@ -88,21 +116,23 @@ function ManageCertificate() {
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell>STT</TableCell>
-                            <TableCell>Tên Công Ty</TableCell>
-                            <TableCell>Địa chỉ</TableCell>
-                            <TableCell>Trạng thái</TableCell>
-                            <TableCell>Thao tác</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold', width: '6.6%' }}>STT</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold', width: '26.6%' }}>Tên Công Ty</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold', width: '16.6%' }}>Tài khoản</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold', width: '16.6%' }}>Địa chỉ</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold', width: '16.6%' }}>Trạng thái</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold', width: '16.6%' }}>Thao tác</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {candidate.map((item, index) => {
-                            const { color, text } = getStatusInfo(item.isActive);
+                            const { color, text } = getStatusInfo(item.status);
                             return (
                                 <TableRow key={item.id}>
                                     <TableCell>{((pageNumber - 1) * 10) + index + 1}</TableCell>
-                                    <TableCell>{item.companyName}</TableCell>
-                                    <TableCell>{item.city}</TableCell>
+                                    <TableCell>{item.enterpriseName}</TableCell>
+                                    <TableCell>{item.username}</TableCell>
+                                    <TableCell>{item.address}</TableCell>
                                     <TableCell style={{ color }}>{text}</TableCell>
                                     <TableCell>
                                         <IconButton
@@ -119,6 +149,7 @@ function ManageCertificate() {
                     </TableBody>
                 </Table>
             </TableContainer>
+
 
             <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
                 <Pagination
@@ -140,19 +171,19 @@ function ManageCertificate() {
                                 alt="Giấy phép"
                                 style={{ width: '100%', height: 'auto', marginBottom: 10 }}
                             />
-                            <p><strong>Tên công ty:</strong> {selectedItem.companyName}</p>
-                            <p><strong>Địa chỉ:</strong> {selectedItem.city}</p>
+                            <p><strong>Tên công ty:</strong> {selectedItem.enterpriseName}</p>
+                            <p><strong>Địa chỉ:</strong> {selectedItem.address}</p>
                         </Box>
                     )}
                 </DialogContent>
                 <DialogActions>
-                    <Button color="success" onClick={() => AdminApi.updateStatusEnterprise("ACTIVE",selectedItem.id).then((e)=>{
+                    <Button color="success" onClick={() => AdminApi.updateStatusEnterprise("ACTIVE", selectedItem.id).then((e) => {
                         fetch();
                         setOpen(false)
                     })}>
                         Phê duyệt
                     </Button>
-                    <Button color="error" onClick={() => AdminApi.updateStatusEnterprise("INACTIVE",selectedItem.id).then((e)=>{
+                    <Button color="error" onClick={() => AdminApi.updateStatusEnterprise("INACTIVE", selectedItem.id).then((e) => {
                         fetch();
                         setOpen(false)
                     })}>

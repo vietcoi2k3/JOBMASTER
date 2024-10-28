@@ -1,5 +1,6 @@
 package com.example.jobmaster.repository;
 
+import com.example.jobmaster.dto.Response.PostManagement;
 import com.example.jobmaster.entity.PostEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,8 +35,21 @@ public interface PostRepository extends JpaRepository<PostEntity,String> {
             "AND pc.packageId='MJ01' " )
     List<PostEntity> getListPostByMoney();
 
-    @Query("SELECT c FROM PostEntity c")
-    Page<PostEntity> getListPostAdmin( Pageable pageable);
+    @Query("""
+        select 
+               p.id as id, 
+               p.title as postName,
+               c.name as campaignName,
+               e.tax as tax,
+               p.status as status
+        from PostEntity p 
+        join CampaignEntity c on c.id = p.campaignId
+        join EnterpriseEntity e on e.id = c.enterpriseId
+        where ( :postName is null or p.title LIKE CONCAT('%', :postName, '%')) 
+                and (:tax is null or e.tax is null or e.tax LIKE CONCAT('%', :tax, '%'))
+        order by p.createdAt desc 
+""")
+    Page<PostManagement> getListPostAdmin(String postName, String tax,Pageable pageable);
 
     @Query("SELECT c FROM PostEntity c INNER JOIN CampaignEntity ce ON c.campaignId = ce.id " +
             "WHERE ce.enterpriseId =:enterpriseId")

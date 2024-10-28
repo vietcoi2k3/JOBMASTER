@@ -81,26 +81,31 @@ public class AdminController {
     @RequestMapping(value = "/get-list-certificate",method = RequestMethod.GET)
     public ResponseEntity getListCertificate(
             @RequestParam(defaultValue = DefautlConstants.PAGE_SIZE) int pageSize,
-            @RequestParam(defaultValue = DefautlConstants.PAGE_NO) int pageNumber
+            @RequestParam(defaultValue = DefautlConstants.PAGE_NO) int pageNumber,
+            @RequestParam(value = "status",required = false) String status,
+            @RequestParam(value = "username",required = false) String username
     ){
-        return ResponseEntity.ok(iAdminService.getListCertificate(pageSize,pageNumber));
+        return ResponseEntity.ok(iAdminService.getListCertificate(pageSize,pageNumber,status,username));
     }
 
     @RequestMapping(value = "/get-list-campaign",method = RequestMethod.GET)
     public ResponseEntity getListCampaign(
             @RequestParam(defaultValue = DefautlConstants.PAGE_SIZE) int pageSize,
             @RequestParam(defaultValue = DefautlConstants.PAGE_NO) int pageNumber,
-                  @RequestParam(defaultValue = "") String search
+            @RequestParam(value = "campaignName",required = false) String campaignName,
+            @RequestParam(value = "tax",required = false) String tax
     ){
-        return ResponseEntity.ok(iAdminService.getListCampaign(pageSize,pageNumber,search));
+        return ResponseEntity.ok(iAdminService.getListCampaign(pageSize,pageNumber,campaignName,tax));
     }
 
     @RequestMapping(value = "/get-list-post",method = RequestMethod.GET)
     public ResponseEntity getListPost(
             @RequestParam(defaultValue = DefautlConstants.PAGE_SIZE) int pageSize,
-            @RequestParam(defaultValue = DefautlConstants.PAGE_NO) int pageNumber
+            @RequestParam(defaultValue = DefautlConstants.PAGE_NO) int pageNumber,
+            @RequestParam(value = "postName",required = false) String postName,
+            @RequestParam(value = "tax",required = false) String tax
     ){
-        return ResponseEntity.ok(iAdminService.getListPost(pageNumber,pageSize));
+        return ResponseEntity.ok(iAdminService.getListPost(pageNumber,pageSize,postName,tax));
     }
 
     @RequestMapping(value = "/get-detail-post/{id}",method = RequestMethod.GET)
@@ -124,4 +129,13 @@ public class AdminController {
     public ResponseEntity getListPackageByCampaign(@RequestParam String status,@RequestParam String id){
         return ResponseEntity.ok(iAdminService.updateStatusEnterprise(status,id));
     }
+
+    @PutMapping("/update-status-campaing/{id}")
+    public ResponseEntity updateStatusCampaign(
+            @PathVariable(value = "id") String campaignId,
+            @RequestParam(value = "status") boolean status
+    ){
+        return ResponseEntity.ok(iAdminService.updateStatusCampaign(campaignId,status));
+    }
+
 }
