@@ -161,8 +161,11 @@ const EnterpriseApi = {
     getNewsChart(){
         const url = "enterprise/get-news-chart";
         return axiosClient.get(url);
-    }
-
+    },
+    getAllPackageOfCampaign(id){
+        const url = "/enterprise/get-list-package/"+id;
+        return axiosClient.get(url);
+    },
 
 }
 

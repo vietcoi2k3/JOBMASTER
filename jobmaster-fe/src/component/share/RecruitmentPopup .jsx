@@ -18,7 +18,7 @@ import {
     TableSortLabel,
     Checkbox,
     Paper,
-    Typography, Table
+    Typography, Table,Box
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
@@ -30,50 +30,23 @@ import Notification from "../notification/Notification";
 const RecruitmentPopup = ({ onSuccess, createStep, campaign }) => {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [services, setServices] = useState([]);
     const [notification, setNotification] = useState({ open: false, message: '', type: '' });
-    const [packages,setPackages]= useState([]);
-    const [selected, setSelected] = useState([]);
     const [data, setData] = useState({
-        name: "",
-        packages: [],
+        name: ""
     });
 
-    const getAllPackages=()=>{
-        EnterpriseApi.getAllPackage()
-        .then((res) => {
-            setPackages(res);
-        }).catch((e) => console.log(e));
-    }
-    const getPackageOfCampaign=(id)=>{
-        EnterpriseApi.getListService(id)
-            .then((res) => setData({
-                name: campaign.name,
-                packages: res
-            }))
-            .catch(console.error);
-    }
-    const handleSelect = (packageC) => {
-        setData((prevData) => {
-            const isSelected = prevData.packages?.includes(packageC);
-            const newPackages = isSelected
-                ? prevData.packages?.filter((item) => item !== packageC) // Xóa ID nếu đã chọn
-                : [...prevData.packages, packageC]; // Thêm ID nếu chưa chọn
-
-            return {
-                ...prevData,
-                packages: newPackages
-            };
-        });
-    };
+  
     const handleClickOpen = () => {
         setOpen(true);
-        getAllPackages();
+        fetchServices(campaign.id);
         if (createStep) {
-            setData({ name: "",packages:[] });
+            setData({ name: "" });
         } else {
-            getPackageOfCampaign(campaign.id);
+            setData({ name: campaign.name });
         }
     };
+
 
     const handleClose = () => {
         setOpen(false);
@@ -118,6 +91,12 @@ const RecruitmentPopup = ({ onSuccess, createStep, campaign }) => {
                 setLoading(false)
             })
     }
+    const fetchServices = (id) => {
+        EnterpriseApi.getAllPackageOfCampaign(id)
+            .then((e) => setServices(e))
+            .catch(console.error);
+    };
+
 
     return (
         <div>
@@ -172,7 +151,7 @@ const RecruitmentPopup = ({ onSuccess, createStep, campaign }) => {
                             </Grid>
                         </Grid>
                     </LocalizationProvider>
-                    <Paper sx={{ mt: 2 }}>
+                    {!createStep && (<Paper sx={{ mt: 2 }}>
                         <TableContainer>
                             <Table>
                                 <TableHead>
@@ -180,27 +159,20 @@ const RecruitmentPopup = ({ onSuccess, createStep, campaign }) => {
                                         <TableCell align="center">STT</TableCell>
                                         <TableCell align="left">Tên dịch vụ</TableCell>
                                         <TableCell align="right">Giá tiền</TableCell>
-                                        <TableCell align="center">Chọn</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {packages.map((service, index) => (
+                                    {services.map((service, index) => (
                                         <TableRow key={service.id}>
                                             <TableCell align="center">{index + 1}</TableCell>
                                             <TableCell align="left">{service.name}</TableCell>
                                             <TableCell align="right">{service.price.toLocaleString('vi-VN')} VND</TableCell>
-                                            <TableCell align="center">
-                                                <Checkbox
-                                                    checked={data.packages.includes(service)} // Sử dụng data.packageIds
-                                                    onChange={() => handleSelect(service)}
-                                                />
-                                            </TableCell>
                                         </TableRow>
                                     ))}
                                 </TableBody>
                             </Table>
                         </TableContainer>
-                    </Paper>
+                    </Paper>)}
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} variant="outlined" color="secondary">

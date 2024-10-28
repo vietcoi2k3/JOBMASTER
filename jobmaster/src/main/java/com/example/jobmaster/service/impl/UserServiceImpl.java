@@ -436,4 +436,8 @@ public class UserServiceImpl implements IUserService {
 
         tokenRepository.delete(resetToken);  // Xóa token sau khi sử dụng
     }
+    public List<RoleEntity> getRole(String token) {
+        String username = jwtUntil.getUsernameFromToken(token.substring(7));
+        return roleRepository.getRoleByUsername(username);
+    }
 }
