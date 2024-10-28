@@ -255,23 +255,34 @@ const Job = () => {
             <Dialog open={openServicePopup} onClose={() => setOpenServicePopup(false)}>
                 <DialogTitle>Chọn dịch vụ</DialogTitle>
                 <DialogContent>
-                    {services.map((service) => (
-                        <Box key={service.id} mb={1}>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={selectedServices.includes(service)}
-                                        onChange={() => handleToggleService(service)}
-                                    />
-                                }
-                                label={`${service.name} - ${service.price} VNĐ`}
-                            />
+                    {services.length === 0 || services.every((service) => selectedServices.includes(service)) ? (
+                        <Box textAlign="center" mt={2}>
+                            <Typography>Bạn đã mua hết dịch vụ cho chiến dịch này rồi</Typography>
                         </Box>
-                    ))}
+                    ) : (
+                        services.map((service) => (
+                            <Box key={service.id} mb={1}>
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            checked={selectedServices.includes(service)}
+                                            onChange={() => handleToggleService(service)}
+                                        />
+                                    }
+                                    label={`${service.name} - ${service.price} VNĐ`}
+                                />
+                            </Box>
+                        ))
+                    )}
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setOpenServicePopup(false)}>Hủy</Button>
-                    <Button onClick={handleServiceSubmit}>Xác nhận</Button>
+                    <Button
+                        onClick={handleServiceSubmit}
+                        disabled={services.length === 0 || services.every((service) => selectedServices.includes(service))}
+                    >
+                        Xác nhận
+                    </Button>
                 </DialogActions>
             </Dialog>
 

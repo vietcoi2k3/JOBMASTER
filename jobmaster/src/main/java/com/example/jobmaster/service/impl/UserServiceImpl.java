@@ -96,7 +96,8 @@ public class UserServiceImpl implements IUserService {
                 RoleEntity roleEntity = roleRepository.findById(2)
                         .orElseThrow(() -> new RuntimeException("Role not found"));
 
-                Set<RoleEntity> roleEntities = new HashSet<>(Arrays.asList(roleEntity));
+                Set<RoleEntity> roleEntities = user.getRoles()==null?new HashSet<>():user.getRoles();
+                roleEntities.add(roleEntity);
                 user.setRoles(roleEntities);
                 user=userRepository.save(user);
             }
@@ -109,8 +110,8 @@ public class UserServiceImpl implements IUserService {
                 RoleEntity roleEntity = roleRepository.findById(1)
                         .orElseThrow(() -> new RuntimeException("Role not found"));
 
-                Set<RoleEntity> roleEntities = new HashSet<>(Arrays.asList(roleEntity));
-                user.setRoles(roleEntities);
+                Set<RoleEntity> roleEntities = user.getRoles()==null?new HashSet<>():user.getRoles();
+                roleEntities.add(roleEntity);
                 user=userRepository.save(user);
             }
             return ResponseEntity.ok(this.loginByGoogle(user));
