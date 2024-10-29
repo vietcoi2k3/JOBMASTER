@@ -39,10 +39,10 @@ const RecruitmentPopup = ({ onSuccess, createStep, campaign }) => {
   
     const handleClickOpen = () => {
         setOpen(true);
-        fetchServices(campaign.id);
         if (createStep) {
             setData({ name: "" });
         } else {
+            fetchServices(campaign.id);
             setData({ name: campaign.name });
         }
     };

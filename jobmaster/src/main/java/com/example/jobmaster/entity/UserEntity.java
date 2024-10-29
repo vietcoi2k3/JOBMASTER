@@ -11,7 +11,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-
 @Entity
 @Table(name = "user")
 @Getter
@@ -24,9 +23,7 @@ public class UserEntity extends BaseEntity implements UserDetails {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-
-    //username = email
-    private String username;
+    private String username;  // username = email
     private String password;
     private String phoneNumber;
     private String fullName;
@@ -36,12 +33,9 @@ public class UserEntity extends BaseEntity implements UserDetails {
     private String enterpriseId;
     private String userInfoId;
     private String historyId;
-    private BigDecimal balance;
 
-    /**
-     * Tập hợp các vai trò của người dùng.
-     * Được ánh xạ với bảng `user_roles` để xác định các vai trò mà người dùng sở hữu.
-     */
+    private BigDecimal balance = BigDecimal.ZERO;  // Giá trị mặc định là 0
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
@@ -49,6 +43,13 @@ public class UserEntity extends BaseEntity implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<RoleEntity> roles = new HashSet<>();
+
+    @PrePersist
+    public void prePersist() {
+        if (this.balance == null) {
+            this.balance = BigDecimal.ZERO;
+        }
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

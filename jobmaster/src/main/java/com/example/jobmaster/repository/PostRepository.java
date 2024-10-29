@@ -16,16 +16,41 @@ public interface PostRepository extends JpaRepository<PostEntity,String> {
     @Query("SELECT c FROM PostEntity c WHERE c.title LIKE %:search% AND (:status is null or c.status = :status) AND c.campaignId IN :campaignId order by c.modifiedAt desc ")
     Page<PostEntity> getListCampaign(@Param("search") String search,@Param("status") String status, @Param("campaignId") List<String> campaignId, Pageable pageable);
 
-    @Query("SELECT c FROM PostEntity c " +
-            "LEFT JOIN CampaignEntity ce ON c.campaignId = ce.id " +
-            "LEFT JOIN PackageCampaign pc ON ce.id= pc.campaignId " +
-            "WHERE " +
-            "c.title LIKE CONCAT('%', :search, '%') " +
-            "AND c.city LIKE CONCAT('%', :address, '%') " +
-            "AND c.field LIKE CONCAT('%', :field, '%') " +
-            "AND ce.isActive = TRUE AND c.status = 'APPROVED' " +
-            "ORDER BY CASE WHEN pc.packageId='SP01' THEN 0 ELSE 1 END" )
-    Page<PostEntity> getListPost(@Param("search") String search, @Param("address") String address, @Param("field") String field, Pageable pageable);
+    @Query(
+            value = "SELECT * FROM ( " +
+                    "SELECT c.*,pc.package_id, " +
+                    "ROW_NUMBER() OVER (PARTITION BY c.id ORDER BY (CASE WHEN pc.package_id = 'SP01' THEN 0 ELSE 1 END)) AS rn " +
+                    "FROM post_entity c " +
+                    "LEFT JOIN campaign_entity ce ON c.campaign_id = ce.id " +
+                    "LEFT JOIN package_campaign pc ON ce.id = pc.campaign_id " +
+                    "WHERE " +
+                    "(:search IS NULL OR c.title LIKE CONCAT('%', :search, '%')) " +
+                    "AND (:address IS NULL OR c.city LIKE CONCAT('%', :address, '%')) " +
+                    "AND (:field IS NULL OR c.field LIKE CONCAT('%', :field, '%')) " +
+                    "AND ce.is_active = TRUE AND c.status = 'APPROVED' " +
+                    ") AS subquery " +
+                    "WHERE rn = 1 " + // Chọn bản ghi đầu tiên cho mỗi id
+                    "ORDER BY  (CASE WHEN package_id = 'SP01' THEN 0 ELSE 1 END),modified_at" , // Sắp xếp theo thứ tự mà không cần dùng c.id
+
+            countQuery = "SELECT COUNT(DISTINCT c.id) FROM post_entity c " +
+                    "LEFT JOIN campaign_entity ce ON c.campaign_id = ce.id " +
+                    "LEFT JOIN package_campaign pc ON ce.id = pc.campaign_id " +
+                    "WHERE " +
+                    "(:search IS NULL OR c.title LIKE CONCAT('%', :search, '%')) " +
+                    "AND (:address IS NULL OR c.city LIKE CONCAT('%', :address, '%')) " +
+                    "AND (:field IS NULL OR c.field LIKE CONCAT('%', :field, '%')) " +
+                    "AND ce.is_active = TRUE AND c.status = 'APPROVED'",
+
+            nativeQuery = true
+    )
+    Page<PostEntity> getListPost(
+            @Param("search") String search,
+            @Param("address") String address,
+            @Param("field") String field,
+            Pageable pageable
+    );
+
+
 
     @Query("SELECT c FROM PostEntity c " +
             "LEFT JOIN CampaignEntity ce ON c.campaignId = ce.id " +
