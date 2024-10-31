@@ -302,15 +302,10 @@ export default function MiniDrawer() {
                 </ListItemIcon>
                 <ListItemText
                   primary={text}
-                  sx={[
-                    open
-                      ? {
-                        opacity: 1,
-                      }
-                      : {
-                        opacity: 0,
-                      },
-                  ]}
+                  sx={{
+                    opacity: open ? 1 : 0,
+                    color: highlightedIndex === index ? '#2D7CF1' : 'gray', 
+                  }}
                 />
               </ListItemButton>
             </ListItem>

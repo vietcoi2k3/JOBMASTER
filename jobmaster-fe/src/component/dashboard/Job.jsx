@@ -255,7 +255,7 @@ const Job = () => {
             <Dialog open={openServicePopup} onClose={() => setOpenServicePopup(false)}>
                 <DialogTitle>Chọn dịch vụ</DialogTitle>
                 <DialogContent>
-                    {services.length === 0 || services.every((service) => selectedServices.includes(service)) ? (
+                    {services.length === 0 ? (
                         <Box textAlign="center" mt={2}>
                             <Typography>Bạn đã mua hết dịch vụ cho chiến dịch này rồi</Typography>
                         </Box>
@@ -279,7 +279,7 @@ const Job = () => {
                     <Button onClick={() => setOpenServicePopup(false)}>Hủy</Button>
                     <Button
                         onClick={handleServiceSubmit}
-                        disabled={services.length === 0 || services.every((service) => selectedServices.includes(service))}
+                        disabled={services.length === 0 || selectedServices.length===0}
                     >
                         Xác nhận
                     </Button>

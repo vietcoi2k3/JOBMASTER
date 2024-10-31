@@ -136,7 +136,7 @@ const ViewCV = () => {
                                     <Chip label={cv.status} color="default" />
                                 </TableCell>
                                 <TableCell>
-                                    <Chip onClick={() => { navigate("/dashboard/detail-cv/" + cv.id); return null }} label="Xem Profile" color="primary" variant="outlined" clickable />
+                                    <Chip onClick={() => { navigate("/dashboard/detail-cv/" + cv.id); return null }} label="Xem CV" color="primary" variant="outlined" clickable />
                                 </TableCell>
                                 <TableCell>
                                     <IconButton>

@@ -22,9 +22,9 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import AddIcon from '@mui/icons-material/Add';
 import AdminApi from "../../api/AdminApi";
 const statusOptions = {
-    ACTIVE: 'Hoạt động',
-    WAITING_ACTIVE: 'Chờ kích hoạt',
-    INACTIVE: 'Không hoạt động'
+    ACTIVE: 'Đã xác thực',
+    WAITING_ACTIVE: 'Đang xét duyệt',
+    INACTIVE: 'Đã từ chối'
 };
 function ManageCertificate() {
     const [pageNumber, setPageNumber] = useState(1);
@@ -34,17 +34,16 @@ function ManageCertificate() {
     const [selectedItem, setSelectedItem] = useState(null); // Lưu thông tin giấy phép được chọn
     const [status, setStatus] = useState('');
     const [username, setUsername] = useState('');
-    const listStatus = ['ACTIVE', 'WAITING_ACTIVE', 'INACTIVE']
     const getStatusInfo = (status) => {
         switch (status) {
             case 'ACTIVE':
-                return { color: 'green', text: 'Đang hoạt động' };
+                return { color: 'green', text: 'Đã xác thực' };
             case 'WAITING_ACTIVE':
-                return { color: 'goldenrod', text: 'Chờ kích hoạt' };
+                return { color: 'goldenrod', text: 'Đang xét duyệt' };
             case 'INACTIVE':
-                return { color: 'red', text: 'Không hoạt động' };
+                return { color: 'red', text: 'Đã từ chối' };
             default:
-                return { color: 'black', text: 'Không xác định' };
+                return { color: 'black', text: 'Chưa cập nhật' };
         }
     };
 

@@ -32,11 +32,11 @@ function Post() {
     const getStatusInfo = (status) => {
         switch (status) {
             case 'APPROVED':
-                return { color: 'green', text: 'Đang hoạt động' };
+                return { color: 'green', text: 'Đang hiển thị' };
             case 'AWAITING_APPROVAL':
-                return { color: 'goldenrod', text: 'Chờ kích hoạt' };
+                return { color: 'goldenrod', text: 'Đang xét duyệt' };
             case 'NOT_APPROVED':
-                return { color: 'red', text: 'Không hoạt động' };
+                return { color: 'red', text: 'Dừng hiển thị' };
             default:
                 return { color: 'black', text: 'Không xác định' };
         }

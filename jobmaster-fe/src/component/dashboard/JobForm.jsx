@@ -54,8 +54,6 @@ const JobForm = ({ operator }) => {
         campaignId: "",
         salaryRange: "",
         campaignName: "",
-        requiredSkills: "",
-        additionalSkills: "",
         detailAddress: "",
     };
     const [data, setData] = useState(initialData);
@@ -694,42 +692,7 @@ const JobForm = ({ operator }) => {
                                         onChange={(value) => handleChange({ target: { name: 'interest', value } })}
                                     />
                                 </Grid>
-                                <Grid item xs={12}>
-                                    <InputLabel variant="h6" style={{ fontWeight: 'bold' }}>
-                                        Kỹ năng cần có
-                                    </InputLabel>
-                                    <ReactQuill
-                                        readOnly={operator === 'detail'} 
-                                        theme="snow"
-                                        placeholder="Kỹ năng cần có"
-                                        style={{
-                                            width: '100%',
-                                            marginTop: '15px',
-                                            border: '1px solid #ccc', // Đường viền
-                                            borderRadius: '5px', // Bo góc
-                                        }}
-                                        value={data.requiredSkills}
-                                        onChange={(value) => handleChange({ target: { name: 'requiredSkills', value } })}
-                                    />
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <InputLabel variant="h6" style={{ fontWeight: 'bold' }}>
-                                        Kỹ năng nên có
-                                    </InputLabel>
-                                    <ReactQuill
-                                        readOnly={operator === 'detail'} 
-                                        theme="snow"
-                                        placeholder="Kỹ năng nên có"
-                                        style={{
-                                            width: '100%',
-                                            marginTop: '15px',
-                                            border: '1px solid #ccc', // Đường viền
-                                            borderRadius: '5px', // Bo góc
-                                        }}
-                                        value={data.additionalSkills}
-                                        onChange={(value) => handleChange({ target: { name: 'additionalSkills', value } })}
-                                    />
-                                </Grid>
+                                
                             </Grid>
 
                             <Grid item xs={12} container justifyContent="flex-end" spacing={2}>
