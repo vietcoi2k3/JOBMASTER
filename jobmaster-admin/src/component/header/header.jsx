@@ -49,7 +49,9 @@ const Header = () => {
                     <Tab label="Chiến dịch" onClick={()=>{
                         navigate("/manage-campaign")
                     }}  />
-                    <Tab label="Dịch vụ" />
+                    <Tab label="Dịch vụ" onClick={()=>{
+                        navigate("/service")
+                    }} />
                     <Tab label="Phê duyệt" onClick={()=>{
                         navigate("/manage-certificate")
                     }} />

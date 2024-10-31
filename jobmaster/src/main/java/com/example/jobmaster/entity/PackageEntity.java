@@ -24,4 +24,5 @@ public class PackageEntity extends BaseEntity{
     private TypeService typeService;
     @Column(columnDefinition = "text")
     private String description;
+    private int days;
 }

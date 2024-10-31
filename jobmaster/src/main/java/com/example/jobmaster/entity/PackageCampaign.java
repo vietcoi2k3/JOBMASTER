@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Setter
 @Getter
 @NoArgsConstructor
@@ -20,4 +22,6 @@ public class PackageCampaign extends BaseEntity{
     private String id;
     private String packageId;
     private String campaignId;
+    private boolean isActive;
+    private LocalDate expired;
 }

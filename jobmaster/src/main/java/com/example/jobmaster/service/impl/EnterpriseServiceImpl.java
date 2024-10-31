@@ -298,11 +298,11 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
         }
         for (String x : activatePackageRequest.getPackageId()
         ) {
-
+            PackageEntity packageEntity = packageRepository.findById(x).get();
             PackageCampaign packageCampaign = new PackageCampaign();
             packageCampaign.setPackageId(x);
             packageCampaign.setCampaignId(activatePackageRequest.getCampaignId());
-
+            packageCampaign.setExpired(LocalDate.now().plusDays(packageEntity.getDays()));
             packageCampaignRepository.save(packageCampaign);
         }
         user.setBalance(user.getBalance().subtract(activatePackageRequest.getPrice()));

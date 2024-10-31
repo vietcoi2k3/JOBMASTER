@@ -26,8 +26,8 @@ const ApplyJobPopup = ({ open, onClose,postId }) => {
     const navigate = useNavigate(); // Dùng để điều hướng
     const token = localStorage.getItem("access_token");
     const [selectedCV, setSelectedCV] = useState('cv1');
-    const [email, setEmail] = useState('vn.phuong.22@gmail.com');
-    const [phoneNumber, setPhoneNumber] = useState('0333482009');
+    const [email, setEmail] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
     const [introduction, setIntroduction] = useState('');
 
         const fileInputRef = useRef(null); // Tạo một ref để tham chiếu đến input file

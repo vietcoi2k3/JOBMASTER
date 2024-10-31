@@ -181,11 +181,7 @@ const JobDetails = () => {
                                 label="Hình thức làm việc"
                                 value={job.typeWorking}
                             />
-                            <GeneralInfo
-                                icon={<Wc color="primary" />}
-                                label="Giới tính"
-                                value={job.gender}
-                            />
+
                         </Box>
                     </Card>
                 </Grid>

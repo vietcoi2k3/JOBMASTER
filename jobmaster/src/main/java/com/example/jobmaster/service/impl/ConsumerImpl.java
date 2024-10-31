@@ -17,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -88,7 +89,7 @@ public class ConsumerImpl implements IConsumerService {
             postResponse.setEnterpriseId(enterprise.getId());
             postResponse.setNameCompany(enterprise.getCompanyName());
             postResponse.setScales(enterprise.getScale());
-            postResponse.setLabel(packageCampaignRepository.existsByCampaignIdAndPackageId(campaignEntity.getId(),"TA01"));
+            postResponse.setLabel(packageCampaignRepository.existsByCampaignIdAndPackageIdAndExpiredBefore(campaignEntity.getId(),"TA01", LocalDate.now()));
             listResult.add(postResponse);
         }
 
@@ -219,7 +220,7 @@ public class ConsumerImpl implements IConsumerService {
             postResponse.setEnterpriseId(enterprise.getId());
             postResponse.setNameCompany(enterprise.getCompanyName());
             postResponse.setScales(enterprise.getScale());
-            postResponse.setLabel(packageCampaignRepository.existsByCampaignIdAndPackageId(campaignEntity.getId(),"TA01"));
+            postResponse.setLabel(packageCampaignRepository.existsByCampaignIdAndPackageIdAndExpiredBefore(campaignEntity.getId(),"TA01",LocalDate.now()));
             listResult.add(postResponse);
         }
         return listResult;
@@ -300,7 +301,7 @@ public class ConsumerImpl implements IConsumerService {
                 postResponse.setEnterpriseId(enterprise.getId());
                 postResponse.setNameCompany(enterprise.getCompanyName());
                 postResponse.setScales(enterprise.getScale());
-                postResponse.setLabel(packageCampaignRepository.existsByCampaignIdAndPackageId(campaignEntity.getId(),"TA01"));
+                postResponse.setLabel(packageCampaignRepository.existsByCampaignIdAndPackageIdAndExpiredBefore(campaignEntity.getId(),"TA01",LocalDate.now()));
                 listResult.add(postResponse);
             }
         }

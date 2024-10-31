@@ -6,6 +6,7 @@ import {
 } from '@mui/material';
 import AuthApi from "../../api/AuthApi";
 import Consumer from "../../api/Consumer";
+import Notification from "../notification/Notification";
 
 export default function Criteria() {
     const [location, setLocation] = useState('');
@@ -14,7 +15,7 @@ export default function Criteria() {
     const [experience, setExperience] = useState(''); // Kinh nghiệm
     const [fieldSelect,setFieldSelect] = useState('')
     const [positionSelect,setPositionSelect] = useState('')
-
+    const [notification, setNotification] = useState({ open: false, message: '', type: '' });
     const [field,setField] = useState([])
     const [position,setPosition] = useState([])
     const [city,setCity] = useState([])
@@ -39,6 +40,11 @@ export default function Criteria() {
         })
     }, []);
 
+    const handleCloseNotification = () => {
+        setNotification({ ...notification, open: false });
+    };
+
+
     const handleLocationChange = (event) => setLocation(event.target.value);
     const handleCompanySizeChange = (event) => setCompanySize(event.target.value);
     const handleJobTypeChange = (event) => setJobType(event.target.value);
@@ -53,13 +59,31 @@ export default function Criteria() {
             field: fieldSelect,
             position: positionSelect
         };
-        Consumer.addCriteria(formData).then((e)=>{
-            console.log(e)
-        })
+        Consumer.addCriteria(formData).then(() => {
+            // Hiển thị thông báo thành công khi thêm thành công
+            setNotification({
+                open: true,
+                message: 'Thêm thành công!',
+                type: 'success',
+            });
+        }).catch(() => {
+            // Hiển thị thông báo lỗi khi có lỗi xảy ra
+            setNotification({
+                open: true,
+                message: 'Có lỗi xảy ra. Vui lòng thử lại!',
+                type: 'error',
+            });
+        });
     };
 
     return  (
         <div className='p-20'>
+            <Notification
+                open={notification.open}
+                onClose={handleCloseNotification}
+                message={notification.message}
+                type={notification.type}
+            />
             {/* Header section */}
             <Box sx={{ bgcolor: '#e8edf2'}}>
 

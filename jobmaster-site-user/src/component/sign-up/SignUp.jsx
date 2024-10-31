@@ -19,6 +19,8 @@ const SignUp = () => {
     email: "",
     password: "",
     confirmPassword: "",
+    phone: "",
+    name: "",
     isConsumer: true,
   });
   const [isAgree, setIsAgree] = useState(false);
@@ -45,8 +47,11 @@ const SignUp = () => {
 
     tempErrors.email = emailPattern.test(formData.email) ? "" : "Email không hợp lệ!";
     tempErrors.password = formData.password ? "" : "Mật khẩu không được để trống!";
-    tempErrors.confirmPassword =
-        formData.confirmPassword === formData.password ? "" : "Mật khẩu không khớp!";
+    tempErrors.confirmPassword = formData.confirmPassword === formData.password ? "" : "Mật khẩu không khớp!";
+    tempErrors.phone = formData.phone ? "" : "Số điện thoại không được để trống!";
+    tempErrors.name = formData.name ? "" : "Họ tên không được để trống!";
+
+    setErrors(tempErrors);
     return Object.values(tempErrors).every((x) => x === "");
   };
 
@@ -104,6 +109,32 @@ const SignUp = () => {
                     <span className="flex-shrink mx-4 text-gray-500">Hoặc bằng email</span>
                     <div className="flex-grow border-t border-gray-300"></div>
                   </div>
+
+                  <TextField
+                      fullWidth
+                      label="Họ tên"
+                      variant="outlined"
+                      sx={{ marginBottom: 4 }}
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      error={!!errors.name}
+                      helperText={errors.name}
+                      required
+                  />
+
+                  <TextField
+                      fullWidth
+                      label="Số điện thoại"
+                      variant="outlined"
+                      sx={{ marginBottom: 4 }}
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      error={!!errors.phone}
+                      helperText={errors.phone}
+                      required
+                  />
 
                   <TextField
                       fullWidth
