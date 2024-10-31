@@ -34,7 +34,7 @@ function Campaign() {
             case true:
                 return { color: 'green', text: 'Đang hoạt động' };
             case false:
-                return { color: 'goldenrod', text: 'Chờ kích hoạt' };
+                return { color: 'goldenrod', text: 'Ngừng hoạt động' };
             default:
                 return { color: 'black', text: 'Không xác định' };
         }

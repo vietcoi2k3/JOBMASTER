@@ -238,8 +238,6 @@ public class EnterpriseServiceImpl implements IEnterpiseService {
                 .campaignId(campaignEntity.getId())
                 .campaignName(campaignEntity.getName())
                 .salaryRange(postEntity.getSalaryRange())
-                .additionalSkills(postEntity.getAdditionalSkills())
-                .requiredSkills(postEntity.getRequiredSkills())
                 .detailAddress(postEntity.getDetailAddress())
                 .status(postEntity.getStatus())
                 .build();

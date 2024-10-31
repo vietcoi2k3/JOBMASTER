@@ -43,8 +43,4 @@ public class PostEntity extends BaseEntity{
     private String salaryRange;
     private String position;
     private String field;
-    @Column(columnDefinition = "longtext")
-    private String requiredSkills;
-    @Column(columnDefinition = "longtext")
-    private String additionalSkills;
 }

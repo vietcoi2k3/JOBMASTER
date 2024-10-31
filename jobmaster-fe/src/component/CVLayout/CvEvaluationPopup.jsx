@@ -13,7 +13,14 @@ import {
     Divider,
 } from '@mui/material';
 import EnterpriseApi from "../../api/EnterpriseApi";
-
+const statusMap = new Map([
+    ["RECEIVED", "Tiếp nhận"],
+    ["MATCHED", "Phù hợp"],
+    ["INTERVIEW_SCHEDULED", "Hẹn phỏng vấn"],
+    ["OFFERED", "Gửi đề nghị"],
+    ["HIRED", "Nhận việc"],
+    ["REJECTED", "Từ chối"]
+]);
 function CvEvaluationPopup({ open, onClose, selectedStatus, onStatusChange,id  }) {
     // Danh sách các trạng thái có sẵn
     const statuses = ['RECEIVED', 'MATCHED', 'INTERVIEW_SCHEDULED', 'OFFERED', 'HIRED', 'REJECTED'];
@@ -44,7 +51,7 @@ function CvEvaluationPopup({ open, onClose, selectedStatus, onStatusChange,id  }
                         <Grid item key={status}>
                             {/* Đổi màu trạng thái đã chọn */}
                             <Chip
-                                label={status}
+                                label={statusMap.get(status)}
                                 color={selectedStatus === status ? 'primary' : 'default'}
                                 variant={selectedStatus === status ? 'filled' : 'outlined'}
                                 onClick={() => handleStatusClick(status)}

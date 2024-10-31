@@ -11,7 +11,14 @@ import EnterpriseApi from "../../api/EnterpriseApi";
 import CvEvaluationPopup from "./CvEvaluationPopup";
 import { STATIC_HOST} from '../../enviroment';
 import DownloadIcon from '@mui/icons-material/Download';
-
+const statusMap = new Map([
+    ["RECEIVED", "Tiếp nhận"],
+    ["MATCHED", "Phù hợp"],
+    ["INTERVIEW_SCHEDULED", "Hẹn phỏng vấn"],
+    ["OFFERED", "Gửi đề nghị"],
+    ["HIRED", "Nhận việc"],
+    ["REJECTED", "Từ chối"]
+]);
 const CVLayout = () => {
     const [open, setOpen] = useState(false);
     // State lưu trạng thái đang chọn
@@ -125,7 +132,7 @@ const CVLayout = () => {
                         size="small"
                         fullWidth
                         label="Trạng thái"
-                        value={isLoading ? "" :cvEntity.status}
+                        value={isLoading ? "" :statusMap.get(cvEntity.status)}
                         InputProps={{
                             readOnly: true,
                         }}

@@ -34,7 +34,5 @@ public class PostDTO {
     private String campaignId;
     private String salaryRange;
     private String campaignName;
-    private String requiredSkills;
-    private String additionalSkills;
     private String status;
 }
