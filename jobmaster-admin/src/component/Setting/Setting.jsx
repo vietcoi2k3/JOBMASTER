@@ -127,7 +127,7 @@ function SettingTable() {
                     <TableHead>
                         <TableRow>
                             <TableCell sx={{ fontWeight: 'bold' }}>STT</TableCell>
-                            <TableCell sx={{ fontWeight: 'bold' }}>Code</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold' }}>Mã</TableCell>
                             <TableCell sx={{ fontWeight: 'bold' }}>Tên lĩnh vực</TableCell>
                             <TableCell sx={{ fontWeight: 'bold' }}>Trạng thái</TableCell>
                             <TableCell sx={{ fontWeight: 'bold' }}>Thao tác</TableCell>
@@ -140,7 +140,7 @@ function SettingTable() {
                                 <TableCell>{field.code}</TableCell>
                                 <TableCell>{field.name}</TableCell>
                                 <TableCell style={{ color: field.status === 'ACTIVE' ? 'green' : 'red' }}>
-                                    {field.status}
+                                    {field.status === 'ACTIVE' ? 'Hiệu lực' : 'Không hiệu lực'}
                                 </TableCell>
                                 <TableCell>
                                     <IconButton aria-label="view" color="primary">

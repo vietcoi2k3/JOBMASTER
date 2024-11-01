@@ -22,10 +22,13 @@ import History from "./component/user-profile/History";
 import PaymentSuccess from "./component/user-profile/PaymentSuccess";
 import News from './component/dashboard/News';
 import ForgotPassword from "./component/forgot-password/ForgotPassword";
+import theme from './theme';
+import {ThemeProvider} from "@mui/material"; // import theme
 
 function App() {
 
   return (
+      <ThemeProvider theme={theme}>
     <Routes>
       <Route path="/dashboard" element={<MiniDrawer />}>
         <Route index element={<SideBarProfile />} />
@@ -55,6 +58,7 @@ function App() {
         <Route path="/forgot-pass" element={<ForgotPassword />} />
       <Route path="/" element={<LoginComponent />} />
     </Routes>
+      </ThemeProvider>
   );
 }
 
