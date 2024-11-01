@@ -15,20 +15,17 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import AddIcon from '@mui/icons-material/Add';
+import SearchIcon from '@mui/icons-material/Search';
 import AdminApi from "../../api/AdminApi";
-// import CreateFieldPopup from "./CreateFieldPopup";
 import { useNavigate } from "react-router-dom";
 
 function Post() {
-    // const navigate = useNavigate();
-    const [tabIndex, setTabIndex] = useState(0); // State for active tab
-    const [pageNumber, setPageNumber] = useState(1); // Current page number
+    const [pageNumber, setPageNumber] = useState(1);
     const [candidate, setCandidate] = useState([]);
-    const [totalPages, setTotalPages] = useState(1); // Total pages for pagination
-    const [open, setOpen] = useState(false);
+    const [totalPages, setTotalPages] = useState(1);
     const [postName, setPostName] = useState('');
     const [tax, setTax] = useState('');
+
     const getStatusInfo = (status) => {
         switch (status) {
             case 'APPROVED':
@@ -42,57 +39,65 @@ function Post() {
         }
     };
 
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-        fetch(); // Refresh data after closing popup
-    };
-
-    const fetch = async () => {
-        const response = await AdminApi.getListPost(pageNumber,postName,tax);
-        setCandidate(response.data); // Update the candidate list
-        setTotalPages(response.totalPage); // Update total pages for pagination
-    };
-
-    useEffect(() => {
-        fetch(); // Fetch candidates when page number changes
-    }, [pageNumber]);
-
-    const handlePageChange = (event, value) => {
-        setPageNumber(value); // Update page number when user interacts with pagination
-    };
     const handleKeyPress = (event) => {
         if (event.key === 'Enter') {
             fetch();
         }
     };
 
-    const navigate = useNavigate()
-    
+    const fetch = async () => {
+        const response = await AdminApi.getListPost(pageNumber, postName, tax);
+        setCandidate(response.data);
+        setTotalPages(response.totalPage);
+    };
+
+    useEffect(() => {
+        fetch();
+    }, [pageNumber]);
+
+    const handlePageChange = (event, value) => {
+        setPageNumber(value);
+    };
+
+    const navigate = useNavigate();
+
     return (
-        <Box sx={{ width: '100%' }}>
-            <Box sx={{ bgcolor: '#ffffff', padding: 1 }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Box sx={{ width: '100%', padding: 2, bgcolor: '#E8EDF2' }}>
+            <Box sx={{ bgcolor: '#ffffff', padding: 2, borderRadius: 2, mb: 2 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Box sx={{ display: 'flex', gap: 2 }}>
-                        <TextField label="Tên bài đăng"  variant="outlined" size="small" 
-                        value={postName}
-                        onChange={(e)=>setPostName(e.target.value)}
-                        onKeyDown={handleKeyPress}/>
-                        <TextField label="Mã số thuế" variant="outlined" size="small" 
-                        value={tax}
-                        onChange={(e)=>setTax(e.target.value)}
-                        onKeyDown={handleKeyPress}/>
+                        <TextField
+                            label="Tên bài đăng"
+                            variant="outlined"
+                            size="small"
+                            value={postName}
+                            onChange={(e) => setPostName(e.target.value)}
+                            onKeyDown={handleKeyPress}
+                        />
+                        <TextField
+                            label="Mã số thuế"
+                            variant="outlined"
+                            size="small"
+                            value={tax}
+                            onChange={(e) => setTax(e.target.value)}
+                            onKeyDown={handleKeyPress}
+                        />
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={fetch}
+                            startIcon={<SearchIcon />}
+                        >
+                            Tìm kiếm
+                        </Button>
                     </Box>
                 </Box>
             </Box>
 
-            <TableContainer component={Paper} sx={{ marginTop: 2, maxHeight: 400 }}>
-                <Table>
-                    <TableHead>
-                        <TableRow>
+            <TableContainer component={Paper} sx={{ maxHeight: 500, borderRadius: 2 }}>
+                <Table stickyHeader>
+                    <TableHead >
+                        <TableRow sx = {{bgcolor:'#3758F9'}}>
                             <TableCell sx={{ fontWeight: 'bold' }}>STT</TableCell>
                             <TableCell sx={{ fontWeight: 'bold' }}>Tiêu đề bài đăng</TableCell>
                             <TableCell sx={{ fontWeight: 'bold' }}>Tên chiến dịch</TableCell>
@@ -105,24 +110,27 @@ function Post() {
                         {candidate.map((item, index) => {
                             const { color, text } = getStatusInfo(item.status);
                             return (
-                                <TableRow key={item.id}>
+                                <TableRow
+                                    key={item.id}
+                                    sx={{
+                                        '&:hover': {
+                                            backgroundColor: '#f5f5f5',
+                                        },
+                                    }}
+                                >
                                     <TableCell>{((pageNumber - 1) * 10) + index + 1}</TableCell>
                                     <TableCell>{item.postName}</TableCell>
                                     <TableCell>{item.campaignName}</TableCell>
                                     <TableCell>{item.tax}</TableCell>
                                     <TableCell style={{ color }}>{text}</TableCell>
                                     <TableCell>
-                                        <IconButton aria-label="view" color="primary" onClick={() => navigate("/detail-post/" + item.id)}>
+                                        <IconButton
+                                            aria-label="view"
+                                            color="primary"
+                                            onClick={() => navigate("/detail-post/" + item.id)}
+                                        >
                                             <VisibilityIcon />
                                         </IconButton>
-                                        {/* Uncomment if delete functionality is needed */}
-                                        {/* <IconButton
-                                            aria-label="delete"
-                                            color="primary"
-                                            onClick={() => handleDelete(item.id)}
-                                        >
-                                            <DeleteIcon />
-                                        </IconButton> */}
                                     </TableCell>
                                 </TableRow>
                             );
@@ -131,7 +139,6 @@ function Post() {
                 </Table>
             </TableContainer>
 
-            {/* Pagination */}
             <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
                 <Pagination
                     count={totalPages}
@@ -140,8 +147,6 @@ function Post() {
                     color="primary"
                 />
             </Box>
-
-            {/*<CreateFieldPopup open={open} onClose={handleClose} />*/}
         </Box>
     );
 }

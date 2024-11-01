@@ -29,4 +29,8 @@ public interface IAdminService {
     PageResponse<EnterpriseResponse> getListCompany(int pageSize, int pageNumber);
 
     CampaignEntity updateStatusCampaign(String campaignId, boolean status);
+
+    PageResponse<FieldEntity> getListField(int pageSize, int pageNumber,String code,String name);
+
+    PageResponse<PositionEntity> getListPosition(int pageSize, int pageNumber,String code,String name);
 }

@@ -21,7 +21,7 @@ const ServiceList = () => {
     }, [selectedDate]);
 
     return (
-        <Box padding={4} bgcolor="#f5f5f5" minHeight="100vh">
+        <Box padding={4} bgcolor="#ffffff" minHeight="100vh" >
             <Typography variant="h4" gutterBottom color="textPrimary" sx={{ fontWeight: 'bold' }}>
                 Danh sách dịch vụ
             </Typography>

@@ -19,6 +19,7 @@ import AddIcon from '@mui/icons-material/Add';
 import AdminApi from "../../api/AdminApi";
 import CreateFieldPopup from "./CreateFieldPopup";
 import { useNavigate } from "react-router-dom";
+import SearchIcon from "@mui/icons-material/Search";
 
 function Account1() {
     const navigate = useNavigate();
@@ -53,7 +54,7 @@ function Account1() {
     const fetchCandidates = async () => {
         const response = await AdminApi.getListAccountCandidate(pageNumber);
         setCandidate(response.data); // Update the candidate list
-        setTotalPages(response.totalPages); // Update total pages for pagination
+        setTotalPages(response.totalPage); // Update total pages for pagination
     };
 
     useEffect(() => {
@@ -65,40 +66,47 @@ function Account1() {
     };
 
     return (
-        <Box sx={{ width: '100%' }}>
-            <Box sx={{ bgcolor: '#ffffff', padding: 1 }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Box sx={{ width: '100%', padding: 2, bgcolor: '#E8EDF2' }}>
+            <Box sx={{ bgcolor: '#ffffff', padding: 2, borderRadius: 2, mb: 2 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Box sx={{ display: 'flex', gap: 2 }}>
-                        <TextField label="Tên lĩnh vực" variant="outlined" size="small" />
-                        <TextField label="Mã lĩnh vực" variant="outlined" size="small" />
+                        <TextField label="Tên tài khoản" variant="outlined" size="small" />
+                        <TextField label="Tên ứng viên" variant="outlined" size="small" />
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={fetch}
+                            startIcon={<SearchIcon />}
+                        >
+                            Tìm kiếm
+                        </Button>
                     </Box>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        startIcon={<AddIcon />}
-                        onClick={handleClickOpen}
-                    >
-                        Thêm mới
-                    </Button>
                 </Box>
             </Box>
 
-            <TableContainer component={Paper} sx={{ marginTop: 2, maxHeight: 400 }}>
-                <Table>
+            <TableContainer component={Paper} sx={{ marginTop: 2, maxHeight: 500 }}>
+                <Table stickyHeader>
                     <TableHead>
-                        <TableRow>
-                            <TableCell>STT</TableCell>
-                            <TableCell>Tài khoản</TableCell>
-                            <TableCell>Tên</TableCell>
-                            <TableCell>Trạng thái</TableCell>
-                            <TableCell>Thao tác</TableCell>
+                        <TableRow sx = {{bgcolor:'#3758F9'}}>
+                            <TableCell sx={{ fontWeight: 'bold' }}>STT</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold' }} >Tài khoản</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold' }}>Tên</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold' }}>Trạng thái</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold' }}>Thao tác</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {candidate.map((item, index) => {
                             const { color, text } = getStatusInfo(item.status);
                             return (
-                                <TableRow key={item.id}>
+                                <TableRow
+                                    key={item.id}
+                                    sx={{
+                                        '&:hover': {
+                                            backgroundColor: '#f5f5f5',
+                                        },
+                                    }}
+                                >
                                     <TableCell>{((pageNumber - 1) * 10) + index + 1}</TableCell>
                                     <TableCell>{item.username}</TableCell>
                                     <TableCell>{item.fullname}</TableCell>

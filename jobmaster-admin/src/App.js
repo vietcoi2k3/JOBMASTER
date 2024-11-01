@@ -1,39 +1,47 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Box, ThemeProvider, CssBaseline } from "@mui/material";
+import theme from './theme'; // Đường dẫn đến file theme.js đã tạo
 
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Header from "./component/header/header";
-
-import { Box } from "@mui/material";
 import AccountTable from "./component/Account/AccountTable";
-
 import TabSetting from "./component/Setting/Tab";
 import ManageCertificate from "./component/MangeCertificate/ManageCertificate";
-
 import Campaign from "./component/campaign/Campaign";
 import Post from "./component/post/Post";
 import ServiceList from "./component/Service/ServiceList";
 import JobInfoView from "./component/post/DetailPost";
 import LoginComponent from './component/sign-in/SignIn';
 import { UserProvider } from './context/UserProvider';
+
+// Layout component chính
+const MainLayout = ({ children }) => (
+    <>
+        <Header />
+        <Box
+            sx={{
+                bgcolor: '#E8EDF2',
+                minHeight: '100vh',
+                padding: 2,
+            }}
+        >
+            {children}
+        </Box>
+    </>
+);
+
 function App() {
     return (
-        <UserProvider>
-            <Router>
-                <Routes>
-                    <Route path="/" element={<LoginComponent />} />
-                    <Route
-                        path="*"
-                        element={
-                            <>
-                                <Header />
-                                <Box
-                                    sx={{
-                                        bgcolor: '#E5E5E5',
-                                        minHeight: '100vh',
-                                        padding: 2,
-                                    }}
-                                >
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <UserProvider>
+                <Router>
+                    <Routes>
+                        <Route path="/" element={<LoginComponent />} />
+                        <Route
+                            path="*"
+                            element={
+                                <MainLayout>
                                     <Routes>
                                         <Route path="account/*" element={<AccountTable />} />
                                         <Route path="setting/*" element={<TabSetting />} />
@@ -43,15 +51,14 @@ function App() {
                                         <Route path="detail-post/:id" element={<JobInfoView />} />
                                         <Route path="service" element={<ServiceList />} />
                                     </Routes>
-                                </Box>
-                            </>
-                        }
-                    />
-                </Routes>
-            </Router>
-        </UserProvider>
+                                </MainLayout>
+                            }
+                        />
+                    </Routes>
+                </Router>
+            </UserProvider>
+        </ThemeProvider>
     );
 }
-
 
 export default App;

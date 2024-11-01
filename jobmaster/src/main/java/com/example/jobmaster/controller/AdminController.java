@@ -39,18 +39,22 @@ public class AdminController {
 
     @RequestMapping(value = "/get-list-field",method = RequestMethod.GET)
     public ResponseEntity getListField(
+            @RequestParam(defaultValue = DefautlConstants.PAGE_SIZE) int pageSize,
+            @RequestParam(defaultValue = DefautlConstants.PAGE_NO) int pageNumber,
             @RequestParam(required = false) String code,
             @RequestParam(defaultValue = "") String name
     ){
-        return ResponseEntity.ok(fieldRepository.findByCodeAndName(code,name));
+        return ResponseEntity.ok(iAdminService.getListField(pageSize,pageNumber,code,name));
     };
 
     @RequestMapping(value = "/get-list-position",method = RequestMethod.GET)
     public ResponseEntity getListPosition(
+            @RequestParam(defaultValue = DefautlConstants.PAGE_SIZE) int pageSize,
+            @RequestParam(defaultValue = DefautlConstants.PAGE_NO) int pageNumber,
             @RequestParam(required = false) String code,
             @RequestParam(defaultValue = "") String name
     ){
-        return ResponseEntity.ok(positionRepository.findByCodeAndName(code,name));
+        return ResponseEntity.ok(iAdminService.getListPosition(pageSize,pageNumber,code,name));
     };
 
     @RequestMapping(value = "/delete-field/{id}",method = RequestMethod.DELETE)

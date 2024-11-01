@@ -49,6 +49,12 @@ public class AdminServiceImpl implements IAdminService {
     private PackageRepository packageRepository;
 
     @Autowired
+    private PositionRepository positionRepository;
+
+    @Autowired
+    private FieldRepository fieldRepository;
+
+    @Autowired
     private JWTUntil jwtUntil;
 
     @Autowired
@@ -66,6 +72,7 @@ public class AdminServiceImpl implements IAdminService {
         Page<UserInfoResponse> page =userInfoRepository.getListCandidate(pageable);
         return PageResponse.<UserInfoResponse>builder()
                 .data(page.getContent())
+                .totalPage(page.getTotalPages())
                 .build();
     }
 
@@ -76,6 +83,7 @@ public class AdminServiceImpl implements IAdminService {
         Page<EnterpriseResponse> page = enterpriseRepository.getListAdmin(pageable);
         return PageResponse.<EnterpriseResponse>builder()
                 .data(page.getContent())
+                .totalPage(page.getTotalPages())
                 .build();
     }
 
@@ -202,4 +210,28 @@ public class AdminServiceImpl implements IAdminService {
         }
         return campaignEntity;
     }
+
+    @Override
+    public PageResponse<FieldEntity> getListField(int pageSize, int pageNumber, String code, String name) {
+        pageNumber--;
+        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+        Page<FieldEntity> page = fieldRepository.findByCodeAndName(code,name,pageable);
+        return PageResponse.<FieldEntity>builder()
+                .data(page.getContent())
+                .totalPage(page.getTotalPages())
+                .build();
+    }
+
+    @Override
+    public PageResponse<PositionEntity> getListPosition(int pageSize, int pageNumber, String code, String name) {
+        pageNumber--;
+        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+        Page<PositionEntity> page = positionRepository.findByCodeAndName(code,name,pageable);
+        return PageResponse.<PositionEntity>builder()
+                .data(page.getContent())
+                .totalPage(page.getTotalPages())
+                .build();
+    }
+
+
 }

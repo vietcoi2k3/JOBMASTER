@@ -17,5 +17,6 @@ public class UserInfoEntity extends BaseEntity{
     private String userId;
     private String criteriaId;
     private String fullName;
+    private String phoneNumber;
 
 }

@@ -28,7 +28,7 @@ const TabSetting = () => {
     }, [location, navigate]);
 
     return (
-        <Box>
+        <Box sx={{ bgcolor: '#ffffff', padding: 2, borderRadius: 2,paddingBottom:10}}>
             {/* Tabs để chuyển đổi giữa các trang */}
             <Tabs
                 value={tabIndex}

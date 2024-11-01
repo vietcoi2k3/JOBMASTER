@@ -35,21 +35,21 @@ function AccountTable() {
     }, [location, navigate]);
 
     return (
-        <Box>
+        <Box sx={{ bgcolor: '#ffffff', padding: 2, borderRadius: 2,paddingBottom:10}}>
             {/* Tabs để chuyển đổi giữa các trang */}
             <Tabs
                 value={tabIndex}
                 onChange={handleTabChange}
                 textColor="primary"
                 indicatorColor="primary"
-                sx={{ bgcolor: 'white', borderBottom: 1, borderColor: 'divider' }} // Đặt màu nền trắng cho Tabs
+                sx={{ bgcolor: 'white', borderBottom: 1, borderColor: 'divider', borderRadius: 2  }} // Đặt màu nền trắng cho Tabs
             >
                 <Tab
                     label="Ứng Viên"
 
                 />
                 <Tab
-                    label="Nhà tuyền dụng"
+                    label="Nhà tuyển dụng"
 
                 />
             </Tabs>

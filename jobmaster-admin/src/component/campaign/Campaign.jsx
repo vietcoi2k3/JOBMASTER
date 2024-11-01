@@ -19,16 +19,16 @@ import AddIcon from '@mui/icons-material/Add';
 import AdminApi from "../../api/AdminApi";
 // import CreateFieldPopup from "./CreateFieldPopup";
 import { useNavigate } from "react-router-dom";
+import SearchIcon from "@mui/icons-material/Search";
 
 function Campaign() {
-    // const navigate = useNavigate();
-    const [tabIndex, setTabIndex] = useState(0); // State for active tab
-    const [pageNumber, setPageNumber] = useState(1); // Current page number
+    const [pageNumber, setPageNumber] = useState(1);
     const [candidate, setCandidate] = useState([]);
-    const [totalPages, setTotalPages] = useState(1); // Total pages for pagination
+    const [totalPages, setTotalPages] = useState(1);
     const [open, setOpen] = useState(false);
     const [campaignName, setCampaignName] = useState('');
     const [tax, setTax] = useState('');
+
     const getStatusInfo = (status) => {
         switch (status) {
             case true:
@@ -46,71 +46,103 @@ function Campaign() {
 
     const handleClose = () => {
         setOpen(false);
-        fetch(); // Refresh data after closing popup
+        fetch();
     };
 
     const fetch = async () => {
-        const response = await AdminApi.getListCampaign(pageNumber,campaignName,tax);
-        setCandidate(response.data); 
-        setTotalPages(response.totalPage); 
+        const response = await AdminApi.getListCampaign(pageNumber, campaignName, tax);
+        setCandidate(response.data);
+        setTotalPages(response.totalPage);
     };
 
     useEffect(() => {
-        fetch(); // Fetch candidates when page number changes
+        fetch();
     }, [pageNumber]);
 
     const handlePageChange = (event, value) => {
-        setPageNumber(value); // Update page number when user interacts with pagination
+        setPageNumber(value);
     };
+
     const handleKeyPress = (event) => {
         if (event.key === 'Enter') {
             fetch();
         }
     };
 
-    const navigate = useNavigate()
-    
+    const navigate = useNavigate();
+
     return (
-        <Box sx={{ width: '100%' }}>
-            <Box sx={{ bgcolor: '#ffffff', padding: 1 }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Box sx={{ width: '100%', padding: 2, bgcolor: '#E8EDF2' }}>
+            <Box sx={{ bgcolor: '#ffffff', padding: 2, borderRadius: 2, mb: 2 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Box sx={{ display: 'flex', gap: 2 }}>
-                        <TextField label="Tên chiến dịch"  variant="outlined" size="small" 
-                        value={campaignName}
-                        onChange={(e)=>setCampaignName(e.target.value)}
-                        onKeyDown={handleKeyPress}/>
-                        <TextField label="Mã số thuế" variant="outlined" size="small" 
-                        value={tax}
-                        onChange={(e)=>setTax(e.target.value)}
-                        onKeyDown={handleKeyPress}/>
+                        <TextField
+                            label="Tên chiến dịch"
+                            variant="outlined"
+                            size="small"
+                            value={campaignName}
+                            onChange={(e) => setCampaignName(e.target.value)}
+                            onKeyDown={handleKeyPress}
+                        />
+                        <TextField
+                            label="Mã số thuế"
+                            variant="outlined"
+                            size="small"
+                            value={tax}
+                            onChange={(e) => setTax(e.target.value)}
+                            onKeyDown={handleKeyPress}
+                        />
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={fetch}
+                            startIcon={<SearchIcon />}
+                        >
+                            Tìm kiếm
+                        </Button>
                     </Box>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleClickOpen}
+                        startIcon={<AddIcon />}
+                    >
+                        Thêm chiến dịch
+                    </Button>
                 </Box>
             </Box>
 
-            <TableContainer component={Paper} sx={{ marginTop: 2, maxHeight: 400 }}>
-                <Table>
+            <TableContainer component={Paper} sx={{ maxHeight: 500, borderRadius: 2 }}>
+                <Table stickyHeader>
                     <TableHead>
-                        <TableRow>
-                            <TableCell sx={{ fontWeight: 'bold' }}>STT</TableCell>
-                            <TableCell sx={{ fontWeight: 'bold' }}>Tiêu chiến dịch</TableCell>
-                            <TableCell sx={{ fontWeight: 'bold' }}>Tên doanh nghiệp</TableCell>
-                            <TableCell sx={{ fontWeight: 'bold' }}>Mã số thuế</TableCell>
-                            <TableCell sx={{ fontWeight: 'bold' }}>Trạng thái</TableCell>
-                            <TableCell sx={{ fontWeight: 'bold' }}>Thao tác</TableCell>
+                        <TableRow sx={{  }}>
+                            <TableCell sx={{ fontWeight: 'bold'}}>STT</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold'}}>Tiêu chiến dịch</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold'}}>Tên doanh nghiệp</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold'}}>Mã số thuế</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold'}}>Trạng thái</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold'}}>Thao tác</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {candidate.map((item, index) => {
                             const { color, text } = getStatusInfo(item.status);
                             return (
-                                <TableRow key={item.id}>
+                                <TableRow
+                                    key={item.id}
+                                    sx={{
+                                        '&:hover': {
+                                            backgroundColor: '#f5f5f5',
+                                        },
+                                    }}
+                                >
                                     <TableCell>{((pageNumber - 1) * 10) + index + 1}</TableCell>
                                     <TableCell>{item.campaignName}</TableCell>
                                     <TableCell>{item.enterpriseName}</TableCell>
                                     <TableCell>{item.tax}</TableCell>
                                     <TableCell style={{ color }}>{text}</TableCell>
                                     <TableCell>
-                                        <IconButton aria-label="view" color="primary" >
+                                        <IconButton aria-label="view" color="primary">
                                             <VisibilityIcon />
                                         </IconButton>
                                     </TableCell>
@@ -121,7 +153,6 @@ function Campaign() {
                 </Table>
             </TableContainer>
 
-            {/* Pagination */}
             <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
                 <Pagination
                     count={totalPages}

@@ -21,6 +21,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import AddIcon from '@mui/icons-material/Add';
 import AdminApi from "../../api/AdminApi";
+import SearchIcon from "@mui/icons-material/Search";
 const statusOptions = {
     ACTIVE: 'Đã xác thực',
     WAITING_ACTIVE: 'Đang xét duyệt',
@@ -81,9 +82,9 @@ function ManageCertificate() {
     };
 
     return (
-        <Box sx={{ width: '100%' }}>
-            <Box sx={{ bgcolor: '#ffffff', padding: 1 }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Box sx={{ width: '100%', padding: 2, bgcolor: '#E8EDF2' }}>
+            <Box sx={{ bgcolor: '#ffffff', padding: 2, borderRadius: 2, mb: 2 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Box sx={{ display: 'flex', gap: 2 }}>
                         <FormControl variant="outlined" size="small" sx={{ minWidth: 200, marginLeft: 2 }}>
                             <InputLabel>Trạng thái</InputLabel>
@@ -100,6 +101,7 @@ function ManageCertificate() {
                                         {value} {/* Hiển thị tên tiếng Việt */}
                                     </MenuItem>
                                 ))}
+
                             </Select>
                         </FormControl>
                         <TextField
@@ -107,14 +109,22 @@ function ManageCertificate() {
                             onChange={(e) => setUsername(e.target.value)}
                             onKeyDown={handleKeyPress}
                             label="Tài khoản" variant="outlined" size="small" />
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={fetch}
+                            startIcon={<SearchIcon />}
+                        >
+                            Tìm kiếm
+                        </Button>
                     </Box>
                 </Box>
             </Box>
 
-            <TableContainer component={Paper} sx={{ marginTop: 2, maxHeight: 400 }}>
-                <Table>
+            <TableContainer component={Paper} sx={{ maxHeight: 500, borderRadius: 2 }}>
+                <Table stickyHeader>
                     <TableHead>
-                        <TableRow>
+                        <TableRow sx = {{bgcolor:'#3758F9'}}>
                             <TableCell sx={{ fontWeight: 'bold', width: '6.6%' }}>STT</TableCell>
                             <TableCell sx={{ fontWeight: 'bold', width: '26.6%' }}>Tên Công Ty</TableCell>
                             <TableCell sx={{ fontWeight: 'bold', width: '16.6%' }}>Tài khoản</TableCell>
@@ -127,7 +137,12 @@ function ManageCertificate() {
                         {candidate.map((item, index) => {
                             const { color, text } = getStatusInfo(item.status);
                             return (
-                                <TableRow key={item.id}>
+                                <TableRow key={item.id}
+                                          sx={{
+                                              '&:hover': {
+                                                  backgroundColor: '#f5f5f5',
+                                              },
+                                          }}>
                                     <TableCell>{((pageNumber - 1) * 10) + index + 1}</TableCell>
                                     <TableCell>{item.enterpriseName}</TableCell>
                                     <TableCell>{item.username}</TableCell>
