@@ -173,7 +173,7 @@ export default function MiniDrawer() {
         if (res !== 'ACTIVE') {
           setOpenNoti(true);
         }else{
-          window.location.href = "/dashboard/job-form/create";
+          navigate("/dashboard/job-form/create")
         }
       })
       .catch((error) => {
