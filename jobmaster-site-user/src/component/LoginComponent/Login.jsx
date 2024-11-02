@@ -90,6 +90,11 @@ const Login = () => {
         }
 
     };
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            handleLogin();
+        }
+    };
     const handleClickShowPassword = () => {
         setShowPassword(!showPassword);
     };
@@ -151,6 +156,7 @@ const Login = () => {
                     error={!!errors.email}
                     helperText={errors.email}
                     required
+                    onKeyDown={handleKeyDown}  // Thêm hàm xử lý sự kiện ở đây
                     onChange={handleChange}
                     sx={{ marginBottom: '20px' }}
                 />
@@ -166,6 +172,7 @@ const Login = () => {
                         helperText={errors.password}
                         onChange={handleChange}
                         required
+                        onKeyDown={handleKeyDown}  // Thêm hàm xử lý sự kiện ở đây
                     />
                     <IconButton
                         sx={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)' }}

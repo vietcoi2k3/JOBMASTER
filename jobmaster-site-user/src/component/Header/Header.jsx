@@ -45,9 +45,9 @@ const Header = () => {
     return (
         <AppBar position="static" color="transparent" elevation={0}>
             <Toolbar>
-                <Typography variant="h6" sx={{ flexGrow: 1 }}>
+                <Typography variant="h6" sx={{ flexGrow: 1,cursor: 'pointer' }}>
                     <div>
-                        <img src={logo} width={160} alt="Logo" />
+                        <img src={logo} width={160} alt="Logo" onClick={()=> navigate("/")} />
                     </div>
                 </Typography>
                 <Box>

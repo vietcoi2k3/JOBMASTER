@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, { useRef, useState } from 'react';
 import {
     Dialog,
     DialogTitle,
@@ -7,67 +7,89 @@ import {
     Button,
     Typography,
     TextField,
-    RadioGroup,
-    Radio,
-    FormControlLabel,
     Box,
-    Avatar,
     IconButton,
 } from '@mui/material';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
-import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import CloseIcon from '@mui/icons-material/Close';
 import AuthApi from "../../api/AuthApi";
-import authApi from "../../api/AuthApi";
 import consumer from "../../api/Consumer";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-const ApplyJobPopup = ({ open, onClose,postId }) => {
-    const navigate = useNavigate(); // Dùng để điều hướng
+const ApplyJobPopup = ({ open, onClose, postId }) => {
+    const navigate = useNavigate();
     const token = localStorage.getItem("access_token");
     const [selectedCV, setSelectedCV] = useState('cv1');
     const [email, setEmail] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
+    const [fullName, setFullName] = useState('');
     const [introduction, setIntroduction] = useState('');
+    const [errors, setErrors] = useState({}); // State to hold error messages
 
-        const fileInputRef = useRef(null); // Tạo một ref để tham chiếu đến input file
-        const [fileEntity,setFileEntity] = useState({})
-        const [fileName, setFileName] = useState(''); // State để lưu tên file
-        const handleFileChange = async (event) => {
-            const file = event.target.files[0]; // Lấy tệp đã chọn
-            if (file) {
-                setFileName(file.name);
-                const formData = new FormData();
-                formData.append("file", file);
-               AuthApi.updatePdf(formData).then((e)=>setFileEntity(e))
-                   .catch((e)=>console.log(e))
+    const fileInputRef = useRef(null);
+    const [fileEntity, setFileEntity] = useState({});
+    const [fileName, setFileName] = useState('');
 
-            }
-        };
-
-    const handleSubmit =()=>{
-        if (token === null) {
-            // Nếu chưa đăng nhập, điều hướng đến /login
-            navigate('/login');
-            return
+    const handleFileChange = async (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            setFileName(file.name);
+            const formData = new FormData();
+            formData.append("file", file);
+            AuthApi.updatePdf(formData).then((e) => setFileEntity(e))
+                .catch((e) => console.log(e));
         }
-        let data = {
-            fileId:fileEntity.id,
-          postId:postId,
-          email:email,
-          phoneNumber:phoneNumber
-        }
-        consumer.getListJob(data).then((e)=>{
-            onClose()
-        })
-    }
-    const handleButtonClick = () => {
-        fileInputRef.current.click(); // Mở hộp thoại chọn tệp
     };
+
+    const handleSubmit = () => {
+        let validationErrors = {};
+        if (!fullName) {
+            validationErrors.fullName = "Họ tên là bắt buộc.";
+        }
+        if (!email) {
+            validationErrors.email = "Email là bắt buộc.";
+        } else if (!/\S+@\S+\.\S+/.test(email)) {
+            validationErrors.email = "Email không hợp lệ.";
+        }
+        if (!phoneNumber) {
+            validationErrors.phoneNumber = "Số điện thoại là bắt buộc.";
+        } else if (!/^\d{10,11}$/.test(phoneNumber)) {
+            validationErrors.phoneNumber = "Số điện thoại không hợp lệ.";
+        }
+        setErrors(validationErrors); // Update errors state
+
+        if (Object.keys(validationErrors).length === 0) {
+            if (token === null) {
+                navigate('/login');
+                return;
+            }
+            let data = {
+                fileId: fileEntity.id,
+                postId: postId,
+                email: email,
+                phoneNumber: phoneNumber,
+                fullName: fullName
+            }
+            consumer.getListJob(data).then((e) => {
+                onClose();
+            });
+        }
+    };
+
+    const handleButtonClick = () => {
+        fileInputRef.current.click();
+    };
+
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault(); // Ngăn chặn hành động mặc định của phím Enter
+            handleSubmit(); // Gọi hàm gửi
+        }
+    };
+
     return (
         <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
             <DialogTitle>
-                {/*Ứng tuyển <strong>Nhân Viên Livestream Cho Joona Baby</strong>*/}
                 <IconButton
                     aria-label="close"
                     onClick={onClose}
@@ -77,90 +99,49 @@ const ApplyJobPopup = ({ open, onClose,postId }) => {
                 </IconButton>
             </DialogTitle>
             <DialogContent>
-                {/* CV Selection */}
                 <Typography variant="h6" color="primary" gutterBottom>
                     Chọn CV để ứng tuyển
                 </Typography>
-                <RadioGroup
-                    value={selectedCV}
-                    onChange={(e) => setSelectedCV(e.target.value)}
-                >
-                    {/*<FormControlLabel*/}
-                    {/*    value="cv1"*/}
-                    {/*    control={<Radio color="primary" />}*/}
-                    {/*    label={*/}
-                    {/*        <Box display="flex" alignItems="center">*/}
-                    {/*            <Avatar*/}
-                    {/*                src="/path-to-cv-icon.png"*/}
-                    {/*                sx={{ width: 24, height: 24, mr: 1 }}*/}
-                    {/*            />*/}
-                    {/*            <Box>*/}
-                    {/*                <Typography>CV ứng tuyển gần nhất: Tester-Intern-PhamThiPhuong.pdf</Typography>*/}
-                    {/*                <Typography variant="body2" color="textSecondary">*/}
-                    {/*                    Xem*/}
-                    {/*                </Typography>*/}
-                    {/*            </Box>*/}
-                    {/*        </Box>*/}
-                    {/*    }*/}
-                    {/*/>*/}
-                    {/*<FormControlLabel*/}
-                    {/*    value="cv2"*/}
-                    {/*    control={<Radio color="primary" />}*/}
-                    {/*    label="Chọn CV khác trong thư viện CV của tôi"*/}
-                    {/*/>*/}
-                </RadioGroup>
 
-                {/* Upload CV */}
                 <Box mt={2}>
-                    <input
-                        type="file"
-                        accept=".pdf" // Chỉ định loại tệp được phép
-                        style={{ display: 'none' }} // Ẩn input file
-                        ref={fileInputRef} // Gán ref cho input
-                        onChange={handleFileChange} // Xử lý sự kiện khi tệp được chọn
-                    />
-                    <Button
-                        variant="outlined"
-                        fullWidth
-                        onClick={()=>handleButtonClick()}
-                        startIcon={<UploadFileIcon />}
-                        color="primary"
-                    >
-                        Tải lên CV từ máy tính, chọn hoặc kéo thả
-                    </Button>
-                    {fileName && ( // Hiển thị tên file nếu có
-                        <Typography variant="body1" mt={2}>
-                            Tên file: {fileName}
-                        </Typography>
-                    )}
-                </Box>
-
-                {/* Email và số điện thoại */}
-                <Box mt={2}>
-                    {/*<Typography variant="h6" color="primary" gutterBottom>*/}
-                    {/*    Họ và tên: Phạm Thị Phượng*/}
-                    {/*</Typography>*/}
                     <TextField
-                        label="Email"
+                        label="Họ và tên *"
+                        fullWidth
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        onKeyPress={handleKeyPress} // Bắt sự kiện phím
+                        margin="normal"
+                        variant="outlined"
+                        color="primary"
+                        error={Boolean(errors.fullName)}
+                        helperText={errors.fullName}
+                    />
+                    <TextField
+                        label="Email *"
                         fullWidth
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                        onKeyPress={handleKeyPress} // Bắt sự kiện phím
                         margin="normal"
                         variant="outlined"
                         color="primary"
+                        error={Boolean(errors.email)}
+                        helperText={errors.email}
                     />
                     <TextField
-                        label="Số điện thoại"
+                        label="Số điện thoại *"
                         fullWidth
                         value={phoneNumber}
                         onChange={(e) => setPhoneNumber(e.target.value)}
+                        onKeyPress={handleKeyPress} // Bắt sự kiện phím
                         margin="normal"
                         variant="outlined"
                         color="primary"
+                        error={Boolean(errors.phoneNumber)}
+                        helperText={errors.phoneNumber}
                     />
                 </Box>
 
-                {/* Thư giới thiệu */}
                 <Box mt={2}>
                     <Typography variant="h6" color="primary" gutterBottom>
                         Thư giới thiệu:
@@ -175,6 +156,30 @@ const ApplyJobPopup = ({ open, onClose,postId }) => {
                         variant="outlined"
                         color="primary"
                     />
+                </Box>
+
+                <Box mt={2}>
+                    <input
+                        type="file"
+                        accept=".pdf"
+                        style={{ display: 'none' }}
+                        ref={fileInputRef}
+                        onChange={handleFileChange}
+                    />
+                    <Button
+                        variant="outlined"
+                        fullWidth
+                        onClick={handleButtonClick}
+                        startIcon={<UploadFileIcon />}
+                        color="primary"
+                    >
+                        Tải lên CV từ máy tính, chọn hoặc kéo thả
+                    </Button>
+                    {fileName && (
+                        <Typography variant="body1" mt={2}>
+                            Tên file: {fileName}
+                        </Typography>
+                    )}
                 </Box>
             </DialogContent>
             <DialogActions>

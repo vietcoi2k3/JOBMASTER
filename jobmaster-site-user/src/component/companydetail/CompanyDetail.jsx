@@ -96,7 +96,7 @@ const CompanyProfile = () => {
                                 <Grid item xs={12} md={6}>
                                     <Typography variant="body2">Mô hình công ty: Sản phẩm</Typography>
                                     <Typography variant="body2">Lĩnh vực công ty: {company.fieldOfActivity}</Typography>
-                                    <Typography variant="body2">Quy mô công ty: 1000+ nhân viên: {company.scales}</Typography>
+                                    <Typography variant="body2">Quy mô công ty: {company.scales}</Typography>
                                 </Grid>
                                 <Grid item xs={12} md={6}>
                                     <Typography variant="body2">Email: {company.emailCompany}</Typography>

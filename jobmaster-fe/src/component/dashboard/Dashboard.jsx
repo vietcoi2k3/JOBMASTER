@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
@@ -131,6 +131,9 @@ export default function MiniDrawer() {
     setAnchorEl(event.currentTarget);
   };
 
+  useEffect(() => {
+    navigate("/dashboard/news")
+  }, []);
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -207,14 +210,11 @@ export default function MiniDrawer() {
                 className="h-1/2"
                 variant="contained"
                 color="primary"
+                sx={{ borderRadius: '8px', padding: '8px 16px', fontWeight: 'bold' }}
               >
                 Đăng tuyển
               </Button>
 
-              <NotificationsIcon
-                className="cursor-pointer ml-5"
-                color="primary"
-              />
 
 
               <Avatar

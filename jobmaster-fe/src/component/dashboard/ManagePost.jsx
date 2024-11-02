@@ -9,22 +9,24 @@ import {
     TableRow,
     Switch,
     Tooltip,
-    TextField, Button,
+    TextField,
+    Button,
     CircularProgress,
-    InputAdornment, Pagination,
+    InputAdornment,
+    Pagination,
     FormControl,
     Select,
-    Grid, InputLabel, MenuItem
+    Grid,
+    MenuItem,
+    Typography,
+    Box
 } from '@mui/material';
-import { Edit, Visibility } from '@mui/icons-material';
+import { Edit, Visibility, Search as SearchIcon } from '@mui/icons-material';
 import { useNavigate } from "react-router-dom";
 import EnterpriseApi from "../../api/EnterpriseApi";
-import EuroIcon from '@mui/icons-material/Euro';
-import SearchIcon from '@mui/icons-material/Search';
 import Notification from "../notification/Notification";
 import ConfirmDialog from '../share/ConfirmDialog';
 import NotificationDialog from "../share/NotificationDialog";
-
 
 export default function ManagePost() {
     const navigate = useNavigate();
@@ -35,10 +37,10 @@ export default function ManagePost() {
     const [search, setSearch] = useState('');
     const [status, setStatus] = useState("ALL");
     const [openConfirm, setOpenConfirm] = useState(false);
-    const [postId,setPostId] = useState();
+    const [postId, setPostId] = useState();
     const [openNoti, setOpenNoti] = useState(false);
-const [mgsConfirm, setMgsConfirm] = useState('');
-    const [notification, setNotification] = React.useState({
+    const [mgsConfirm, setMgsConfirm] = useState('');
+    const [notification, setNotification] = useState({
         open: false,
         message: '',
         type: 'success'
@@ -48,84 +50,95 @@ const [mgsConfirm, setMgsConfirm] = useState('');
         getList();
     }, [pageNumber, status]);
 
-
     const handleKeyPress = (event) => {
-        if (event.key === 'Enter') {
-            getList();
-        }
+        if (event.key === 'Enter') getList();
     };
+
     const getList = () => {
         setLoading(true);
         EnterpriseApi.getListPost(pageNumber, search, status === "ALL" ? "" : status)
             .then((e) => {
-                setPost(e.data)
-                setTotalPage(e.totalPages)
+                setPost(e.data);
+                setTotalPage(e.totalPages);
             })
-            .catch()
-            .finally(() => setLoading(false))
-    }
-    const handleClickOpenConfirm = () => {
-        setOpenConfirm(true);
+            .catch(() => setNotification({
+                open: true,
+                message: "Lỗi khi tải dữ liệu",
+                type: "error"
+            }))
+            .finally(() => setLoading(false));
     };
-    const handleConfirm = () => {
-        handleResetStatus();
+
+    const handleStatusChange = (event) => {
+        setStatus(event.target.value);
     };
+
     const handleResetStatus = () => {
         EnterpriseApi.resetPostStatus(postId)
-            .then((res) => {
+            .then(() => {
                 setNotification({
                     open: true,
                     message: "Hạ tin đăng thành công",
                     type: "success"
-                })
+                });
                 getList();
             })
-            .catch((error) => {
+            .catch(() => {
                 setNotification({
                     open: true,
-                    message: error,
+                    message: "Lỗi khi hạ tin đăng",
                     type: "error"
-                })
-            })
-    }
-    const handleCloseNoti = () => {
-        setOpenNoti(false);
-      };
+                });
+            });
+    };
+
     const checkStatus = () => {
         EnterpriseApi.getStatus()
-          .then((res) => {
-            if (res !== 'ACTIVE') {
-              setOpenNoti(true);
-            }else{
-               navigate("/dashboard/job-form/create");
-            }
-          })
-          .catch((error) => {
-            console.error("Error fetching status:", error); // bắt lỗi khi fetch status
-        });
-          
-      }
+            .then((res) => {
+                if (res !== 'ACTIVE') {
+                    setOpenNoti(true);
+                } else {
+                    navigate("/dashboard/job-form/create");
+                }
+            })
+            .catch(() => {
+                setNotification({
+                    open: true,
+                    message: "Lỗi khi kiểm tra trạng thái",
+                    type: "error"
+                });
+            });
+    };
+
     return (
-        <div className="p-6 w-full">
-            <div className="flex justify-between items-center mb-4">
-                <h1 className="text-xl font-semibold">Tin đăng tuyển</h1>
-                <button onClick={checkStatus} className="bg-primary text-accent py-2 px-4 rounded border-sidebar">+ Thêm tin tuyển dụng</button>
-            </div>
+        <Box p={4} sx={{ backgroundColor: '#F5F7FA', minHeight: '100vh' ,width :'100%'}}>
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+                <Typography variant="h5" fontWeight="bold" color="primary">Quản lý tin đăng tuyển</Typography>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={checkStatus}
+                    sx={{ borderRadius: '8px', padding: '8px 16px', fontWeight: 'bold' }}
+                >
+                    + Thêm tin tuyển dụng
+                </Button>
+            </Box>
+
             <Notification
                 open={notification.open}
                 onClose={() => setNotification({ open: false })}
                 message={notification.message}
                 type={notification.type}
             />
-            <Grid container alignItems="center">
-                {/* Dropdown for status */}
+
+            <Grid container spacing={2} alignItems="center" mb={3}>
                 <Grid item xs={12} sm={3}>
-                    <FormControl fullWidth variant="outlined" margin="normal">
+                    <FormControl fullWidth variant="outlined">
                         <Select
-                            labelId="status-label"
                             value={status}
-                            onChange={(e) => { setStatus(e.target.value) }}
-                            sx={{ backgroundColor: '#ffffff' }}
+                            onChange={handleStatusChange}
+                            displayEmpty
+                            sx={{ backgroundColor: '#ffffff', borderRadius: '8px' }}
                         >
                             <MenuItem value="ALL">Tất cả tin đăng</MenuItem>
                             <MenuItem value="APPROVED">Đã được duyệt</MenuItem>
@@ -134,41 +147,38 @@ const [mgsConfirm, setMgsConfirm] = useState('');
                         </Select>
                     </FormControl>
                 </Grid>
-    
-                {/* TextField for search */}
+
                 <Grid item xs={12} sm={9}>
                     <TextField
-                        label="Nhập tên chiến dịch"
                         variant="outlined"
                         fullWidth
-                        margin="normal"
-                        name="search"
-                        sx={{ backgroundColor: '#ffffff' }}
+                        placeholder="Nhập tên chiến dịch"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         onKeyPress={handleKeyPress}
                         InputProps={{
                             endAdornment: (
                                 <InputAdornment position="end">
-                                    <SearchIcon
-                                        onClick={getList}
-                                        style={{ cursor: 'pointer' }}
-                                    />
+                                    <IconButton onClick={getList}>
+                                        <SearchIcon />
+                                    </IconButton>
                                 </InputAdornment>
                             ),
                         }}
+                        sx={{ backgroundColor: '#ffffff', borderRadius: '8px' }}
                     />
                 </Grid>
             </Grid>
-            <TableContainer sx={{ backgroundColor: "#ffffff"}} className="border-s-accent rounded ">
+
+            <TableContainer sx={{ backgroundColor: "#ffffff", borderRadius: '8px', boxShadow: 1 }}>
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell sx={{ fontWeight: 'bold', width: '30%' }}>Tin tuyển dụng</TableCell>
-                            <TableCell sx={{ fontWeight: 'bold', width: '20%' }}>Vị trí</TableCell>
-                            <TableCell sx={{ fontWeight: 'bold', width: '15%' }}>Chiến dịch tuyển dụng</TableCell>
-                            <TableCell sx={{ fontWeight: 'bold', width: '15%' }}>Số lượng CV</TableCell>
-                            <TableCell sx={{ fontWeight: 'bold', width: '20%' }}>Thao tác</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold' }}>Tin tuyển dụng</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold' }}>Vị trí</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold' }}>Chiến dịch</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Số lượng CV</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Thao tác</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -181,76 +191,77 @@ const [mgsConfirm, setMgsConfirm] = useState('');
                         ) : (
                             post.map((post) => (
                                 <TableRow key={post.id}>
-                                    <TableCell sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '150px' }}>
-                                        <div>{post.title}</div>
-                                    </TableCell>
-                                    <TableCell sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100px' }}>{post.position}</TableCell>
-                                    <TableCell sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '150px' }}>
-                                        <div>{post.nameCam}</div>
-                                    </TableCell>
-                                    <TableCell sx={{ textAlign: 'center' }}>
-                                        <Button variant="outlined" color="primary" onClick={() => [
-                                            navigate(`/dashboard/view-cv/${post.id}`)
-                                        ]}>
+                                    <TableCell>{post.title}</TableCell>
+                                    <TableCell>{post.position}</TableCell>
+                                    <TableCell>{post.nameCam}</TableCell>
+                                    <TableCell align="center">
+                                        <Button
+                                            variant="outlined"
+                                            color="primary"
+                                            onClick={() => navigate(`/dashboard/view-cv/${post.id}`)}
+                                        >
                                             Xem CV ({post.quantityCv})
                                         </Button>
                                     </TableCell>
-                                    <TableCell sx={{ textAlign: 'space-between' }}>
+                                    <TableCell align="center">
                                         <Tooltip title="Xem tin">
                                             <IconButton onClick={() => navigate("/dashboard/job-form/detail/" + post.id)}>
                                                 <Visibility />
                                             </IconButton>
                                         </Tooltip>
                                         <Tooltip title="Chỉnh sửa">
-                                            <IconButton onClick={() => { navigate("/dashboard/job-form/update/" + post.id) }}>
+                                            <IconButton onClick={() => navigate("/dashboard/job-form/update/" + post.id)}>
                                                 <Edit />
                                             </IconButton>
                                         </Tooltip>
-                                        <Tooltip title="Hạ tin"
-                                        onClick={() => {
-                                            setMgsConfirm("Bạn có muốn hạ tin đăng không?");
-                                            setPostId(post.id);
-                                            handleClickOpenConfirm();
-                                        }}>
-                                        <Switch 
-                                        disabled ={post.status === 'NOT_APPROVED'}
-                                         checked={post.status === 'AWAITING_APPROVAL' || post.status === 'APPROVED'} />
+                                        <Tooltip title="Hạ tin">
+                                            <Switch
+                                                checked={post.status === 'AWAITING_APPROVAL' || post.status === 'APPROVED'}
+                                                disabled={post.status === 'NOT_APPROVED'}
+                                                onClick={() => {
+                                                    setMgsConfirm("Bạn có muốn hạ tin đăng không?");
+                                                    setPostId(post.id);
+                                                    setOpenConfirm(true);
+                                                }}
+                                            />
                                         </Tooltip>
-                                        
                                     </TableCell>
                                 </TableRow>
                             ))
                         )}
                     </TableBody>
-                    
                 </Table>
             </TableContainer>
-            <Pagination
-                onChange={(event, page) => setPageNumber(page)}
-                page={pageNumber}
-                count={totalPage}
-                color="primary"
-                sx={{
-                    width: '100%',
-                    backgroundColor: '#ffff',
-                    marginTop: 1,
-                    '& .MuiPagination-ul': {
+
+            <Box mt={3}>
+                <Pagination
+                    onChange={(event, page) => setPageNumber(page)}
+                    page={pageNumber}
+                    count={totalPage}
+                    color="primary"
+                    sx={{
+                        backgroundColor: '#ffffff',
+                        padding: '10px',
+                        borderRadius: '8px',
+                        display: 'flex',
                         justifyContent: 'center'
-                    }
-                }}
-            />
+                    }}
+                />
+            </Box>
+
             <ConfirmDialog
                 open={openConfirm}
-                onClose={setOpenConfirm}
+                onClose={() => setOpenConfirm(false)}
                 title="Xác nhận"
+                onConfirm={handleResetStatus}
                 message={mgsConfirm}
-                onConfirm={handleConfirm}
             />
+
             <NotificationDialog
-          open={openNoti}
-          onClose={handleCloseNoti}
-          message="Doanh nghiệp chưa kích hoạt"
-        />
-        </div>
+                open={openNoti}
+                onClose={() => setOpenNoti(false)}
+                message="Bạn không thể thêm tin tuyển dụng mới trong thời điểm hiện tại."
+            />
+        </Box>
     );
-}    
+}

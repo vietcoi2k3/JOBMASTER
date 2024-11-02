@@ -15,6 +15,6 @@ public interface PackageCampaignRepository extends JpaRepository<PackageCampaign
     @Query("SELECT c.packageId FROM PackageCampaign c WHERE c.campaignId =:campaignId GROUP BY c.packageId")
     List<String> getListIdPackage(@Param("campaignId") String campaignId);
 
-    boolean existsByCampaignIdAndPackageIdAndExpiredBefore(
+    boolean existsByCampaignIdAndPackageIdAndExpiredAfter(
             String campaignId, String packageId, LocalDate expired);
 }

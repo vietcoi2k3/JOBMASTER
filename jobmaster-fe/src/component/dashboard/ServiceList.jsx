@@ -1,65 +1,95 @@
 import React, { useEffect, useState } from 'react';
-import { Typography } from '@mui/material';
-import ServiceCard from "./Service";
+import { Typography, CircularProgress, Box, Grid, Snackbar } from '@mui/material';
+import ServiceCard from './Service';
 import EnterpriseApi from '../../api/EnterpriseApi';
+
 const ServiceList = () => {
     const [serviceList, setServiceList] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         EnterpriseApi.getAllPackage()
             .then((res) => {
                 setServiceList(res);
-            }).catch((e) => console.log(e))
+                setLoading(false);
+            })
+            .catch((e) => {
+                console.log(e);
+                setError('Có lỗi xảy ra khi tải dữ liệu dịch vụ.');
+                setLoading(false);
+            });
     }, []);
 
     return (
-        <div className="p-8">
-            <Typography variant="h4" className="mb-4 text-black font-bold">
+        <Box sx={{ padding: '32px', backgroundColor: '#F7F9FC',width:'100%' }}>
+            <Typography variant="h4" sx={{ marginBottom: '16px', fontWeight: 'bold' }} color = 'primary'>
                 Danh sách dịch vụ
             </Typography>
 
-            <div className="mb-8">
-                <Typography variant="h5" className="text-blue-700 font-bold">
-                    <span style={{ color: '#3758F9' }}>Master Job</span> | Đăng tin tuyển dụng hiệu suất cao
+            <Box sx={{ marginBottom: '32px', padding: '16px', backgroundColor: '#E3F2FD', borderRadius: '8px' }}>
+                <Typography variant="h5" sx={{ color: '#3758F9', fontWeight: 'bold' }}>
+                    Master Job | Đăng tin tuyển dụng hiệu suất cao
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
                     Công hưởng sức mạnh công nghệ tạo ra hiệu quả đột phá cho tin tuyển dụng của Doanh nghiệp
                 </Typography>
-            </div>
+            </Box>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {serviceList.map((e) =>
-                    (e.typeService === 'MASTER_JOBS' || e.typeService === 'TOP_ADD') && (
-                        <ServiceCard
-                            title={e.name}
-                            price={e.price}
-                            description={e.description} />
-                    )
+            {loading ? (
+                <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '32px' }}>
+                    <CircularProgress />
+                </Box>
+            ) : error ? (
+                <Typography variant="body1" color="error" align="center">
+                    {error}
+                </Typography>
+            ) : (
+                <Grid container spacing={2} sx={{ marginBottom: '32px' }}>
+                    {serviceList.map((e) =>
+                            (e.typeService === 'MASTER_JOBS' || e.typeService === 'TOP_ADD') && (
+                                <Grid item xs={12} md={4} key={e.id}>
+                                    <ServiceCard
+                                        title={e.name}
+                                        price={e.price}
+                                        description={e.description}
+                                    />
+                                </Grid>
+                            )
+                    )}
+                </Grid>
+            )}
 
-                )}
-            </div>
-
-            <div className="mt-8">
-                <Typography variant="h5" className="text-blue-700 font-bold">
-                    <span style={{ color: '#3758F9' }}>STANDARD PLUS</span> | Đăng tin tuyển dụng tiết kiệm
+            <Box sx={{ marginTop: '32px', padding: '16px', backgroundColor: '#E3F2FD', borderRadius: '8px' }}>
+                <Typography variant="h5" sx={{ color: '#3758F9', fontWeight: 'bold' }}>
+                    STANDARD PLUS | Đăng tin tuyển dụng tiết kiệm
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
                     Tối ưu chi phí - Tiếp lợi thế cho Nhà tuyển dụng
                 </Typography>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+            </Box>
+
+            <Grid container spacing={2} sx={{ marginTop: '16px' }}>
                 {serviceList.map((e) =>
-                    (e.typeService === 'STAND_PLUS') && (
-                        <ServiceCard
-                            title={e.name}
-                            price={e.price}
-                            description={e.description} />
-                    )
-
+                        (e.typeService === 'STAND_PLUS') && (
+                            <Grid item xs={12} md={4} key={e.id}>
+                                <ServiceCard
+                                    title={e.name}
+                                    price={e.price}
+                                    description={e.description}
+                                />
+                            </Grid>
+                        )
                 )}
+            </Grid>
 
-            </div>
-        </div>
+            <Snackbar
+                open={Boolean(error)}
+                autoHideDuration={6000}
+                message={error}
+                onClose={() => setError(null)}
+            />
+        </Box>
     );
 };
 

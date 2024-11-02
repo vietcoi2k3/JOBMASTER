@@ -15,7 +15,6 @@ import SearchIcon from '@mui/icons-material/Search';
 import Notification from "../notification/Notification";
 import ConfirmDialog from '../share/ConfirmDialog';
 
-
 const Job = () => {
     const [data, setData] = useState([]);
     const [reload, setReload] = useState(false);
@@ -29,15 +28,16 @@ const Job = () => {
     const [services, setServices] = useState([]);
     const [campaignDownId, setCampaignDownId] = useState();
     const [selectedServices, setSelectedServices] = useState([]);
-    const [openPaymentPopup, setOpenPaymentPopup] = useState(false); // Popup xác nhận thanh toán
-    const [totalAmount, setTotalAmount] = useState(0); // Tổng số tiền
-    const [camId, setCamId] = useState(null); // Tổng số tiền
+    const [openPaymentPopup, setOpenPaymentPopup] = useState(false);
+    const [totalAmount, setTotalAmount] = useState(0);
+    const [camId, setCamId] = useState(null);
     const navigate = useNavigate();
-    const [notification, setNotification] = React.useState({
+    const [notification, setNotification] = useState({
         open: false,
         message: '',
         type: 'success'
     });
+
     const handleReload = () => {
         getList();
         setReload(!reload);
@@ -47,7 +47,6 @@ const Job = () => {
         getList();
     }, [pageNumber]);
 
-    
     const getList = () => {
         setLoading(true);
         EnterpriseApi.getListCampaign(search, pageNumber)
@@ -65,29 +64,26 @@ const Job = () => {
             .finally(() => {
                 setLoading(false);
             });
-
     };
 
     const fetchServices = (id) => {
         EnterpriseApi.getListService(id)
             .then((e) => setServices(e))
             .catch(console.error);
-        setCamId(id)
+        setCamId(id);
     };
 
     const handleToggleService = (service) => {
         setSelectedServices((prev) =>
-            prev.includes(service)
-                ? prev.filter((s) => s !== service)
-                : [...prev, service]
+            prev.includes(service) ? prev.filter((s) => s !== service) : [...prev, service]
         );
     };
 
     const handleServiceSubmit = () => {
         const total = selectedServices.reduce((sum, service) => sum + service.price, 0);
-        setTotalAmount(total); // Cập nhật số tiền
-        setOpenServicePopup(false); // Đóng popup dịch vụ
-        setOpenPaymentPopup(true); // Mở popup thanh toán
+        setTotalAmount(total);
+        setOpenServicePopup(false);
+        setOpenPaymentPopup(true);
     };
 
     const handlePaymentConfirm = () => {
@@ -96,27 +92,26 @@ const Job = () => {
             price: totalAmount,
             campaignId: camId,
             packageId: packageIds
-        }
+        };
         EnterpriseApi.activateService(data)
-            .then((res) => {
+            .then(() => {
                 setNotification({
                     open: true,
                     message: 'Thanh toán thành công',
-                    type: "success"
-                })
+                    type: 'success'
+                });
             })
-            .catch((error) => {
+            .catch(() => {
                 setNotification({
                     open: true,
                     message: 'Số dư không đủ',
-                    type: "error"
-                })
-            }).then((e) => {
-                console.log(e)
-            })
-        setOpenPaymentPopup(false); // Đóng popup thanh toán
-        setSelectedServices([]); // Reset dịch vụ đã chọn
+                    type: 'error'
+                });
+            });
+        setOpenPaymentPopup(false);
+        setSelectedServices([]);
     };
+
     const handleSearch = () => {
         getList();
     };
@@ -126,14 +121,14 @@ const Job = () => {
             handleSearch();
         }
     };
+
     const handleToggle = () => {
-        console.log(campaignDownId + "----------------")
         EnterpriseApi.updateStatusCampaign(campaignDownId)
-            .then((res) => {
+            .then(() => {
                 getList();
                 setNotification({
                     open: true,
-                    message: "Cập nhật trạng thái thành công",
+                    message: 'Cập nhật trạng thái thành công',
                     type: 'success'
                 });
             })
@@ -141,22 +136,24 @@ const Job = () => {
                 setNotification({
                     open: true,
                     message: error,
-                    type: 'erro'
+                    type: 'error'
                 });
-            })
+            });
     };
+
     const handleClickOpenConfirm = () => {
         setOpenConfirm(true);
     };
+
     const handleConfirm = () => {
         handleToggle();
         setOpenConfirm(false);
     };
-    return (
 
-        <div className="w-full">
+    return (
+        <Box sx={{ padding: 4, backgroundColor: '#F5F7FA', borderRadius: 2,width:'100%' }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
-                <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+                <Typography variant="h4" sx={{ fontWeight: 'bold' }} color = 'primary'>
                     Chiến dịch tuyển dụng
                 </Typography>
                 <RecruitmentPopup onSuccess={handleReload} createStep={true} />
@@ -166,23 +163,22 @@ const Job = () => {
                 variant="outlined"
                 fullWidth
                 margin="normal"
-                name="search"
-                sx={{ backgroundColor: '#ffffff' }}
+                sx={{ backgroundColor: '#ffffff', borderRadius: 1 }}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                onKeyPress={handleKeyPress} // Bắt sự kiện Enter
+                onKeyPress={handleKeyPress}
                 InputProps={{
                     endAdornment: (
                         <InputAdornment position="end">
                             <SearchIcon
-                                onClick={handleSearch} // Bắt sự kiện click vào biểu tượng
-                                style={{ cursor: 'pointer' }} // Thay đổi con trỏ khi hover
+                                onClick={handleSearch}
+                                style={{ cursor: 'pointer' }}
                             />
                         </InputAdornment>
                     ),
                 }}
             />
-            <TableContainer component={Paper}>
+            <TableContainer component={Paper} sx={{ borderRadius: 2 }}>
                 <Table>
                     <TableHead>
                         <TableRow>
@@ -202,31 +198,26 @@ const Job = () => {
                             data.map((campaign, index) => (
                                 <TableRow key={index}>
                                     <TableCell align="center">{campaign.name}</TableCell>
-                                    <TableCell align="center">{campaign.cvQuantity ? campaign.cvQuantity : 0}</TableCell>
+                                    <TableCell align="center">{campaign.cvQuantity || 0}</TableCell>
                                     <TableCell align="center">
-                                        <IconButton>
-                                            <EuroIcon onClick={() => { fetchServices(campaign.id); setOpenServicePopup(true); }} />
+                                        <IconButton onClick={() => { fetchServices(campaign.id); setOpenServicePopup(true); }}>
+                                            <EuroIcon />
                                         </IconButton>
                                         <IconButton>
-                                            <RecruitmentPopup
-                                             onSuccess={handleReload} createStep={false} campaign={campaign} />
+                                            <RecruitmentPopup onSuccess={handleReload} createStep={false} campaign={campaign} />
                                         </IconButton>
                                         <Switch
                                             checked={campaign.isActive}
-                                            onClick={(event) => {
+                                            onClick={() => {
                                                 setCampaignDownId(campaign.id);
-                                                // Chỉ bật popup khi chuyển từ mở (true) sang tắt (false)
-                                                if (campaign.isActive) {
-                                                    setMgsConfirm('Xác nhận tắt chiến dịch, tin đăng của chiến dịch cũng sẽ bị tắt?');
-                                                    handleClickOpenConfirm();
-                                                } else {
-                                                    setMgsConfirm('Kích hoạt chiến dịch');
-                                                    handleClickOpenConfirm();
-                                                }
+                                                setMgsConfirm(campaign.isActive ?
+                                                    'Xác nhận tắt chiến dịch, tin đăng của chiến dịch cũng sẽ bị tắt?' :
+                                                    'Kích hoạt chiến dịch');
+                                                handleClickOpenConfirm();
                                             }}
                                         />
                                         <IconButton disabled={!campaign.postId}>
-                                            <EventNoteIcon onClick={() => { navigate("/dashboard/job-form/detail/" + campaign.postId) }} />
+                                            <EventNoteIcon onClick={() => navigate(`/dashboard/job-form/detail/${campaign.postId}`)} />
                                         </IconButton>
                                     </TableCell>
                                 </TableRow>
@@ -235,7 +226,6 @@ const Job = () => {
                     </TableBody>
                 </Table>
             </TableContainer>
-
             <Pagination
                 onChange={(event, page) => setPageNumber(page)}
                 page={pageNumber}
@@ -243,7 +233,7 @@ const Job = () => {
                 color="primary"
                 sx={{
                     width: '100%',
-                    backgroundColor: '#ffff',
+                    backgroundColor: '#ffffff',
                     marginTop: 1,
                     '& .MuiPagination-ul': {
                         justifyContent: 'center'
@@ -279,7 +269,7 @@ const Job = () => {
                     <Button onClick={() => setOpenServicePopup(false)}>Hủy</Button>
                     <Button
                         onClick={handleServiceSubmit}
-                        disabled={services.length === 0 || selectedServices.length===0}
+                        disabled={services.length === 0 || selectedServices.length === 0}
                     >
                         Xác nhận
                     </Button>
@@ -290,28 +280,31 @@ const Job = () => {
             <Dialog open={openPaymentPopup} onClose={() => setOpenPaymentPopup(false)}>
                 <DialogTitle>Xác nhận thanh toán</DialogTitle>
                 <DialogContent>
-                    <p>Bạn có muốn thanh toán với số tiền <strong>{totalAmount} VNĐ</strong> không?</p>
+                    <Typography variant="h6">
+                        Bạn có chắc chắn thanh toán dịch vụ với tổng số tiền là {totalAmount} VNĐ không?
+                    </Typography>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setOpenPaymentPopup(false)}>Hủy</Button>
-                    <Button onClick={handlePaymentConfirm}>Thanh toán</Button>
+                    <Button onClick={handlePaymentConfirm}>Xác nhận</Button>
                 </DialogActions>
             </Dialog>
 
-            <Notification
-                open={notification.open}
-                onClose={() => setNotification({ ...notification, open: false })}
-                message={notification.message}
-                type={notification.type}
-            />
+            {/* Xác nhận toggle chiến dịch */}
             <ConfirmDialog
                 open={openConfirm}
-                onClose={setOpenConfirm}
-                title="Xác nhận"
-                message={mgsConfirm}
-                onConfirm={() => handleConfirm()}
+                title="Xác nhận hành động"
+                subTitle={mgsConfirm}
+                onConfirm={handleConfirm}
+                onClose={() => setOpenConfirm(false)}
             />
-        </div>
+
+            {/* Notification */}
+            <Notification
+                notification={notification}
+                setNotification={setNotification}
+            />
+        </Box>
     );
 };
 

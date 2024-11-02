@@ -47,7 +47,11 @@ const LoginComponent = () => {
     setErrors(tempErrors);
     return Object.values(tempErrors).every((x) => x === "");
   }
-
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleLogin();
+    }
+  };
   const handleLoginGoogle = () => {
     const clientId =
       "421794227239-vvm5o77fkd4qsendqmr4movhv6kmqt3m.apps.googleusercontent.com";
@@ -148,6 +152,7 @@ const LoginComponent = () => {
           type="email"
           name="email"
           variant="outlined"
+          onKeyPress={handleKeyPress} // Bắt sự kiện "Enter" cho password
           error={!!errors.email}
           helperText={errors.email}
           required
@@ -162,6 +167,7 @@ const LoginComponent = () => {
             label="Mật khẩu"
             type={showPassword ? "text" : "password"}
             variant="outlined"
+            onKeyPress={handleKeyPress} // Bắt sự kiện "Enter" cho password
             error={!!errors.password}
             helperText={errors.password}
             onChange={handleChange}

@@ -72,7 +72,7 @@ const ChangePassword = () => {
 
     return (
         <div style={{ padding: '20px', width: '100%' }}>
-            <Typography variant="h5" gutterBottom sx={{ marginBottom: 2, textAlign: 'center' }}>
+            <Typography variant="h5" gutterBottom sx={{ marginBottom: 2, textAlign: 'center' ,fontWeight:'bold'}} color ='primary'>
                 Thay đổi mật khẩu
             </Typography>
             <Box sx={{ width: '100%', margin: '20px auto', padding: '20px', border: '1px solid #ccc', borderRadius: '8px' }}>

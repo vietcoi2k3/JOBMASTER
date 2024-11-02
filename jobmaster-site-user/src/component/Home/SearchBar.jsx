@@ -1,22 +1,24 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, TextField, Button, MenuItem, IconButton } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import AuthApi from "../../api/AuthApi";
 
 const SearchBar = () => {
-    const [search,setSearch] = useState('')
-    const [locations,setLocations] = useState([])
-    const [categories,setCategories] = useState([])
-    const [locationsSelect,setLocationsSelect] = useState('')
-    const [categorySelect,setCategorySelect] = useState('')
-    const  navigate =useNavigate()
+    const [search, setSearch] = useState('');
+    const [locations, setLocations] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [locationsSelect, setLocationsSelect] = useState('');
+    const [categorySelect, setCategorySelect] = useState('');
+    const navigate = useNavigate();
+
     const handleSearch = () => {
         // Điều hướng sang trang list-job với các tham số
         navigate(`/list-job?search=${search}&address=${locationsSelect}&field=${categorySelect}`);
     };
+
     const handleSearchChange = (event) => {
         setSearch(event.target.value);
     };
@@ -28,9 +30,17 @@ const SearchBar = () => {
     const setFieldSelect = (event) => {
         setCategorySelect(event.target.value);
     };
+
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault(); // Ngăn chặn hành động mặc định
+            handleSearch(); // Gọi hàm tìm kiếm
+        }
+    };
+
     useEffect(() => {
-        AuthApi.getAllCity().then(e=>setLocations(e))
-        AuthApi.getAllField().then(e=>setCategories(e))
+        AuthApi.getAllCity().then(e => setLocations(e));
+        AuthApi.getAllField().then(e => setCategories(e));
     }, []);
 
     return (
@@ -52,6 +62,7 @@ const SearchBar = () => {
                 size="small"
                 fullWidth
                 onChange={handleSearchChange}
+                onKeyPress={handleKeyPress} // Bắt sự kiện phím
                 InputProps={{
                     startAdornment: (
                         <IconButton edge="start">
@@ -83,7 +94,7 @@ const SearchBar = () => {
                     color: '#ffffff', // Màu chữ xanh đậm
                     borderColor: '#1a237e', // Màu viền xanh đậm
                     backgroundColor: '#3758F9', // Nền xanh nhạt
-                    padding: '8px 16px', // Thêm padding cho nút
+                    padding: '8px 32px', // Thêm padding cho nút
                     borderRadius: 2,
                     '&:hover': {
                         backgroundColor: '#bbdefb', // Nền xanh nhạt hơn khi hover

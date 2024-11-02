@@ -104,6 +104,8 @@ public class UserServiceImpl implements IUserService {
             if (origin.equals("http://localhost:3000")&&user.getEnterpriseId()==null){
                 EnterpriseEntity enterprise = new EnterpriseEntity();
                 enterprise.setUserId(user.getId());
+                enterprise.setIsActive(EnterpriseEnum.INACTIVE.name());
+                enterprise.setLogo("https://cdn-new.topcv.vn/unsafe/https://static.topcv.vn/v4/image/normal-company/logo_default.png");
                 enterprise = enterpriseRepository.save(enterprise);
 
                 user.setEnterpriseId(enterprise.getId());
@@ -182,6 +184,7 @@ public class UserServiceImpl implements IUserService {
         EnterpriseEntity enterpriseEntity = EnterpriseEntity.builder()
                 .companyName(registerRequest.getCompanyName())
                 .city(registerRequest.getCity())
+                .logo("https://cdn-new.topcv.vn/unsafe/https://static.topcv.vn/v4/image/normal-company/logo_default.png")
                 .district(registerRequest.getDistrict())
                 .isActive(UserEnum.INACTIVE.name())
                 .userId(user.getId()) // Sử dụng ID của user sau khi đã lưu

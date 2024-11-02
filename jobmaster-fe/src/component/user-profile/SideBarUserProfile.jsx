@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import {Outlet, useNavigate} from "react-router-dom";
 import LockIcon from "@mui/icons-material/Lock";
 import ReceiptIcon from "@mui/icons-material/Receipt";
@@ -7,8 +7,11 @@ import BusinessIcon from "@mui/icons-material/Business";
 import WorkOutlinedIcon from '@mui/icons-material/WorkOutlined';
 import HistoryIcon from '@mui/icons-material/History';
 const SideBarProfile = () => {
-    const [selected, setSelected] =React.useState(null);
+    const [selected, setSelected] =React.useState(1);
     const navigate = useNavigate();
+    useEffect(() => {
+        navigate("/dashboard/profile/change-password")
+    }, []);
     // Hàm để cập nhật mục được chọn
     const handleSelect = (index) => {
         if (index===1){

@@ -43,28 +43,28 @@ export default function News() {
     }
 
     return (
-        <div style={{ width: '100%', padding: '20px' }}>
-            <Typography variant="h5" align="left" gutterBottom>
+        <div style={{ width: '100%', padding: '20px' , minHeight :'100vh' }}>
+            <Typography variant="h5" align="left" gutterBottom color = 'primary' sx={{fontWeight:'bold'}}>
                 Bảng tin
             </Typography>
             <Box sx={{ backgroundColor: '#ffffff', padding: '20px', height: '100%' }}>
                 <Box >
                     <Grid container spacing={3} sx={{ marginTop: '10px' }}>
                         <Grid item xs={3}>
-                            <Box sx={{ padding: '10px', backgroundColor: '#ebf3ff', textAlign: 'center', borderRadius: '4px', }}>
+                            <Box sx={{ padding: '20px', backgroundColor: '#ebf3ff', textAlign: 'center', borderRadius: '4px', transition: '0.3s', '&:hover': { transform: 'scale(1.02)' } }}>
                                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     {/* Phần tử bên trái */}
-                                    <Typography sx={{ color: '#2D7CF1' }} variant="h6">{info.campaignOpening}</Typography>
+                                    <Typography sx={{ color: '#2D7CF1', fontWeight: 'bold'}} variant="h6">{info.campaignOpening}</Typography>
 
                                     {/* Phần tử bên phải */}
                                     <OnlinePredictionIcon sx={{ color: '#2D7CF1' }} />
                                 </Box>
-                                <Typography sx={{ textAlign: 'left', color: '#2D7CF1' }} variant="h6">Chiến dịch đang mở</Typography>
+                                <Typography sx={{ textAlign: 'left', color: '#2D7CF1', fontWeight: 'bold' }} variant="h6">Chiến dịch đang mở</Typography>
 
                             </Box>
                         </Grid>
                         <Grid item xs={3}>
-                            <Box sx={{ padding: '10px', backgroundColor: '#fffae9', textAlign: 'center', borderRadius: '4px', }}>
+                            <Box sx={{ padding: '20px', backgroundColor: '#fffae9', textAlign: 'center', borderRadius: '4px', transition: '0.3s', '&:hover': { transform: 'scale(1.02)' } }}>
                                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     {/* Phần tử bên trái */}
                                     <Typography sx={{ color: '#E5B500' }} variant="h6">{info.postDisplaying}</Typography>
@@ -72,33 +72,33 @@ export default function News() {
                                     {/* Phần tử bên phải */}
                                     <InsertDriveFileIcon sx={{ color: '#E5B500' }} />
                                 </Box>
-                                <Typography sx={{ textAlign: 'left', color: '#E5B500' }} variant="h6">Tin tuyển dụng hiển thị</Typography>
+                                <Typography sx={{ textAlign: 'left', color: '#2D7CF1', fontWeight: 'bold' }} variant="h6">Tin tuyển dụng hiển thị</Typography>
 
                             </Box>
                         </Grid>
                         <Grid item xs={3}>
-                            <Box sx={{ padding: '10px', backgroundColor: '#fff3f2', textAlign: 'center', borderRadius: '4px', }}>
+                            <Box sx={{ padding: '20px', backgroundColor: '#fff3f2', textAlign: 'center', borderRadius: '4px', transition: '0.3s', '&:hover': { transform: 'scale(1.02)' } }}>
                                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     {/* Phần tử bên trái */}
-                                    <Typography sx={{ color: '#DA4538' }} variant="h6">{info.newCv}</Typography>
+                                    <Typography sx={{ color: '#DA4538' , fontWeight: 'bold' }} variant="h6">{info.newCv}</Typography>
 
                                     {/* Phần tử bên phải */}
                                     <FileOpenIcon sx={{ color: '#DA4538' }} />
                                 </Box>
-                                <Typography sx={{ textAlign: 'left', color: '#DA4538' }} variant="h6">CV ứng tuyển mới</Typography>
+                                <Typography sx={{ textAlign: 'left', color: '#2D7CF1', fontWeight: 'bold' }} variant="h6">CV ứng tuyển mới</Typography>
 
                             </Box>
                         </Grid>
                         <Grid item xs={3}>
-                            <Box sx={{ padding: '10px', backgroundColor: '#f5fff9', textAlign: 'center', borderRadius: '4px', }}>
+                            <Box sx={{ padding: '20px', backgroundColor: '#f5fff9', textAlign: 'center', borderRadius: '4px', transition: '0.3s', '&:hover': { transform: 'scale(1.02)' } }}>
                                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     {/* Phần tử bên trái */}
-                                    <Typography sx={{ color: '#00B14F' }} variant="h6">{info.workCv}</Typography>
+                                    <Typography sx={{ color: '#00B14F', fontWeight: 'bold'  }} variant="h6">{info.workCv}</Typography>
 
                                     {/* Phần tử bên phải */}
                                     <ContactPageIcon sx={{ color: '#00B14F' }} />
                                 </Box>
-                                <Typography sx={{ textAlign: 'left', color: '#00B14F' }} variant="h6">Cv nhận việc</Typography>
+                                <Typography sx={{ textAlign: 'left', color: '#2D7CF1', fontWeight: 'bold' }} variant="h6">Cv nhận việc</Typography>
                             </Box>
                         </Grid>
                     </Grid>
@@ -109,7 +109,7 @@ export default function News() {
                 </Typography>
                 {loading ? (
                     <CircularProgress />
-                    
+
                 ) : (
                     <BarChart
                         width={1000} // Chiều rộng biểu đồ bằng 100%

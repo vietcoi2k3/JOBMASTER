@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
     Avatar, Box, Button, Card, CardContent, Chip, Divider,
     IconButton, Typography, Stack, Grid
@@ -9,7 +9,7 @@ import {
 } from '@mui/icons-material';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ApplyJobPopup from "./ApplyJobPopup";
-
+import { EmojiEvents } from '@mui/icons-material';
 const GeneralInfo = ({ icon, label, value }) => (
     <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
         {icon}
@@ -28,14 +28,14 @@ const JobDetails = () => {
     const { state } = useLocation();
     const { job } = state || {};
     const navigate = useNavigate();
-    const token = localStorage.getItem("access_token")
+    const token = localStorage.getItem("access_token");
     const handleNavigateToCompany = () => {
         navigate(`/detail-company/${job.enterpriseId}`);
     };
     const [open, setOpen] = useState(false);
     return (
-        <Box sx={{ maxWidth: '1200px', margin: 'auto', px: 3,py:6 }}>
-            <ApplyJobPopup open={open} onClose={() => setOpen(false) } postId ={job.id}/>
+        <Box sx={{ maxWidth: '1200px', margin: 'auto', px: 3, py: 6 }}>
+            <ApplyJobPopup open={open} onClose={() => setOpen(false)} postId={job.id} />
             <Grid container spacing={3}>
                 {/* Main Content */}
                 <Grid item xs={12} md={8}>
@@ -88,9 +88,7 @@ const JobDetails = () => {
                                     return
                                 }
                                 setOpen(true)
-                            }
-                        }
-
+                            }}
                         >
                             Ứng tuyển ngay
                         </Button>
@@ -167,7 +165,7 @@ const JobDetails = () => {
                                 value={job.level}
                             />
                             <GeneralInfo
-                                icon={<AccessTime color="primary" />}
+                                icon={<EmojiEvents color="primary" />}
                                 label="Kinh nghiệm"
                                 value={job.experience}
                             />
@@ -181,7 +179,12 @@ const JobDetails = () => {
                                 label="Hình thức làm việc"
                                 value={job.typeWorking}
                             />
-
+                            {/* Thêm thông tin timeWorking */}
+                            <GeneralInfo
+                                icon={<AccessTime color="primary" />}
+                                label="Thời gian làm việc"
+                                value={job.timeWorking}
+                            />
                         </Box>
                     </Card>
                 </Grid>

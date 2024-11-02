@@ -89,7 +89,7 @@ public class ConsumerImpl implements IConsumerService {
             postResponse.setEnterpriseId(enterprise.getId());
             postResponse.setNameCompany(enterprise.getCompanyName());
             postResponse.setScales(enterprise.getScale());
-            postResponse.setLabel(packageCampaignRepository.existsByCampaignIdAndPackageIdAndExpiredBefore(campaignEntity.getId(),"TA01", LocalDate.now()));
+            postResponse.setLabel(packageCampaignRepository.existsByCampaignIdAndPackageIdAndExpiredAfter(campaignEntity.getId(),"TA01", LocalDate.now()));
             listResult.add(postResponse);
         }
 
@@ -220,7 +220,7 @@ public class ConsumerImpl implements IConsumerService {
             postResponse.setEnterpriseId(enterprise.getId());
             postResponse.setNameCompany(enterprise.getCompanyName());
             postResponse.setScales(enterprise.getScale());
-            postResponse.setLabel(packageCampaignRepository.existsByCampaignIdAndPackageIdAndExpiredBefore(campaignEntity.getId(),"TA01",LocalDate.now()));
+            postResponse.setLabel(packageCampaignRepository.existsByCampaignIdAndPackageIdAndExpiredAfter(campaignEntity.getId(),"TA01",LocalDate.now()));
             listResult.add(postResponse);
         }
         return listResult;
@@ -301,7 +301,7 @@ public class ConsumerImpl implements IConsumerService {
                 postResponse.setEnterpriseId(enterprise.getId());
                 postResponse.setNameCompany(enterprise.getCompanyName());
                 postResponse.setScales(enterprise.getScale());
-                postResponse.setLabel(packageCampaignRepository.existsByCampaignIdAndPackageIdAndExpiredBefore(campaignEntity.getId(),"TA01",LocalDate.now()));
+                postResponse.setLabel(packageCampaignRepository.existsByCampaignIdAndPackageIdAndExpiredAfter(campaignEntity.getId(),"TA01",LocalDate.now()));
                 listResult.add(postResponse);
             }
         }

@@ -17,7 +17,7 @@ const CallBack = () => {
             fetchToken()
       }, []);
   return (
-    <div>CallBack</div>
+    <div></div>
   )
 }
 

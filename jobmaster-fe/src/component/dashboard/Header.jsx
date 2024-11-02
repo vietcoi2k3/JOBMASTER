@@ -9,9 +9,6 @@ const Header = () => {
         <h1 className="text-xl text-blue-600">JobMaster</h1>
         <div className="flex items-center">
           <IconButton>
-            <Notifications />
-          </IconButton>
-          <IconButton>
             <Avatar alt="Pham Phuong" src="/static/images/avatar/1.jpg" />
           </IconButton>
           <IconButton>

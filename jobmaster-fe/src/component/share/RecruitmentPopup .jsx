@@ -110,7 +110,8 @@ const RecruitmentPopup = ({ onSuccess, createStep, campaign }) => {
             </div>
 
             {createStep ? (
-                <Button variant="contained" color="primary" onClick={handleClickOpen}>
+                <Button variant="contained" color="primary" onClick={handleClickOpen}
+                        sx={{ borderRadius: '8px', padding: '8px 16px', fontWeight: 'bold' }}>
                     + Thêm chiến dịch mới
                 </Button>
             ) : (
