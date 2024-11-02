@@ -29,9 +29,9 @@ function CreatePositionPopup({ open, onClose }) {
     // Gọi API để lấy danh sách lĩnh vực khi component được render
     useEffect(() => {
         if (open) {
-            AdminApi.getListField(null,null) // Giả sử API là `getFields`
+            AdminApi.getListField(null,null,1,1000) // Giả sử API là `getFields`
                 .then((response) => {
-                    setFields(response);
+                    setFields(response.data);
                 })
                 .catch((error) => {
                     console.error("Lỗi khi lấy danh sách lĩnh vực:", error);

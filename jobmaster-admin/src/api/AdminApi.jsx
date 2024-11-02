@@ -9,12 +9,14 @@ const AdminApi =  {
         });
     },
 
-    getListField(code, name) {
+    getListField(code, name,pageNumber,pageSize) {
         const url = "/admin/get-list-field";
         return axiosClient.get(url, {
             params: {
                 code: code,
                 name: name,
+                pageNumber:pageNumber,
+                pageSize:pageSize
             },
         });
     },
@@ -96,12 +98,14 @@ const AdminApi =  {
         return axiosClient.post(url,data)
     },
 
-    getListPosition(code, name) {
+    getListPosition(code, name,pageNumber,pageSize) {
         const url = "/admin/get-list-position";
         return axiosClient.get(url, {
             params: {
                 code: code,
                 name: name,
+                pageNumber:pageNumber,
+                pageSize:10
             },
         });
     },

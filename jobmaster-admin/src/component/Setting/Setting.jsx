@@ -49,7 +49,7 @@ function SettingTable() {
     };
 
     const fetchFields = () => {
-        AdminApi.getListField(code, name, currentPage, itemsPerPage).then((response) => {
+        AdminApi.getListField(code, name, currentPage, 10).then((response) => {
             setField(response.data); // Assume response.data is the list of fields
             setTotalCount(response.totalPage); // Assume response.totalCount is the total number of fields
         });
