@@ -17,9 +17,10 @@ public class VerifyTokenEntity extends BaseEntity{
 
     private String token;
 
-    @OneToOne(targetEntity = UserEntity.class, fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "user_id")
     private UserEntity user;
+
 
     private Date expiryDate;
 

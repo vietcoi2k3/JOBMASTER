@@ -241,12 +241,16 @@ const JobForm = ({ operator }) => {
             errors.timeWorking = 'Thời gian làm việc không được để trống.';
         }
 
-        if (data.campaignId == null) {
+        if (data.campaignId == null||data.campaignId.trim() === '') {
             errors.campaignId = 'Chiến dịch tuyển dụng không được để trống.';
         }
 
         if (!data.salaryRange || data.salaryRange.trim() === '') {
             errors.salaryRange = 'Khoảng lương không được để trống.';
+        }
+
+        if (!data.deadline || data.deadline.trim() === '') {
+            errors.deadline = 'Khoảng lương không được để trống.';
         }
 
 
@@ -425,6 +429,7 @@ const JobForm = ({ operator }) => {
                                         Hạn nộp hồ sơ <span style={{ color: 'red' }}>*</span>
                                     </InputLabel>
                                     <TextField
+                                        error={Boolean(errors.deadline)}
                                         InputProps={{ readOnly: operator === 'detail' }}
                                         fullWidth
                                         labelId="deadline-label"
@@ -643,7 +648,7 @@ const JobForm = ({ operator }) => {
                                         Mô tả công việc
                                     </InputLabel>
                                     <ReactQuill
-                                        InputProps={{ readOnly: operator === 'detail' }}
+                                        readOnly={operator === 'detail'}
                                         theme="snow"
                                         placeholder="Mô tả công việc"
                                         style={{

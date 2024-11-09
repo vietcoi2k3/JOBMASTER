@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import PersonSharpIcon from '@mui/icons-material/PersonSharp';
 import {
     Box,
     Paper,
@@ -11,7 +12,7 @@ import {
     TableRow,
     Chip,
     IconButton,
-    Avatar, Pagination, MenuItem, Select, InputLabel, FormControl
+    Avatar, Pagination, MenuItem, Select, InputLabel, FormControl, Tooltip
 } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone';
@@ -71,9 +72,9 @@ const ViewCV = () => {
                 </Typography>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
 
-                    <Typography variant="body2" color="text.secondary">
-                        Đăng bởi HR
-                    </Typography>
+                    {/*<Typography variant="body2" color="text.secondary">*/}
+                    {/*    Đăng bởi HR*/}
+                    {/*</Typography>*/}
                 </Box>
                 <Box sx={{ mt: 2 }}>
                     <Typography><strong>Tiêu đề tin đăng:</strong> {jobInfo.title}</Typography>
@@ -97,7 +98,15 @@ const ViewCV = () => {
                     </MenuItem>
                     {statuses.map((status) => (
                         <MenuItem key={status} value={status}>
-                            {status}
+                            {
+                                status === 'RECEIVED' ? 'Tiếp nhận CV' :
+                                    status === 'MATCHED' ? 'Đã xem' :
+                                        status === 'INTERVIEW_SCHEDULED' ? 'Hẹn phỏng vấn' :
+                                            status ==='OFFERED' ? 'Qua phỏng vấn' :
+                                                status ==='HIRED' ? 'Nhận việc' :
+                                                    status ==='REJECTED' ? 'Từ chối':
+                                                        status
+                            }
                         </MenuItem>
                     ))}
                 </Select>
@@ -107,17 +116,18 @@ const ViewCV = () => {
                 <Table sx={{ minWidth: 650 }} aria-label="candidates table">
                     <TableHead>
                         <TableRow>
-                            <TableCell>Ứng viên</TableCell>
-                            <TableCell>Thông tin liên hệ</TableCell>
-                            <TableCell>Trạng thái</TableCell>
-                            <TableCell>Thông tin ứng viên</TableCell>
-                            <TableCell>Thao tác</TableCell>
+                            <TableCell sx={{fontWeight:'bold'}}>Ứng viên</TableCell>
+                            <TableCell sx={{fontWeight:'bold'}}>Thông tin liên hệ</TableCell>
+                            <TableCell sx={{fontWeight:'bold'}}>Trạng thái</TableCell>
+                            <TableCell sx={{fontWeight:'bold'}}>Thông tin ứng viên</TableCell>
+                            <TableCell sx={{fontWeight:'bold'}}>Thao tác</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {cv.map((cv, index) => (
                             <TableRow key={index}>
                                 <TableCell component="th" scope="row">
+                                    {/*<PersonSharpIcon fontSize = "small" sx={{ mr: 1 }}/>*/}
                                     <Typography variant="body2" color="text.secondary">
                                         {cv.name}
                                     </Typography>
@@ -133,17 +143,62 @@ const ViewCV = () => {
                                     </Box>
                                 </TableCell>
                                 <TableCell>
-                                    <Chip label={cv.status} color="default" />
+                                    <Chip
+                                        label={
+                                            cv.status === 'RECEIVED' ? 'Tiếp nhận CV' :
+                                                cv.status === 'MATCHED' ? 'Đã xem' :
+                                                    cv.status === 'INTERVIEW_SCHEDULED' ? 'Hẹn phỏng vấn' :
+                                                        cv.status === 'OFFERED' ? 'Qua phỏng vấn' :
+                                                            cv.status === 'HIRED' ? 'Nhận việc' :
+                                                                cv.status === 'REJECTED' ? 'Từ chối' :
+                                                                    cv.status
+                                        }
+                                        color={
+                                            cv.status === 'RECEIVED' ? 'default' :
+                                                cv.status === 'MATCHED' ? 'warning' :
+                                                    cv.status === 'INTERVIEW_SCHEDULED' ? 'primary' :
+                                                        cv.status === 'OFFERED' ? 'primary' :
+                                                            cv.status === 'HIRED' ? 'success' :
+                                                                cv.status === 'REJECTED' ? 'error' :
+                                                                    'default'
+                                        }
+                                        sx={{
+                                            width: 150, // Cố định chiều rộng
+                                            fontWeight: 'bold', // Để chữ đậm
+                                            backgroundColor:
+                                                cv.status === 'RECEIVED' ? '#e0e0e0' : // Nền xám nhạt cho RECEIVED
+                                                    cv.status === 'MATCHED' ? '#ffe082' : // Nền vàng nhạt cho MATCHED
+                                                        cv.status === 'INTERVIEW_SCHEDULED' ? '#c5cae9' : // Nền xanh dương nhạt cho INTERVIEW_SCHEDULED
+                                                            cv.status === 'OFFERED' ? '#c5cae9' : // Nền xanh dương nhạt cho OFFERED
+                                                                cv.status === 'HIRED' ? '#81c784' : // Nền xanh lá nhạt cho HIRED
+                                                                    cv.status === 'REJECTED' ? '#ef9a9a' : // Nền đỏ nhạt cho REJECTED
+                                                                        '#e0e0e0', // Nền xám nhạt mặc định
+                                            color:
+                                                cv.status === 'RECEIVED' ? '#616161' : // Chữ xám đậm cho RECEIVED
+                                                    cv.status === 'MATCHED' ? '#ff6f00' : // Chữ cam đậm cho MATCHED
+                                                        cv.status === 'INTERVIEW_SCHEDULED' ? '#3f51b5' : // Chữ xanh dương đậm cho INTERVIEW_SCHEDULED
+                                                            cv.status === 'OFFERED' ? '#3f51b5' : // Chữ xanh dương đậm cho OFFERED
+                                                                cv.status === 'HIRED' ? '#388e3c' : // Chữ xanh lá đậm cho HIRED
+                                                                    cv.status === 'REJECTED' ? '#d32f2f' : // Chữ đỏ đậm cho REJECTED
+                                                                        '#616161', // Chữ xám đậm mặc định
+                                            borderRadius: 1, // Góc bo tròn cho Chip
+                                            opacity: 1 // Đảm bảo độ đậm của chữ và nền không bị mờ
+                                        }}
+                                    />
+
+
                                 </TableCell>
                                 <TableCell>
                                     <Chip onClick={() => { navigate("/dashboard/detail-cv/" + cv.id); return null }} label="Xem CV" color="primary" variant="outlined" clickable />
                                 </TableCell>
                                 <TableCell>
-                                    <IconButton>
-                                        <DownloadIcon
-                                            onClick={() => handleDownload(cv.id)}
-                                        ></DownloadIcon>
-                                    </IconButton>
+                                    <Tooltip title={'Tải CV'}>
+                                        <IconButton>
+                                            <DownloadIcon
+                                                onClick={() => handleDownload(cv.id)}
+                                            ></DownloadIcon>
+                                        </IconButton>
+                                    </Tooltip>
 
                                 </TableCell>
                             </TableRow>

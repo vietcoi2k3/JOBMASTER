@@ -74,6 +74,7 @@ public interface CampaignRepository extends JpaRepository<CampaignEntity,String>
         WHERE
          c.enterprise_id = :enterpriseId
         AND (c.post_id IS NULL or p.id =:campaignId)
+        AND  c.is_active  =true
         group by c.id, p.id
         """, nativeQuery = true)
     List<CampaignResponse> getListCampaignForPost(@Param("enterpriseId") String enterpriseId, String campaignId);

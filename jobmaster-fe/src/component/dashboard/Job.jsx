@@ -4,7 +4,7 @@ import {
     TableHead, TableRow, Paper, TextField,
     IconButton, Switch, Pagination, Dialog, DialogTitle,
     DialogContent, DialogActions, Button, Checkbox,
-    FormControlLabel, Box, InputAdornment, Typography, CircularProgress
+    FormControlLabel, Box, InputAdornment, Typography, CircularProgress, Tooltip
 } from '@mui/material';
 import RecruitmentPopup from "../share/RecruitmentPopup ";
 import EnterpriseApi from "../../api/EnterpriseApi";
@@ -200,25 +200,33 @@ const Job = () => {
                                     <TableCell align="center">{campaign.name}</TableCell>
                                     <TableCell align="center">{campaign.cvQuantity || 0}</TableCell>
                                     <TableCell align="center">
-                                        <IconButton onClick={() => { fetchServices(campaign.id); setOpenServicePopup(true); }}>
-                                            <EuroIcon />
-                                        </IconButton>
-                                        <IconButton>
-                                            <RecruitmentPopup onSuccess={handleReload} createStep={false} campaign={campaign} />
-                                        </IconButton>
-                                        <Switch
-                                            checked={campaign.isActive}
-                                            onClick={() => {
-                                                setCampaignDownId(campaign.id);
-                                                setMgsConfirm(campaign.isActive ?
-                                                    'Xác nhận tắt chiến dịch, tin đăng của chiến dịch cũng sẽ bị tắt?' :
-                                                    'Kích hoạt chiến dịch');
-                                                handleClickOpenConfirm();
-                                            }}
-                                        />
-                                        <IconButton disabled={!campaign.postId}>
-                                            <EventNoteIcon onClick={() => navigate(`/dashboard/job-form/detail/${campaign.postId}`)} />
-                                        </IconButton>
+                                        <Tooltip title="Dịch vụ">
+                                            <IconButton onClick={() => { fetchServices(campaign.id); setOpenServicePopup(true); }}>
+                                                <EuroIcon />
+                                            </IconButton>
+                                        </Tooltip>
+                                        <Tooltip title="Chỉnh sửa">
+                                            <IconButton>
+                                                <RecruitmentPopup onSuccess={handleReload} createStep={false} campaign={campaign} />
+                                            </IconButton>
+                                        </Tooltip>
+                                        <Tooltip title="Kích hoạt">
+                                            <Switch
+                                                checked={campaign.isActive}
+                                                onClick={() => {
+                                                    setCampaignDownId(campaign.id);
+                                                    setMgsConfirm(campaign.isActive ?
+                                                        'Xác nhận tắt chiến dịch, tin đăng của chiến dịch cũng sẽ bị tắt?' :
+                                                        'Kích hoạt chiến dịch');
+                                                    handleClickOpenConfirm();
+                                                }}
+                                            />
+                                        </Tooltip>
+                                        <Tooltip title="Chỉnh sửa tin đăng">
+                                            <IconButton disabled={!campaign.postId}>
+                                                <EventNoteIcon onClick={() => navigate(`/dashboard/job-form/detail/${campaign.postId}`)} />
+                                            </IconButton>
+                                        </Tooltip>
                                     </TableCell>
                                 </TableRow>
                             ))
@@ -259,7 +267,7 @@ const Job = () => {
                                             onChange={() => handleToggleService(service)}
                                         />
                                     }
-                                    label={`${service.name} - ${service.price} VNĐ`}
+                                    label={`${service.name} - ${service.price} VNĐ - Hiệu lực: ${service.days} ngày`}
                                 />
                             </Box>
                         ))
@@ -294,15 +302,18 @@ const Job = () => {
             <ConfirmDialog
                 open={openConfirm}
                 title="Xác nhận hành động"
-                subTitle={mgsConfirm}
+                message={mgsConfirm}
                 onConfirm={handleConfirm}
                 onClose={() => setOpenConfirm(false)}
             />
 
             {/* Notification */}
             <Notification
-                notification={notification}
-                setNotification={setNotification}
+
+                open={notification.open}
+                onClose={() => setNotification({ open: false })}
+                message={notification.message}
+                type={notification.type}
             />
         </Box>
     );

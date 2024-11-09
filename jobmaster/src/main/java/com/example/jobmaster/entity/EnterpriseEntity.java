@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Setter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class EnterpriseEntity extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -43,4 +42,9 @@ public class EnterpriseEntity extends BaseEntity{
     private String isActive;
     @NotNull
     private String userId;
+
+    public EnterpriseEntity() {
+        this.logo = "https://cdn-new.topcv.vn/unsafe/https://static.topcv.vn/v4/image/normal-company/logo_default.png";        // Default logo value
+        this.isActive = "INACTIVE"; // Default active status
+    }
 }

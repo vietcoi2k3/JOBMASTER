@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Card, CardContent, Typography } from '@mui/material';
 
-const ServiceCard = ({ title, price, description }) => {
+const ServiceCard = ({ title, price, description,effectiveTime }) => {
     return (
         <Card
             className="shadow-lg rounded-lg border border-gray-200 hover:shadow-2xl transition-all duration-300"
@@ -15,6 +15,9 @@ const ServiceCard = ({ title, price, description }) => {
                 </Typography>
                 <Typography variant="body2" color="textSecondary" className="mb-4">
                     {description}
+                </Typography>
+                <Typography variant="body2" color="textSecondary" className="italic">
+                    Thời gian hiệu lực: {effectiveTime}
                 </Typography>
             </CardContent>
         </Card>
