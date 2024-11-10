@@ -78,6 +78,7 @@ const ServiceList = () => {
                                     title={e.name}
                                     price={e.price}
                                     description={e.description}
+                                    effectiveTime={e.days}
                                 />
                             </Grid>
                         )
@@ -101,6 +102,7 @@ const ServiceList = () => {
                                     title={e.name}
                                     price={e.price}
                                     description={e.description}
+                                    effectiveTime={e.days}
                                 />
                             </Grid>
                         )

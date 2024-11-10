@@ -1,10 +1,7 @@
 package com.example.jobmaster.entity;
 
 import com.sun.istack.NotNull;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -38,12 +35,18 @@ public class EnterpriseEntity extends BaseEntity{
     private String businessCertificate;
     private String logo;
     private String scale;
+    @Column(columnDefinition = "LONGTEXT")
     private String description;
     private String isActive;
     @NotNull
     private String userId;
 
     public EnterpriseEntity() {
+
+    }
+
+    @PrePersist
+    protected void onCreate() {
         this.logo = "https://cdn-new.topcv.vn/unsafe/https://static.topcv.vn/v4/image/normal-company/logo_default.png";        // Default logo value
         this.isActive = "INACTIVE"; // Default active status
     }

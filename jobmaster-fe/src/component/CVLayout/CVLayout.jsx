@@ -24,7 +24,12 @@ const CVLayout = () => {
     const [open, setOpen] = useState(false);
     const [selectedStatus, setSelectedStatus] = useState('CV tiếp nhận');
     const handleOpenPopup = () => setOpen(true);
-    const handleClosePopup = () => setOpen(false);
+    const handleClosePopup = () => {
+        setOpen(false)
+        setCVEntity({...cvEntity,
+            status: cvEntity.status
+        })
+    };
     const id = useParams().id;
     const [cvEntity, setCVEntity] = useState({});
     const [isLoading, setIsLoading] = useState(true);
@@ -108,8 +113,9 @@ const CVLayout = () => {
                 <CvEvaluationPopup
                     open={open}
                     onClose={handleClosePopup}
-                    selectedStatus={selectedStatus}
+                    selectedStatus={cvEntity.status}
                     onStatusChange={handleStatusChange}
+                    cvEntity = {cvEntity}
                     id={id}
                 />
             </Box>

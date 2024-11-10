@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     Box,
     Button,
@@ -21,20 +21,23 @@ const statusMap = new Map([
     ["HIRED", "Nhận việc"],
     ["REJECTED", "Từ chối"]
 ]);
-function CvEvaluationPopup({ open, onClose, selectedStatus, onStatusChange,id  }) {
+function CvEvaluationPopup({ open, onClose, selectedStatus, onStatusChange,id,cvEntity  }) {
     // Danh sách các trạng thái có sẵn
     const statuses = ['RECEIVED', 'MATCHED', 'INTERVIEW_SCHEDULED', 'OFFERED', 'HIRED', 'REJECTED'];
-
+    const [statusSelect,setStatusSelect] = useState(selectedStatus)
     // Hàm xử lý khi người dùng chọn một trạng thái khác
     const handleStatusClick = (status) => {
-        onStatusChange(status); //
+        setStatusSelect(status)
     };
-
+    useEffect(() => {
+        setStatusSelect(cvEntity.status);
+    }, [cvEntity]);
     const handleSubmit = (status)=>{
-        onClose()
+        onClose(setStatusSelect)
+        onStatusChange(statusSelect)
         const data = {
             id:id,
-            status : status
+            status : statusSelect
         }
         EnterpriseApi.updateStatus(data).then((e)=>{
             console.log(e)
@@ -52,8 +55,8 @@ function CvEvaluationPopup({ open, onClose, selectedStatus, onStatusChange,id  }
                             {/* Đổi màu trạng thái đã chọn */}
                             <Chip
                                 label={statusMap.get(status)}
-                                color={selectedStatus === status ? 'primary' : 'default'}
-                                variant={selectedStatus === status ? 'filled' : 'outlined'}
+                                color={statusSelect === status ? 'primary' : 'default'}
+                                variant={statusSelect === status ? 'filled' : 'outlined'}
                                 onClick={() => handleStatusClick(status)}
                                 sx={{ cursor: 'pointer' }}
                             />

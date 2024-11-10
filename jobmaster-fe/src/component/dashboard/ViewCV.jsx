@@ -100,7 +100,7 @@ const ViewCV = () => {
                         <MenuItem key={status} value={status}>
                             {
                                 status === 'RECEIVED' ? 'Tiếp nhận CV' :
-                                    status === 'MATCHED' ? 'Đã xem' :
+                                    status === 'MATCHED' ? 'Phù hợp' :
                                         status === 'INTERVIEW_SCHEDULED' ? 'Hẹn phỏng vấn' :
                                             status ==='OFFERED' ? 'Qua phỏng vấn' :
                                                 status ==='HIRED' ? 'Nhận việc' :
@@ -146,7 +146,7 @@ const ViewCV = () => {
                                     <Chip
                                         label={
                                             cv.status === 'RECEIVED' ? 'Tiếp nhận CV' :
-                                                cv.status === 'MATCHED' ? 'Đã xem' :
+                                                cv.status === 'MATCHED' ? 'Phù hợp' :
                                                     cv.status === 'INTERVIEW_SCHEDULED' ? 'Hẹn phỏng vấn' :
                                                         cv.status === 'OFFERED' ? 'Qua phỏng vấn' :
                                                             cv.status === 'HIRED' ? 'Nhận việc' :
@@ -166,22 +166,22 @@ const ViewCV = () => {
                                             width: 150, // Cố định chiều rộng
                                             fontWeight: 'bold', // Để chữ đậm
                                             backgroundColor:
-                                                cv.status === 'RECEIVED' ? '#e0e0e0' : // Nền xám nhạt cho RECEIVED
-                                                    cv.status === 'MATCHED' ? '#ffe082' : // Nền vàng nhạt cho MATCHED
-                                                        cv.status === 'INTERVIEW_SCHEDULED' ? '#c5cae9' : // Nền xanh dương nhạt cho INTERVIEW_SCHEDULED
-                                                            cv.status === 'OFFERED' ? '#c5cae9' : // Nền xanh dương nhạt cho OFFERED
-                                                                cv.status === 'HIRED' ? '#81c784' : // Nền xanh lá nhạt cho HIRED
-                                                                    cv.status === 'REJECTED' ? '#ef9a9a' : // Nền đỏ nhạt cho REJECTED
+                                                cv.status === 'RECEIVED' ? '#D9D9D9' : // Nền xám nhạt cho RECEIVED
+                                                    cv.status === 'MATCHED' ? '#F5BA1333' : // Nền vàng nhạt cho MATCHED
+                                                        cv.status === 'INTERVIEW_SCHEDULED' ? '#6098F642' : // Nền xanh dương nhạt cho INTERVIEW_SCHEDULED
+                                                            cv.status === 'OFFERED' ? '#6098F64A' : // Nền xanh dương nhạt cho OFFERED
+                                                                cv.status === 'HIRED' ? '#25B37333' : // Nền xanh lá nhạt cho HIRED
+                                                                    cv.status === 'REJECTED' ? '#FF000033' : // Nền đỏ nhạt cho REJECTED
                                                                         '#e0e0e0', // Nền xám nhạt mặc định
                                             color:
                                                 cv.status === 'RECEIVED' ? '#616161' : // Chữ xám đậm cho RECEIVED
-                                                    cv.status === 'MATCHED' ? '#ff6f00' : // Chữ cam đậm cho MATCHED
-                                                        cv.status === 'INTERVIEW_SCHEDULED' ? '#3f51b5' : // Chữ xanh dương đậm cho INTERVIEW_SCHEDULED
-                                                            cv.status === 'OFFERED' ? '#3f51b5' : // Chữ xanh dương đậm cho OFFERED
-                                                                cv.status === 'HIRED' ? '#388e3c' : // Chữ xanh lá đậm cho HIRED
-                                                                    cv.status === 'REJECTED' ? '#d32f2f' : // Chữ đỏ đậm cho REJECTED
+                                                    cv.status === 'MATCHED' ? '#F5BA13' : // Chữ cam đậm cho MATCHED
+                                                        cv.status === 'INTERVIEW_SCHEDULED' ? '#6098F6' : // Chữ xanh dương đậm cho INTERVIEW_SCHEDULED
+                                                            cv.status === 'OFFERED' ? '#3758F9' : // Chữ xanh dương đậm cho OFFERED
+                                                                cv.status === 'HIRED' ? '#25B373' : // Chữ xanh lá đậm cho HIRED
+                                                                    cv.status === 'REJECTED' ? '#FF0000A8' : // Chữ đỏ đậm cho REJECTED
                                                                         '#616161', // Chữ xám đậm mặc định
-                                            borderRadius: 1, // Góc bo tròn cho Chip
+                                            borderRadius: 4, // Góc bo tròn cho Chip
                                             opacity: 1 // Đảm bảo độ đậm của chữ và nền không bị mờ
                                         }}
                                     />
