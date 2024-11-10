@@ -25,7 +25,7 @@ import { Button, Menu, MenuItem, Typography } from "@mui/material";
 import SettingsIcon from '@mui/icons-material/Settings';
 import WorkOutlinedIcon from '@mui/icons-material/WorkOutlined';
 import LocalAtmIcon from '@mui/icons-material/LocalAtm';
-import { Outlet } from "react-router-dom";
+import {Outlet, useLocation} from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import DynamicFeedIcon from '@mui/icons-material/DynamicFeed';
 import EnterpriseApi from "../../api/EnterpriseApi";
@@ -130,9 +130,11 @@ export default function MiniDrawer() {
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-
+  const location = useLocation(); // Lấy thông tin đường dẫn hiện tại
   useEffect(() => {
-    navigate("/dashboard/news")
+    if (location.pathname === '/dashboard') {
+      navigate("/dashboard/news"); // Điều hướng tới '/dashboard/news'
+    }
   }, []);
   const handleClose = () => {
     setAnchorEl(null);
@@ -261,7 +263,7 @@ export default function MiniDrawer() {
       <Drawer variant="permanent" open={open} >
         <Divider />
         <List>
-          {["Bản tin","Cài đặt tài khoản ", "Chiến dịch tuyển dụng", "Quản lí tin đăng", "Dịch vụ"].map((text, index) => (
+          {["Bản tin","Cài đặt tài khoản ", "Chiến dịch tuyển dụng", "Tin tuyển dụng", "Dịch vụ"].map((text, index) => (
             <ListItem
               key={text} disablePadding sx={{ display: "block" }}>
               <ListItemButton

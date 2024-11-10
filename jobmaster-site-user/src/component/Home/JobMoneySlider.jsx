@@ -68,13 +68,14 @@ const JobSlider = () => {
                                                 verticalAlign: 'middle'
                                             }}>
                                     {job.title+"  "}
-                                    {job.label&& <Chip
-                                        label={"Hot"}
-                                        color={'error'}
-                                        size="small"
-                                        sx={{ marginBottom: '4px', fontSize: '12px', height: '20px' }}
-                                    />}
+
                                 </Typography>
+                                {job.label&& <Chip
+                                    label={"Hot"}
+                                    color={'error'}
+                                    size="small"
+                                    sx={{ marginBottom: '4px', fontSize: '12px', height: '20px' }}
+                                />}
                             </Box>
                             <Typography
                                 variant="body2"

@@ -15,10 +15,9 @@ import {
     TableContainer,
     TableHead,
     TableRow,
-    TableSortLabel,
     Checkbox,
     Paper,
-    Typography, Table,Box
+    Typography, Table, Box
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
@@ -35,8 +34,8 @@ const RecruitmentPopup = ({ onSuccess, createStep, campaign }) => {
     const [data, setData] = useState({
         name: ""
     });
+    const [nameError, setNameError] = useState(false); // Add error state
 
-  
     const handleClickOpen = () => {
         setOpen(true);
         if (createStep) {
@@ -47,9 +46,9 @@ const RecruitmentPopup = ({ onSuccess, createStep, campaign }) => {
         }
     };
 
-
     const handleClose = () => {
         setOpen(false);
+        setNameError(false); // Reset error state on close
     };
 
     const handleChange = (e) => {
@@ -57,57 +56,66 @@ const RecruitmentPopup = ({ onSuccess, createStep, campaign }) => {
             ...data,
             [e.target.name]: e.target.value,
         });
-    }
+        if (e.target.name === "name" && e.target.value.trim() !== "") {
+            setNameError(false); // Clear error if name is filled
+        }
+    };
 
     const handleSubmitCreate = () => {
-        setLoading(true)
+        if (!data.name.trim()) {
+            setNameError(true); // Set error if name is empty
+            return;
+        }
+        setLoading(true);
         EnterpriseApi.addCampaign(data)
-            .then((err) => {
+            .then(() => {
                 onSuccess();
-                setNotification({ open: true, message: "thêm thành công", type: "success" })
+                setNotification({ open: true, message: "Thêm thành công", type: "success" });
+            })
+            .catch(() => {
+                setNotification({ open: true, message: "Thêm thất bại", type: "error" });
+            })
+            .finally(() => {
+                handleClose();
+                setLoading(false);
+            });
+    };
 
-            })
-            .catch((err) => {
-                setNotification({ open: true, message: "thêm thất bại", type: "error" })
-            })
-            .finally((e) => {
-                handleClose()
-                setLoading(false)
-            })
-    }
     const handleSubmitUpdate = () => {
-        setLoading(true)
-        EnterpriseApi.updateCampaign(campaign.id, data)
-            .then((err) => {
-                onSuccess();
-                setNotification({ open: true, message: "Cập nhật thành công", type: "success" })
+        if (!data.name.trim()) {
+            setNameError(true);
+            return;
+        }
+        setLoading(true);
 
+        EnterpriseApi.updateCampaign(campaign.id, data)
+            .then(() => {
+                onSuccess();
+                setNotification({ open: true, message: "Cập nhật thành công", type: "success" });
             })
-            .catch((err) => {
-                setNotification({ open: true, message: "Cập nhật thất bại", type: "error" })
+            .catch(() => {
+                setNotification({ open: true, message: "Cập nhật thất bại", type: "error" });
             })
-            .finally((e) => {
-                handleClose()
-                setLoading(false)
-            })
-    }
+            .finally(() => {
+                setLoading(false);
+            });
+    };
+
     const fetchServices = (id) => {
         EnterpriseApi.getAllPackageOfCampaign(id)
             .then((e) => setServices(e))
             .catch(console.error);
     };
 
-
     return (
         <div>
-            <div>
                 <Notification
+                    key={notification.message}
                     open={notification.open}
                     onClose={() => setNotification({ open: false })}
                     message={notification.message}
                     type={notification.type}
                 />
-            </div>
 
             {createStep ? (
                 <Button variant="contained" color="primary" onClick={handleClickOpen}
@@ -140,7 +148,6 @@ const RecruitmentPopup = ({ onSuccess, createStep, campaign }) => {
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
                                 <TextField
-
                                     label="Tên chiến dịch tuyển dụng"
                                     placeholder="VD: Tuyển dụng nhân viên marketing"
                                     fullWidth
@@ -148,6 +155,8 @@ const RecruitmentPopup = ({ onSuccess, createStep, campaign }) => {
                                     name="name"
                                     onChange={handleChange}
                                     value={data.name}
+                                    error={nameError} // Set error prop
+                                    helperText={nameError ? "Vui lòng nhập tên chiến dịch" : ""} // Display error message
                                 />
                             </Grid>
                         </Grid>
@@ -183,11 +192,11 @@ const RecruitmentPopup = ({ onSuccess, createStep, campaign }) => {
                         <Button onClick={handleSubmitCreate} disabled={loading} variant="contained" color="primary">
                             {loading ? <CircularProgress size={24} color="inherit" /> : 'Tạo mới'}
                         </Button>
-                    ) : (<Button onClick={handleSubmitUpdate} disabled={loading} variant="contained" color="primary">
-                        {loading ? <CircularProgress size={24} color="inherit" /> : 'Cập nhật'}
-                    </Button>)
-                    }
-
+                    ) : (
+                        <Button onClick={handleSubmitUpdate} disabled={loading} variant="contained" color="primary">
+                            {loading ? <CircularProgress size={24} color="inherit" /> : 'Cập nhật'}
+                        </Button>
+                    )}
                 </DialogActions>
             </Dialog>
         </div>

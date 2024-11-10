@@ -31,8 +31,8 @@ public class JobmasterApplication {
         return new ModelMapper();
     }
 
-//    @Autowired
-//    private CityRepository cityRepository;
+    @Autowired
+    private CityRepository cityRepository;
 //    @PostConstruct
 //    public void Test(){
 //        RestTemplate restTemplate = new RestTemplate();

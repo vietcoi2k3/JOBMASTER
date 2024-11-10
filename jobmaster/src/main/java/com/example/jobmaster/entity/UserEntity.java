@@ -5,7 +5,6 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.HashSet;
@@ -49,6 +48,7 @@ public class UserEntity extends BaseEntity implements UserDetails {
     public void prePersist() {
         if (this.balance == null) {
             this.balance = BigDecimal.ZERO;
+            this.isActive = "INACTIVE";
         }
     }
 

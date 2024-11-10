@@ -1,12 +1,13 @@
 import React, {useEffect} from 'react';
-import {useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import AuthApi from "../../api/AuthApi";
 
 function PaymentSuccess() {
     const { search } = useLocation();
+    const navigate = useNavigate()
     useEffect(() => {
         AuthApi.saveMoney(search).then(()=>{
-            window.location.href = "http://localhost:3000/dashboard/profile/history"
+            navigate("/dashboard/profile/history")
         })
     }, []);
     return (

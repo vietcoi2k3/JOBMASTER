@@ -113,7 +113,7 @@ export default function ManagePost() {
     return (
         <Box p={4} sx={{ backgroundColor: '#F5F7FA', minHeight: '100vh' ,width :'100%'}}>
             <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-                <Typography variant="h5" fontWeight="bold" color="primary">Quản lý tin đăng tuyển</Typography>
+                <Typography variant="h5" fontWeight="bold" color="primary">Tin tuyển dụng</Typography>
                 <Button
                     variant="contained"
                     color="primary"
@@ -141,9 +141,9 @@ export default function ManagePost() {
                             sx={{ backgroundColor: '#ffffff', borderRadius: '8px' }}
                         >
                             <MenuItem value="ALL">Tất cả tin đăng</MenuItem>
-                            <MenuItem value="APPROVED">Đã được duyệt</MenuItem>
+                            <MenuItem value="APPROVED">Đang hiển thị</MenuItem>
                             <MenuItem value="AWAITING_APPROVAL">Đang chờ duyệt</MenuItem>
-                            <MenuItem value="NOT_APPROVED">Chưa duyệt</MenuItem>
+                            <MenuItem value="NOT_APPROVED">Dừng hiển thị</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>

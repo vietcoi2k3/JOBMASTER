@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react'
-import {Outlet, useNavigate} from "react-router-dom";
+import {Outlet, useLocation, useNavigate} from "react-router-dom";
 import LockIcon from "@mui/icons-material/Lock";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import PersonIcon from "@mui/icons-material/Person";
@@ -9,8 +9,15 @@ import HistoryIcon from '@mui/icons-material/History';
 const SideBarProfile = () => {
     const [selected, setSelected] =React.useState(1);
     const navigate = useNavigate();
+    const location = useLocation(); // Lấy thông tin đường dẫn hiện tại
     useEffect(() => {
-        navigate("/dashboard/profile/change-password")
+        if (location.pathname === '/dashboard/profile') {
+            navigate("/dashboard/profile/change-password")
+        }
+        if (location.pathname === '/dashboard/profile/history'){
+            setSelected(5)
+        }
+
     }, []);
     // Hàm để cập nhật mục được chọn
     const handleSelect = (index) => {

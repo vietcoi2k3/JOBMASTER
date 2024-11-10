@@ -2,10 +2,11 @@ import React from 'react';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 
-const Notification = ({ open, onClose, message,type }) => {
+const Notification = ({ open, onClose, message,type,key  }) => {
   return (
     <Snackbar
-      open={open}
+        key={key} // Thêm key tại đây
+        open={open}
       autoHideDuration={6000}
       onClose={onClose}
       anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} // Đặt thông báo ở góc dưới bên phải

@@ -47,12 +47,13 @@ const ServiceList = () => {
             ) : (
                 <Grid container spacing={2} sx={{ marginBottom: '32px' }}>
                     {serviceList.map((e) =>
-                            (e.typeService === 'MASTER_JOBS' || e.typeService === 'TOP_ADD') && (
+                            (e.typeService === 'MASTER_JOBS') && (
                                 <Grid item xs={12} md={4} key={e.id}>
                                     <ServiceCard
                                         title={e.name}
                                         price={e.price}
                                         description={e.description}
+                                        effectiveTime={e.days}
                                     />
                                 </Grid>
                             )
@@ -77,6 +78,31 @@ const ServiceList = () => {
                                     title={e.name}
                                     price={e.price}
                                     description={e.description}
+                                    effectiveTime={e.days}
+                                />
+                            </Grid>
+                        )
+                )}
+            </Grid>
+
+            <Box sx={{ marginTop: '32px', padding: '16px', backgroundColor: '#E3F2FD', borderRadius: '8px' }}>
+                <Typography variant="h5" sx={{ color: '#3758F9', fontWeight: 'bold' }}>
+                    TOP ADD | Thêm nhãn cho tin đăng
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                    Tối ưu chi phí - Tiếp lợi thế cho Nhà tuyển dụng
+                </Typography>
+            </Box>
+
+            <Grid container spacing={2} sx={{ marginTop: '16px' }}>
+                {serviceList.map((e) =>
+                        (e.typeService === 'TOP_ADD') && (
+                            <Grid item xs={12} md={4} key={e.id}>
+                                <ServiceCard
+                                    title={e.name}
+                                    price={e.price}
+                                    description={e.description}
+                                    effectiveTime={e.days}
                                 />
                             </Grid>
                         )
