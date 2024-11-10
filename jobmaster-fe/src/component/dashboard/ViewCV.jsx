@@ -32,6 +32,14 @@ const ViewCV = () => {
     const [pageIndex, setPageIndex] = useState(1)
     const [status, setStatus] = useState('')
     const statuses = ['RECEIVED', 'MATCHED', 'INTERVIEW_SCHEDULED', 'OFFERED', 'HIRED', 'REJECTED'];
+    const statusMap = new Map([
+        ["RECEIVED", "Tiếp nhận"],
+        ["MATCHED", "Phù hợp"],
+        ["INTERVIEW_SCHEDULED", "Hẹn phỏng vấn"],
+        ["OFFERED", "Gửi đề nghị"],
+        ["HIRED", "Nhận việc"],
+        ["REJECTED", "Từ chối"]
+    ]);
 
     useEffect(() => {
         EnterpriseApi.getListCv(pageIndex, id, status).then((e) => {
@@ -84,9 +92,9 @@ const ViewCV = () => {
             </Paper>
 
             <FormControl style={{ width: '20%', backgroundColor: 'white' }} sx={{ mb: 2 }}>
-            <InputLabel id="status-select-label">Chọn trạng thái</InputLabel>
+                <InputLabel id="status-select-label">Chọn trạng thái</InputLabel>
                 <Select
-                labelId="status-select-label"
+                    labelId="status-select-label"
                     id="status-select"
                     value={status}
                     onChange={handleStatusChange}
@@ -95,9 +103,9 @@ const ViewCV = () => {
                     <MenuItem value="">
                         <em>Tất cả trạng thái</em>
                     </MenuItem>
-                    {statuses.map((status) => (
-                        <MenuItem key={status} value={status}>
-                            {status}
+                    {Array.from(statusMap.entries()).map(([key, value]) => (
+                        <MenuItem key={key} value={key}>
+                            {value}
                         </MenuItem>
                     ))}
                 </Select>
@@ -133,7 +141,7 @@ const ViewCV = () => {
                                     </Box>
                                 </TableCell>
                                 <TableCell>
-                                    <Chip label={cv.status} color="default" />
+                                    <Chip label={statusMap.get(cv.status) || cv.status} color="default" />
                                 </TableCell>
                                 <TableCell>
                                     <Chip onClick={() => { navigate("/dashboard/detail-cv/" + cv.id); return null }} label="Xem CV" color="primary" variant="outlined" clickable />
