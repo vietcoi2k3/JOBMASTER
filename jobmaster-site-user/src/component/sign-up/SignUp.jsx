@@ -3,11 +3,10 @@ import logo from "../../assets/logo.png";
 import logo2 from "../../assets/logo2.png";
 import Button from "@mui/material/Button";
 import GoogleIcon from "@mui/icons-material/Google";
-import { Snackbar, Alert, Checkbox, IconButton, InputAdornment } from "@mui/material";
+import { Snackbar, Alert, Checkbox, IconButton, InputAdornment, Box, Typography, CircularProgress, TextField } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useNavigate } from 'react-router-dom';
 import Notification from "../notification/Notification";
-import { CircularProgress, TextField } from '@mui/material';
 import AuthApi from "../../api/AuthApi";
 import { Link } from 'react-router-dom';
 
@@ -19,8 +18,8 @@ const SignUp = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    phone: "",
-    name: "",
+    phoneNumber: "",
+    fullName: "",
     isConsumer: true,
   });
   const [isAgree, setIsAgree] = useState(false);
@@ -48,8 +47,8 @@ const SignUp = () => {
     tempErrors.email = emailPattern.test(formData.email) ? "" : "Email không hợp lệ!";
     tempErrors.password = formData.password ? "" : "Mật khẩu không được để trống!";
     tempErrors.confirmPassword = formData.confirmPassword === formData.password ? "" : "Mật khẩu không khớp!";
-    tempErrors.phone = formData.phone ? "" : "Số điện thoại không được để trống!";
-    tempErrors.name = formData.name ? "" : "Họ tên không được để trống!";
+    tempErrors.phoneNumber = formData.phoneNumber ? "" : "Số điện thoại không được để trống!";
+    tempErrors.fullName = formData.fullName ? "" : "Họ tên không được để trống!";
 
     setErrors(tempErrors);
     return Object.values(tempErrors).every((x) => x === "");
@@ -77,17 +76,19 @@ const SignUp = () => {
   };
 
   return (
-      <div className="overflow-hidden bg-white">
+      <Box sx={{ display: 'flex', minHeight: '100vh', backgroundColor: 'white' }}>
         {loading ? (
-            <CircularProgress className="flex justify-center items-center" />
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+              <CircularProgress />
+            </Box>
         ) : (
-            <div className="flex flex-row-reverse bg-white">
-              <img src={logo2} alt="" className="h-screen w-1/3" />
-              <div className="overflow-auto scrollable-content p-12 h-screen">
+            <Box sx={{ display: 'flex', flexDirection: 'row-reverse', width: '100%' }}>
+              <Box component="img" src={logo2} alt="" sx={{ height: '100vh', width: '33%' }} />
+              <Box sx={{ p: 4, flex: 1, overflow: 'auto' }}>
                 <Notification open={notification.open} onClose={() => setNotification({ open: false, message: '' })} message={notification.message} />
-                <img src={logo} alt="" width={200} />
-                <h2 className="text-primary font-black text-2xl">Đăng kí để tìm việc</h2>
-                <div className="p-4">
+                <Box component="img" src={logo} alt="" sx={{ width: 200 }} />
+                <Typography variant="h5" color="primary" fontWeight="bold" sx={{ mt: 2, mb: 4 }}>Đăng kí để tìm việc</Typography>
+                <Box>
                   <Snackbar open={open} autoHideDuration={6000} onClose={() => setOpen(false)} anchorOrigin={{ vertical: "top", horizontal: "center" }}>
                     <Alert onClose={() => setOpen(false)} severity="warning">
                       Bạn phải đồng ý với điều khoản sử dụng trước khi đăng nhập!
@@ -96,133 +97,75 @@ const SignUp = () => {
 
                   <Button
                       onClick={handleLogin}
-                      className="w-full text-accent"
                       variant="contained"
-                      sx={{ marginTop: 4 }}
+                      fullWidth
                       startIcon={<GoogleIcon />}
+                      sx={{ mt: 2, color: 'accent.main' }}
                   >
                     Đăng kí bằng Google
                   </Button>
 
-                  <div className="flex items-center my-4">
-                    <div className="flex-grow border-t border-gray-300"></div>
-                    <span className="flex-shrink mx-4 text-gray-500">Hoặc bằng email</span>
-                    <div className="flex-grow border-t border-gray-300"></div>
-                  </div>
+                  <Box sx={{ display: 'flex', alignItems: 'center', my: 4 }}>
+                    <Box sx={{ flexGrow: 1, borderTop: 1, borderColor: 'divider' }} />
+                    <Typography variant="body2" color="textSecondary" sx={{ mx: 2 }}>Hoặc bằng email</Typography>
+                    <Box sx={{ flexGrow: 1, borderTop: 1, borderColor: 'divider' }} />
+                  </Box>
 
-                  <TextField
-                      fullWidth
-                      label="Họ tên"
-                      variant="outlined"
-                      sx={{ marginBottom: 4 }}
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      error={!!errors.name}
-                      helperText={errors.name}
-                      required
-                  />
+                  {["fullName", "phoneNumber", "email", "password", "confirmPassword"].map((field, index) => (
+                      <TextField
+                          key={field}
+                          fullWidth
+                          label={field === "fullName" ? "Họ tên" : field === "phoneNumber" ? "Số điện thoại" : field === "email" ? "Email đăng nhập" : field === "password" ? "Mật khẩu" : "Nhập lại mật khẩu"}
+                          variant="outlined"
+                          sx={{ mb: 3 }}
+                          name={field}
+                          type={(field === "password" && !showPassword) || (field === "confirmPassword" && !showConfirmPassword) ? "password" : "text"}
+                          value={formData[field]}
+                          onChange={handleChange}
+                          error={!!errors[field]}
+                          helperText={errors[field]}
+                          InputProps={["password", "confirmPassword"].includes(field) ? {
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                  <IconButton onClick={() => field === "password" ? setShowPassword(!showPassword) : setShowConfirmPassword(!showConfirmPassword)}>
+                                    {field === "password" ? (showPassword ? <VisibilityOff /> : <Visibility />) : (showConfirmPassword ? <VisibilityOff /> : <Visibility />)}
+                                  </IconButton>
+                                </InputAdornment>
+                            ),
+                          } : null}
+                          required
+                      />
+                  ))}
 
-                  <TextField
-                      fullWidth
-                      label="Số điện thoại"
-                      variant="outlined"
-                      sx={{ marginBottom: 4 }}
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      error={!!errors.phone}
-                      helperText={errors.phone}
-                      required
-                  />
-
-                  <TextField
-                      fullWidth
-                      label="Email đăng nhập"
-                      variant="outlined"
-                      sx={{ marginBottom: 4 }}
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      error={!!errors.email}
-                      helperText={errors.email}
-                      required
-                  />
-
-                  <TextField
-                      fullWidth
-                      label="Mật khẩu"
-                      type={showPassword ? "text" : "password"}
-                      variant="outlined"
-                      sx={{ marginBottom: 4 }}
-                      name="password"
-                      value={formData.password}
-                      onChange={handleChange}
-                      error={!!errors.password}
-                      helperText={errors.password}
-                      required
-                      InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="end">
-                              <IconButton onClick={() => setShowPassword(!showPassword)}>
-                                {showPassword ? <VisibilityOff /> : <Visibility />}
-                              </IconButton>
-                            </InputAdornment>
-                        ),
-                      }}
-                  />
-
-                  <TextField
-                      fullWidth
-                      label="Nhập lại mật khẩu"
-                      type={showConfirmPassword ? "text" : "password"}
-                      variant="outlined"
-                      sx={{ marginBottom: 4 }}
-                      name="confirmPassword"
-                      value={formData.confirmPassword}
-                      onChange={handleChange}
-                      error={!!errors.confirmPassword}
-                      helperText={errors.confirmPassword}
-                      required
-                      InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="end">
-                              <IconButton onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
-                                {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-                              </IconButton>
-                            </InputAdornment>
-                        ),
-                      }}
-                  />
-
-                  <Checkbox checked={isAgree} onClick={() => setIsAgree(!isAgree)} />
-                  <p className="inline">
-                    Tôi đã đọc và đồng ý với{" "}
-                    <span className="text-primary">Điều khoản dịch vụ</span> và{" "}
-                    <span className="text-primary">Điều khoản bảo mật</span> của JobMaster.
-                  </p>
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                    <Checkbox checked={isAgree} onChange={() => setIsAgree(!isAgree)} />
+                    <Typography variant="body2">
+                      Tôi đã đọc và đồng ý với{" "}
+                      <Box component="span" color="primary.main">Điều khoản dịch vụ</Box> và{" "}
+                      <Box component="span" color="primary.main">Điều khoản bảo mật</Box> của JobMaster.
+                    </Typography>
+                  </Box>
 
                   <Button
-                      type="submit"
                       variant="contained"
                       fullWidth
-                      className="bg-blue-500 hover:bg-blue-600 mb-4"
+                      sx={{ bgcolor: 'primary.main', '&:hover': { bgcolor: 'primary.dark' }, mb: 2 }}
                       onClick={handleSubmit}
                   >
                     Đăng ký
                   </Button>
 
-                  <p className="text-center">
+                  <Typography align="center">
                     Đã có tài khoản?{" "}
-                    <Link to="/login" className="text-primary">
+                    <Link to="/login" style={{ color: '#1976d2' }}>
                       Đăng nhập ngay
                     </Link>
-                  </p>
-                </div>
-              </div>
-            </div>
+                  </Typography>
+                </Box>
+              </Box>
+            </Box>
         )}
-      </div>
+      </Box>
   );
 };
 

@@ -24,52 +24,59 @@ import ApplyJobPopup from "./ApplyJobPopup";
 import { useLocation, useNavigate } from "react-router-dom";
 import LoadingPopup from "../loading/LoadingPopup";
 
-const JobList = ({ jobs, onSelectJob }) => (
-    <Grid container spacing={1} direction="column">
-        {jobs.map((job) => (
-            <Grid item key={job.index}>
-                <Card
-                    variant="outlined"
-                    sx={{ padding: 2, cursor: 'pointer', minHeight: 100, boxShadow: 2 }}
-                >
-                    <CardContent
-                        sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: 1 }}
+
+
+const JobList = ({ jobs, onSelectJob }) => {
+    const navigate = useNavigate();
+    return(
+        <Grid container spacing={1} direction="column">
+            {jobs.map((job) => (
+                <Grid item key={job.index}>
+                    <Card
+                        variant="outlined"
+                        sx={{ padding: 2, cursor: 'pointer', minHeight: 100, boxShadow: 2 }}
                     >
-                        <Box display="flex" alignItems="center">
-                            <img
-                                src={job.logoCompany}
-                                alt={`${job.nameCompany} logo`}
-                                style={{ width: 40, height: 40, objectFit: 'cover', marginRight: 12, borderRadius: 8 }}
-                            />
-                            <Box>
-                                {job.label && (
-                                    <Chip
-                                        label="Hot"
-                                        color="error"
-                                        size="small"
-                                        sx={{ mb: 0.5, fontSize: 12, height: 20 }}
-                                    />
-                                )}
-                                <Typography variant="subtitle2" fontWeight="bold">
-                                    {job.title}
-                                </Typography>
-                                <Typography variant="body2">
-                                    {job.nameCompany} - {job.address}
-                                </Typography>
-                                <Typography variant="caption" color="textSecondary">
-                                    Mức lương: {job.salaryRange}
-                                </Typography>
+                        <CardContent
+                            sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: 1 }}
+                        >
+                            <Box display="flex" alignItems="center" onClick={()=>{
+                                navigate(`/job-detail`, { state: { job } });
+                            }}>
+                                <img
+                                    src={job.logoCompany}
+                                    alt={`${job.nameCompany} logo`}
+                                    style={{ width: 40, height: 40, objectFit: 'cover', marginRight: 12, borderRadius: 8 }}
+                                />
+                                <Box>
+                                    {job.label && (
+                                        <Chip
+                                            label="Hot"
+                                            color="error"
+                                            size="small"
+                                            sx={{ mb: 0.5, fontSize: 12, height: 20 }}
+                                        />
+                                    )}
+                                    <Typography variant="subtitle2" fontWeight="bold">
+                                        {job.title}
+                                    </Typography>
+                                    <Typography variant="body2">
+                                        {job.nameCompany} - {job.address}
+                                    </Typography>
+                                    <Typography variant="caption" color="textSecondary">
+                                        Mức lương: {job.salaryRange}
+                                    </Typography>
+                                </Box>
                             </Box>
-                        </Box>
-                        <IconButton size="small" onClick={() => onSelectJob(job)}>
-                            <ArrowForwardIosIcon fontSize="small" />
-                        </IconButton>
-                    </CardContent>
-                </Card>
-            </Grid>
-        ))}
-    </Grid>
-);
+                            <IconButton size="small" onClick={() => onSelectJob(job)}>
+                                <ArrowForwardIosIcon fontSize="small" />
+                            </IconButton>
+                        </CardContent>
+                    </Card>
+                </Grid>
+            ))}
+        </Grid>
+    );
+}
 
 const JobDetails = ({ job }) => {
     const navigate = useNavigate();

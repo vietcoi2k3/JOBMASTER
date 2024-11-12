@@ -35,7 +35,7 @@ const EmailVerification = () => {
         
         <img src={verifyemail} alt="" />
         <Typography className="text-center mb-6"sx={{marginTop:0.5,marginBottom:0.5}}>
-            Email xác thực tài khoản đã  được gửi đến email <b className='text-primary'>{"  "+email+"  "}</b> của bạn
+            Email xác thực tài khoản đã  được gửi đến email <b className='text-primary'>{"  "}</b> của bạn
         </Typography>
         
         <Typography className="text-center mb-6" sx={{marginTop:0.5,marginBottom:0.5}}>

@@ -17,10 +17,11 @@ import VerifyEmail from "./component/sign-up/VerifyEmail";
 import EmailVerification from "./component/sign-up/EmailVerification";
 import JobDetails from "./component/ListJob/JobDetails";
 import ForgotPassword from "./component/forgot-password/ForgotPassword";
+import PersonalInfo from "./component/PersonalInfo/PersonalInfo";
 
 function AppContent() {
     const location = useLocation();
-    const isLoginPage = location.pathname === '/login' || location.pathname === '/sign-up' || location.pathname === '/hihi/forgot-pass';
+    const isLoginPage = location.pathname === '/login' || location.pathname === '/sign-up' || location.pathname === '/hihi/forgot-pass' ||location.pathname === '/verify-email';
 
     return (
         <>
@@ -34,6 +35,7 @@ function AppContent() {
                     <Route path="/sign-up" element={<SignUp />} />
                     <Route path="/criteria" element={<Criteria />} />
                     <Route path="/callback" element={<CallBack />} />
+                    <Route path="/personalInfo" element={<PersonalInfo />} />
                     <Route path="/verify-email" element={<EmailVerification />} />
                     <Route path="/verify" element={<VerifyEmail />} />
                     <Route path="/job-detail" element={<JobDetails />} />

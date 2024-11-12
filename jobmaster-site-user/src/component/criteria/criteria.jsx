@@ -19,26 +19,25 @@ export default function Criteria() {
     const [field,setField] = useState([])
     const [position,setPosition] = useState([])
     const [city,setCity] = useState([])
-    useEffect(() => {
-        AuthApi.getAllField().then((e)=>{
-            setField(e)
-        })
-        AuthApi.getAllPosition().then((e)=>{
-            setPosition(e)
-        })
-        AuthApi.getAllCity().then((e)=>{
-            setCity(e)
-        })
-        Consumer.getCriteria().then((e)=>{
-            console.log(e)
-            setLocation(e.city)
-            setFieldSelect(e.field)
-            setPositionSelect(e.position)
-            setCompanySize(e.scales)
-            setJobType(e.typeWorking)
-            setExperience(e.experience)
-        })
-    }, []);
+    // useEffect(() => {
+    //     AuthApi.getAllField().then((e)=>{
+    //         setField(e)
+    //     })
+    //     AuthApi.getAllPosition().then((e)=>{
+    //         setPosition(e)
+    //     })
+    //     AuthApi.getAllCity().then((e)=>{
+    //         setCity(e)
+    //     })
+    //     Consumer.getCriteria().then((e)=>{
+    //         // setLocation(e.city)
+    //         // setFieldSelect(e.field)
+    //         // setPositionSelect(e.position)
+    //         // setCompanySize(e.scales)
+    //         // setJobType(e.typeWorking)
+    //         // setExperience(e.experience)
+    //     })
+    // }, []);
 
     const handleCloseNotification = () => {
         setNotification({ ...notification, open: false });
@@ -179,6 +178,9 @@ export default function Criteria() {
                     onChange={handleCompanySizeChange}
                     fullWidth
                 >
+                    <MenuItem value="">
+                        <em>Chọn một tùy chọn</em>
+                    </MenuItem>
                     <MenuItem value="Nhân viên">Nhân viên</MenuItem>
                     <MenuItem value="Trưởng nhóm">Trưởng nhóm</MenuItem>
                     <MenuItem value="Trưởng/ Phó phòng">Trưởng/ Phó phòng</MenuItem>

@@ -20,7 +20,6 @@ const Header = () => {
     const handleClose = () => {
         setAnchorEl(null);
     };
-    // Cập nhật token mỗi khi URL thay đổi
     useEffect(() => {
         setToken(localStorage.getItem("access_token"));
     }, [location]);
@@ -30,6 +29,7 @@ const Header = () => {
         if (token === null) {
             navigate('/login'); // Chưa đăng nhập -> Điều hướng về /login
         } else {
+            // console.log("hihi")
             navigate('/criteria'); // Đã đăng nhập -> Điều hướng về /criteria
         }
     };
@@ -87,6 +87,8 @@ const Header = () => {
                             }}
                         >
                             <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
+                            <MenuItem onClick={()=>navigate("/")}>Thông tin cá nhân</MenuItem>
+                            <MenuItem onClick={()=>navigate("/")}>Đổi mật khẩu</MenuItem>
                         </Menu>
                     </Box>
                 )}
