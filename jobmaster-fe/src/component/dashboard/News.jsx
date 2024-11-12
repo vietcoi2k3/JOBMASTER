@@ -59,7 +59,7 @@ export default function News() {
                                     {/* Phần tử bên phải */}
                                     <OnlinePredictionIcon sx={{ color: '#2D7CF1' }} />
                                 </Box>
-                                <Typography sx={{ textAlign: 'left', color: '#2D7CF1', fontWeight: 'bold' }} variant="h6">Chiến dịch đang mở</Typography>
+                                <Typography sx={{ textAlign: 'left', color: '#2D7CF1', fontWeight: 'bold' }} variant="h7">Chiến dịch đang mở</Typography>
 
                             </Box>
                         </Grid>
@@ -72,7 +72,7 @@ export default function News() {
                                     {/* Phần tử bên phải */}
                                     <InsertDriveFileIcon sx={{ color: '#E5B500' }} />
                                 </Box>
-                                <Typography sx={{ textAlign: 'left', color: '#E5B500', fontWeight: 'bold' }} variant="h6">Tin tuyển dụng hiển thị</Typography>
+                                <Typography sx={{ textAlign: 'left', color: '#E5B500', fontWeight: 'bold' }} variant="h7">Tin tuyển dụng hiển thị</Typography>
 
                             </Box>
                         </Grid>
@@ -85,7 +85,7 @@ export default function News() {
                                     {/* Phần tử bên phải */}
                                     <FileOpenIcon sx={{ color: '#DA4538' }} />
                                 </Box>
-                                <Typography sx={{ textAlign: 'left', color: '#DA4538', fontWeight: 'bold' }} variant="h6">CV ứng tuyển mới</Typography>
+                                <Typography sx={{ textAlign: 'left', color: '#DA4538', fontWeight: 'bold' }} variant="h7">CV ứng tuyển mới</Typography>
 
                             </Box>
                         </Grid>
@@ -98,7 +98,7 @@ export default function News() {
                                     {/* Phần tử bên phải */}
                                     <ContactPageIcon sx={{ color: '#00B14F' }} />
                                 </Box>
-                                <Typography sx={{ textAlign: 'left', color: '#00B14F', fontWeight: 'bold' }} variant="h6">Cv nhận việc</Typography>
+                                <Typography sx={{ textAlign: 'left', color: '#00B14F', fontWeight: 'bold' }} variant="h7">Cv nhận việc</Typography>
                             </Box>
                         </Grid>
                     </Grid>

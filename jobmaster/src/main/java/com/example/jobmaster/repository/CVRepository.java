@@ -45,7 +45,7 @@ public interface CVRepository extends JpaRepository<CVEntity,String> {
     @Query("""
         SELECT 
             COUNT(cv.id) AS totalCandidate,
-            SUM(CASE WHEN cv.status = 'OFFERED' THEN 1 ELSE 0 END) AS offeredCv,
+            SUM(CASE WHEN cv.status = 'HIRED' THEN 1 ELSE 0 END) AS offeredCv,
             FUNCTION('MONTH', cv.createdAt) AS month,
             FUNCTION('YEAR', cv.createdAt) AS year
         FROM CVEntity cv
