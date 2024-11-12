@@ -145,9 +145,6 @@ const ViewCV = () => {
                                     </Box>
                                 </TableCell>
                                 <TableCell>
-<<<<<<< HEAD
-                                    <Chip label={statusMap.get(cv.status) || cv.status} color="default" />
-=======
                                     <Chip
                                         label={
                                             cv.status === 'RECEIVED' ? 'Tiếp nhận CV' :
@@ -191,8 +188,6 @@ const ViewCV = () => {
                                         }}
                                     />
 
-
->>>>>>> ffeb8be80b476c45452a8722708a81a977de76e1
                                 </TableCell>
                                 <TableCell>
                                     <Chip onClick={() => { navigate("/dashboard/detail-cv/" + cv.id); return null }} label="Xem CV" color="primary" variant="outlined" clickable />

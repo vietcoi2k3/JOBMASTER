@@ -45,7 +45,8 @@ const CertificateBusiness = () => {
                 label={
                     status === "WAITING_ACTIVE" ? "Chờ phê duyệt" :
                         status === "ACTIVE" ? "Đã phê duyệt" :
-                            status === "INACTIVE" ? "Chưa cập nhật" : "Chưa cập nhật"
+                            status === "INACTIVE" ? "Chưa cập nhật" : 
+                                status === "REJECTED"? "Đã bị từ chối" : "Chưa cập nhật"
                 }
                 color={
                     status === "WAITING_ACTIVE" ? "warning" :
@@ -114,7 +115,7 @@ const CertificateBusiness = () => {
                         console.log(status);
                     }}
                 >
-                    {status === "INACTIVE" ? "Gửi yêu cầu phê duyệt" : "Chờ phê duyệt"}
+                    {(status === "INACTIVE" || status === "REJECTED" )? "Gửi yêu cầu phê duyệt" : "Chờ phê duyệt"}
                 </Button>
             )
 
