@@ -3,7 +3,7 @@ import {STATIC_HOST_LOCAL, STATIC_HOST_PRODUCT} from "../enviroment";
 import { useNavigate } from 'react-router-dom'; // Nếu bạn dùng React Router
 // Tạo một instance của axios với baseURL
 const axiosClient = axios.create({
-    baseURL: `${STATIC_HOST_LOCAL}`,
+    baseURL: `${STATIC_HOST_PRODUCT}`,
 })
 // Thêm một interceptor cho request
 axiosClient.interceptors.request.use(

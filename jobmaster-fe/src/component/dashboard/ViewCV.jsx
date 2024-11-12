@@ -145,6 +145,7 @@ const ViewCV = () => {
                                     </Box>
                                 </TableCell>
                                 <TableCell>
+
                                     <Chip
                                         label={
                                             cv.status === 'RECEIVED' ? 'Tiếp nhận CV' :
