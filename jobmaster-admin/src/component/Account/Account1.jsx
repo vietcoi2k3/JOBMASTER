@@ -109,7 +109,7 @@ function Account1() {
                                 >
                                     <TableCell>{((pageNumber - 1) * 10) + index + 1}</TableCell>
                                     <TableCell>{item.username}</TableCell>
-                                    <TableCell>{item.fullname}</TableCell>
+                                    <TableCell>{item.fullName}</TableCell>
                                     <TableCell style={{ color }}>{text}</TableCell>
                                     <TableCell>
                                         <IconButton aria-label="view" color="primary">

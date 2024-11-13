@@ -12,7 +12,8 @@ import java.util.List;
 
 @Repository
 public interface UserInfoRepository extends JpaRepository<UserInfoEntity,String> {
-    @Query("SELECT new com.example.jobmaster.dto.Response.UserInfoResponse(u.username, c.fullName, u.isActive) " +
-            "FROM UserInfoEntity c INNER JOIN UserEntity u ON c.userId = u.id")
+    @Query("SELECT new com.example.jobmaster.dto.Response.UserInfoResponse(u.username, u.fullName, u.isActive) " +
+            "FROM UserInfoEntity c INNER JOIN UserEntity u ON c.userId = u.id" +
+            " order by  c.modifiedAt desc ")
     Page<UserInfoResponse> getListCandidate(Pageable pageable);
 }

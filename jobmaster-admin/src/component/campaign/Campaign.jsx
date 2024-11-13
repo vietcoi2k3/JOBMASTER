@@ -20,6 +20,7 @@ import AdminApi from "../../api/AdminApi";
 // import CreateFieldPopup from "./CreateFieldPopup";
 import { useNavigate } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
+import RecruitmentPopup from "./RecruitmentPopup";
 
 function Campaign() {
     const [pageNumber, setPageNumber] = useState(1);
@@ -28,7 +29,12 @@ function Campaign() {
     const [open, setOpen] = useState(false);
     const [campaignName, setCampaignName] = useState('');
     const [tax, setTax] = useState('');
+    const [reload, setReload] = useState(false);
 
+    const handleReload = () => {
+        fetch();
+        setReload(!reload);
+    };
     const getStatusInfo = (status) => {
         switch (status) {
             case true:
@@ -143,7 +149,7 @@ function Campaign() {
                                     <TableCell style={{ color }}>{text}</TableCell>
                                     <TableCell>
                                         <IconButton aria-label="view" color="primary">
-                                            <VisibilityIcon />
+                                            <RecruitmentPopup onSuccess={handleReload} createStep={false} campaign={item} />
                                         </IconButton>
                                     </TableCell>
                                 </TableRow>

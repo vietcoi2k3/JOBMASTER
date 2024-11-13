@@ -72,7 +72,7 @@ public interface PostRepository extends JpaRepository<PostEntity,String> {
         join EnterpriseEntity e on e.id = c.enterpriseId
         where ( :postName is null or p.title LIKE CONCAT('%', :postName, '%')) 
                 and (:tax is null or e.tax is null or e.tax LIKE CONCAT('%', :tax, '%'))
-        order by p.createdAt desc 
+        order by p.modifiedAt desc 
 """)
     Page<PostManagement> getListPostAdmin(String postName, String tax,Pageable pageable);
 

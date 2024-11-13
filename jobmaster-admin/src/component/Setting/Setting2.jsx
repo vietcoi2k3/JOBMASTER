@@ -16,7 +16,7 @@ import {
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle
+    DialogTitle, Tooltip
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -34,7 +34,7 @@ function SettingTable2() {
     const [position, setPosition] = useState([]);
     const [open, setOpen] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5);
+    const [itemsPerPage] = useState(10);
     const [totalCount, setTotalCount] = useState(1);
     const [deleteOpen, setDeleteOpen] = useState(false);
     const [positionIdToDelete, setPositionIdToDelete] = useState(null);
@@ -161,10 +161,16 @@ function SettingTable2() {
                                 </TableCell>
                                 <TableCell>
                                     <IconButton aria-label="view" color="primary">
-                                        <VisibilityIcon />
+                                        <Tooltip title={"Xem chi tiết"}>
+                                            <VisibilityIcon />
+                                        </Tooltip>
+
                                     </IconButton>
                                     <IconButton aria-label="delete" color="primary" onClick={() => handleDeleteClick(field.id)}>
-                                        <DeleteIcon color="error" />
+
+                                        <Tooltip title={"Xóa"}>
+                                            <DeleteIcon color="error" />
+                                        </Tooltip>
                                     </IconButton>
                                 </TableCell>
                             </TableRow>

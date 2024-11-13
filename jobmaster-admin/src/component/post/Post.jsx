@@ -11,7 +11,7 @@ import {
     Box,
     TextField,
     Button,
-    Pagination
+    Pagination, Tooltip
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -129,7 +129,10 @@ function Post() {
                                             color="primary"
                                             onClick={() => navigate("/detail-post/" + item.id)}
                                         >
-                                            <VisibilityIcon />
+                                            <Tooltip title={"Xem chi tiết"}>
+                                                <VisibilityIcon />
+                                            </Tooltip>
+
                                         </IconButton>
                                     </TableCell>
                                 </TableRow>

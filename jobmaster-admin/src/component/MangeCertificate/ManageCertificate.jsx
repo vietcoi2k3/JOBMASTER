@@ -15,13 +15,14 @@ import {
     Dialog,
     DialogTitle,
     DialogContent,
-    DialogActions, MenuItem, FormControl, InputLabel, Select
+    DialogActions, MenuItem, FormControl, InputLabel, Select, Tooltip
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import AddIcon from '@mui/icons-material/Add';
 import AdminApi from "../../api/AdminApi";
 import SearchIcon from "@mui/icons-material/Search";
+import Notification from "../../notification/Notification";
 const statusOptions = {
     ACTIVE: 'Đã xác thực',
     WAITING_ACTIVE: 'Đang xét duyệt',
@@ -81,8 +82,16 @@ function ManageCertificate() {
         }
     };
 
+    const [notification, setNotification] = useState({ open: false, message: '', type: '' });
+
     return (
         <Box sx={{ width: '100%', padding: 2, bgcolor: '#E8EDF2' }}>
+            <Notification
+                open={notification.open}
+                onClose={()=>setNotification({open: false})}
+                message={notification.message}
+                type={notification.type}
+            />
             <Box sx={{ bgcolor: '#ffffff', padding: 2, borderRadius: 2, mb: 2 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Box sx={{ display: 'flex', gap: 2 }}>
@@ -154,7 +163,9 @@ function ManageCertificate() {
                                             color="primary"
                                             onClick={() => handleClickOpen(item)}
                                         >
-                                            <VisibilityIcon />
+                                            <Tooltip title={"Xem chi tiết"}>
+                                                <VisibilityIcon />
+                                            </Tooltip>
                                         </IconButton>
                                     </TableCell>
                                 </TableRow>
@@ -193,6 +204,7 @@ function ManageCertificate() {
                 <DialogActions>
                     <Button color="success" onClick={() => AdminApi.updateStatusEnterprise("ACTIVE", selectedItem.id).then((e) => {
                         fetch();
+                        setNotification({ open: true, message: 'Phê duyệt giấy phép thành công', type: 'success' })
                         setOpen(false)
                     })}>
                         Phê duyệt

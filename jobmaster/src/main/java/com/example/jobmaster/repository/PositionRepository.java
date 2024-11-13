@@ -15,6 +15,7 @@ import java.util.List;
 public interface PositionRepository extends JpaRepository<PositionEntity,String> {
     @Query("SELECT f FROM PositionEntity f WHERE "
             + "(:code IS NULL OR LOWER(f.code) LIKE LOWER(CONCAT('%', :code, '%'))) AND "
-            + "(:name IS NULL OR LOWER(f.name) LIKE LOWER(CONCAT('%', :name, '%')))")
+            + "(:name IS NULL OR LOWER(f.name) LIKE LOWER(CONCAT('%', :name, '%')))" +
+            " order by  f.modifiedAt desc ")
     Page<PositionEntity> findByCodeAndName(@Param("code") String code, @Param("name") String name, Pageable pageable);
 }

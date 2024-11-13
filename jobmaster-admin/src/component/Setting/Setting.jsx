@@ -11,7 +11,7 @@ import {
     Box,
     TextField,
     Button,
-    Pagination
+    Pagination, Tooltip
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -144,10 +144,15 @@ function SettingTable() {
                                 </TableCell>
                                 <TableCell>
                                     <IconButton aria-label="view" color="primary">
-                                        <VisibilityIcon />
+                                       <Tooltip title={"Xem chi tiết"}>
+                                           <VisibilityIcon />
+                                       </Tooltip>
                                     </IconButton>
                                     <IconButton aria-label="delete" color="primary" onClick={() => handleDelete(field.id)}>
-                                        <DeleteIcon color="error"/>
+
+                                        <Tooltip title={"Xóa"}>
+                                            <DeleteIcon color="error"/>
+                                        </Tooltip>
                                     </IconButton>
                                 </TableCell>
                             </TableRow>

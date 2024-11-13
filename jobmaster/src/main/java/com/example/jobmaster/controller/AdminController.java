@@ -62,7 +62,7 @@ public class AdminController {
         return ResponseEntity.ok("oke");
     }
 
-    @RequestMapping(value = "/delete-position/{id}",method = RequestMethod.GET)
+    @RequestMapping(value = "/delete-position/{id}",method = RequestMethod.DELETE)
     public ResponseEntity deletePosition(@PathVariable String id){positionRepository.deleteById(id);
         return ResponseEntity.ok("oke");
     }

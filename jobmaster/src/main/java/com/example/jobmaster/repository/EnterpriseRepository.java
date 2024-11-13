@@ -24,8 +24,9 @@ import java.util.Optional;
 public interface EnterpriseRepository extends JpaRepository<EnterpriseEntity,String> {
     EnterpriseEntity findByUserId(String userId);
 
-    @Query("SELECT new com.example.jobmaster.dto.Response.EnterpriseResponse(u.username, c.companyName, u.isActive) " +
-            "FROM EnterpriseEntity c INNER JOIN UserEntity u ON c.userId = u.id")
+    @Query("SELECT new com.example.jobmaster.dto.Response.EnterpriseResponse(u.username, c.companyName, c.isActive) " +
+            "FROM EnterpriseEntity c INNER JOIN UserEntity u ON c.userId = u.id" +
+            " order by  c.modifiedAt desc ")
     Page<EnterpriseResponse> getListAdmin(Pageable pageable);
 
     @Query("""
@@ -46,7 +47,8 @@ public interface EnterpriseRepository extends JpaRepository<EnterpriseEntity,Str
             "FROM EnterpriseEntity c " +
             "INNER JOIN CampaignEntity ce ON c.id = ce.enterpriseId " +
             "INNER JOIN PackageCampaign pc ON ce.id = pc.campaignId " +
-            "WHERE c.isActive = 'ACTIVE'")
+            "WHERE c.isActive = 'ACTIVE' " +
+            " order by  c.modifiedAt desc ")
     List<EnterpriseEntity> getListCompany();
 
     @Query("""
