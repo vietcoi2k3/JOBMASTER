@@ -37,7 +37,7 @@ public interface CVRepository extends JpaRepository<CVEntity,String> {
         join PostEntity p on cv.postId = p.id
         join CampaignEntity c on p.id = c.postId
         where c.enterpriseId = :enterpriseId
-        and DATE(cv.createdAt) = current date 
+        and DATE(cv.modifiedAt) = current date 
         and cv.status = 'HIRED'
 """)
     Integer countWorkCv(String enterpriseId);

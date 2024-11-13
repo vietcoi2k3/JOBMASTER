@@ -26,7 +26,8 @@ import Notification from "../../notification/Notification";
 const statusOptions = {
     ACTIVE: 'Đã xác thực',
     WAITING_ACTIVE: 'Đang xét duyệt',
-    INACTIVE: 'Đã từ chối'
+    INACTIVE: 'Chưa cập nhật',
+    REJECTED: 'Đã từ chối'
 };
 function ManageCertificate() {
     const [pageNumber, setPageNumber] = useState(1);
@@ -43,7 +44,9 @@ function ManageCertificate() {
             case 'WAITING_ACTIVE':
                 return { color: 'goldenrod', text: 'Đang xét duyệt' };
             case 'INACTIVE':
-                return { color: 'red', text: 'Đã từ chối' };
+                return { color: 'red', text: 'Chưa cập nhật' };
+            case 'REJECTED':
+                return { color: 'red', text: 'Đã bị từ chối' };
             default:
                 return { color: 'black', text: 'Chưa cập nhật' };
         }
@@ -209,7 +212,7 @@ function ManageCertificate() {
                     })}>
                         Phê duyệt
                     </Button>
-                    <Button color="error" onClick={() => AdminApi.updateStatusEnterprise("INACTIVE", selectedItem.id).then((e) => {
+                    <Button color="error" onClick={() => AdminApi.updateStatusEnterprise("REJECTED", selectedItem.id).then((e) => {
                         fetch();
                         setOpen(false)
                     })}>

@@ -188,6 +188,7 @@ const ViewCV = () => {
                                             opacity: 1 // Đảm bảo độ đậm của chữ và nền không bị mờ
                                         }}
                                     />
+
                                 </TableCell>
                                 <TableCell>
                                     <Chip onClick={() => { navigate("/dashboard/detail-cv/" + cv.id); return null }} label="Xem CV" color="primary" variant="outlined" clickable />
