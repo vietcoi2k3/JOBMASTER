@@ -202,7 +202,7 @@ public class ConsumerImpl implements IConsumerService {
             EnterpriseEntity enterprise = enterpriseEntityOptional.get();
             PostResponse postResponse = new PostResponse();
             postResponse.setId(x.getId());
-            postResponse.setQuantityCv(x.getQuantity());
+            postResponse.setQuantity(x.getQuantity());
             postResponse.setTitle(x.getTitle());
             postResponse.setTimeWorking(x.getTimeWorking());
             postResponse.setGender(x.getGender());
@@ -283,7 +283,7 @@ public class ConsumerImpl implements IConsumerService {
                 EnterpriseEntity enterprise = enterpriseEntityOptional.get();
                 PostResponse postResponse = new PostResponse();
                 postResponse.setId(x.getId());
-                postResponse.setQuantityCv(x.getQuantity());
+                postResponse.setQuantity(x.getQuantity());
                 postResponse.setTitle(x.getTitle());
                 postResponse.setCity(x.getCity());
                 postResponse.setNameCam(x.getTitle());
