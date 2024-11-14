@@ -69,21 +69,21 @@ const ServiceList = () => {
                                     </Typography>
                                 </Box>
 
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    fullWidth
-                                    sx={{
-                                        borderRadius: '20px',
-                                        padding: '10px 0',
-                                        fontWeight: 'bold',
-                                        '&:hover': {
-                                            backgroundColor: '#1565c0',
-                                        },
-                                    }}
-                                >
-                                    Xem chi tiết
-                                </Button>
+                                {/*<Button*/}
+                                {/*    variant="contained"*/}
+                                {/*    color="primary"*/}
+                                {/*    fullWidth*/}
+                                {/*    sx={{*/}
+                                {/*        borderRadius: '20px',*/}
+                                {/*        padding: '10px 0',*/}
+                                {/*        fontWeight: 'bold',*/}
+                                {/*        '&:hover': {*/}
+                                {/*            backgroundColor: '#1565c0',*/}
+                                {/*        },*/}
+                                {/*    }}*/}
+                                {/*>*/}
+                                {/*    Xem chi tiết*/}
+                                {/*</Button>*/}
                             </CardContent>
                         </Card>
                     </Grid>

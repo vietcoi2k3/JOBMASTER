@@ -151,7 +151,7 @@ const ViewCV = () => {
                                             cv.status === 'RECEIVED' ? 'Tiếp nhận CV' :
                                                 cv.status === 'MATCHED' ? 'Phù hợp' :
                                                     cv.status === 'INTERVIEW_SCHEDULED' ? 'Hẹn phỏng vấn' :
-                                                        cv.status === 'OFFERED' ? 'Qua phỏng vấn' :
+                                                        cv.status === 'OFFERED' ? 'Gửi đề nghị' :
                                                             cv.status === 'HIRED' ? 'Nhận việc' :
                                                                 cv.status === 'REJECTED' ? 'Từ chối' :
                                                                     cv.status
