@@ -58,7 +58,7 @@ const SearchBar = () => {
             {/* Input tìm kiếm */}
             <TextField
                 variant="outlined"
-                placeholder="Nhập từ khóa theo tên việc làm, tên công ty"
+                placeholder="Nhập từ khóa theo tên việc làm"
                 size="small"
                 fullWidth
                 onChange={handleSearchChange}
