@@ -33,11 +33,11 @@ public class EnterpriseEntity extends BaseEntity{
     private String emailCompany;
     private String linkWebSite;
     private String businessCertificate;
-    private String logo;
+    private String logo = "https://cdn-new.topcv.vn/unsafe/https://static.topcv.vn/v4/image/normal-company/logo_default.png";
     private String scale;
     @Column(columnDefinition = "LONGTEXT")
     private String description;
-    private String isActive;
+    private String isActive = "INACTIVE";
     @NotNull
     private String userId;
 

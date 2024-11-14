@@ -29,7 +29,7 @@ public class UserEntity extends BaseEntity implements UserDetails {
     private String fullName;
     private String googleId;
     private String gender;
-    private String isActive;
+    private String isActive = UserEnum.WAITING_ACTIVE.name();;
     private String enterpriseId;
     private String userInfoId;
     private String historyId;
@@ -48,7 +48,7 @@ public class UserEntity extends BaseEntity implements UserDetails {
     public void prePersist() {
         if (this.balance == null) {
             this.balance = BigDecimal.ZERO;
-            this.isActive = "WAITING_ACTIVE";
+            this.isActive = UserEnum.WAITING_ACTIVE.name();
         }
     }
 
