@@ -77,7 +77,7 @@ public class ConsumerImpl implements IConsumerService {
             EnterpriseEntity enterprise = enterpriseEntityOptional.get();
             PostResponse postResponse = new PostResponse();
             postResponse.setId(x.getId());
-            postResponse.setQuantityCv(x.getQuantity());
+            postResponse.setQuantity(x.getQuantity());
             postResponse.setTitle(x.getTitle());
             postResponse.setNameCam(x.getTitle());
             postResponse.setDeadLine((int) ChronoUnit.DAYS.between(x.getDeadline(), LocalDateTime.now())*-1);
