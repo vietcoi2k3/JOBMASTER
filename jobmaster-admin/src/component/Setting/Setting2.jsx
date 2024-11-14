@@ -25,6 +25,7 @@ import AdminApi from "../../api/AdminApi";
 import CreatePositionPopup from "./CreatePositionPopup";
 import { useNavigate } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
+import EditIcon from "@mui/icons-material/Edit";
 
 // Component for the table
 function SettingTable2() {
@@ -162,7 +163,7 @@ function SettingTable2() {
                                 <TableCell>
                                     <IconButton aria-label="view" color="primary">
                                         <Tooltip title={"Xem chi tiết"}>
-                                            <VisibilityIcon />
+                                            <EditIcon />
                                         </Tooltip>
 
                                     </IconButton>
