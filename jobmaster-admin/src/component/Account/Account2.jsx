@@ -11,7 +11,7 @@ import {
     Box,
     TextField,
     Button,
-    Pagination
+    Pagination, FormControl, InputLabel, Select, MenuItem
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -35,13 +35,19 @@ function Account2() {
         switch (status) {
             case 'ACTIVE':
                 return { color: 'green', text: 'Đang hoạt động' };
-            case 'WATTING_ACTIVE':
+            case 'WAITING_ACTIVE':
                 return { color: 'goldenrod', text: 'Chờ kích hoạt' };
             case 'INACTIVE':
                 return { color: 'red', text: 'Không hoạt động' };
             default:
                 return { color: 'black', text: 'Không xác định' };
         }
+    };
+
+    const handleChangeStatus = (username, newStatus) => {
+        AdminApi.updateStatusAccountEnterprise(username, newStatus).then(() => {
+            fetchAccounts();
+        });
     };
 
     const handleClose = () => {
@@ -92,7 +98,6 @@ function Account2() {
                             <TableCell  sx={{ fontWeight: 'bold' }}>Tài khoản</TableCell>
                             <TableCell  sx={{ fontWeight: 'bold' }}>Tên công ty</TableCell>
                             <TableCell  sx={{ fontWeight: 'bold' }}>Trạng thái</TableCell>
-                            <TableCell  sx={{ fontWeight: 'bold' }}>Thao tác</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -110,21 +115,20 @@ function Account2() {
                                     <TableCell>{((pageNumber - 1) * 10) + index + 1}</TableCell>
                                     <TableCell>{item.username}</TableCell>
                                     <TableCell>{item.companyName}</TableCell>
-                                    <TableCell style={{ color }}>{text}</TableCell>
                                     <TableCell>
-                                        <IconButton aria-label="view" color="primary">
-                                            <VisibilityIcon />
-                                        </IconButton>
-                                        {/* Uncomment to enable delete */}
-                                        {/*
-                                        <IconButton
-                                            aria-label="delete"
-                                            color="primary"
-                                            onClick={() => handleDelete(account.id)}
-                                        >
-                                            <DeleteIcon />
-                                        </IconButton>
-                                        */}
+                                        <FormControl fullWidth size="small" variant="outlined">
+                                            <InputLabel>Trạng thái</InputLabel>
+                                            <Select
+                                                label="Trạng thái"
+                                                value={item.status}
+                                                onChange={(e) => handleChangeStatus(item.username, e.target.value)}
+                                                sx={{ color: item.status === 'ACTIVE' ? 'green' : item.status === 'INACTIVE' ? 'red' : 'goldenrod' }}
+                                            >
+                                                <MenuItem value="ACTIVE">Đang hoạt động</MenuItem>
+                                                <MenuItem value="INACTIVE">Không hoạt động</MenuItem>
+                                                <MenuItem value="WAITING_ACTIVE">Chờ kích hoạt</MenuItem>
+                                            </Select>
+                                        </FormControl>
                                     </TableCell>
                                 </TableRow>
                             );

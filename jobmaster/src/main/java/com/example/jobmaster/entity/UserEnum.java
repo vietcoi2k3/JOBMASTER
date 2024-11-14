@@ -8,5 +8,5 @@ package com.example.jobmaster.entity;
  */
 
 public enum UserEnum {
-    ACTIVE,INACTIVE,WAITING_ACTIVE
+    ACTIVE,INACTIVE,WAITING_ACTIVE,BAN
 }

@@ -18,10 +18,11 @@ import EmailVerification from "./component/sign-up/EmailVerification";
 import JobDetails from "./component/ListJob/JobDetails";
 import ForgotPassword from "./component/forgot-password/ForgotPassword";
 import PersonalInfo from "./component/PersonalInfo/PersonalInfo";
+import BannedNotification from "./component/BannedNotification/BannedNotification";
 
 function AppContent() {
     const location = useLocation();
-    const isLoginPage = location.pathname === '/login' || location.pathname === '/sign-up' || location.pathname === '/hihi/forgot-pass' ||location.pathname === '/verify-email';
+    const isLoginPage = location.pathname === '/login' || location.pathname === '/sign-up' || location.pathname === '/hihi/forgot-pass' ||location.pathname === '/verify-email' || location.pathname ==='/user-is-ban';
 
     return (
         <>
@@ -40,6 +41,7 @@ function AppContent() {
                     <Route path="/verify" element={<VerifyEmail />} />
                     <Route path="/job-detail" element={<JobDetails />} />
                     <Route path="/hihi/forgot-pass" element={<ForgotPassword />} />
+                    <Route path="/user-is-ban" element={<BannedNotification />} />
                 </Routes>
             </div>
             {!isLoginPage && <Footer />}

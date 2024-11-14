@@ -23,7 +23,8 @@ import PaymentSuccess from "./component/user-profile/PaymentSuccess";
 import News from './component/dashboard/News';
 import ForgotPassword from "./component/forgot-password/ForgotPassword";
 import theme from './theme';
-import {ThemeProvider} from "@mui/material"; // import theme
+import {ThemeProvider} from "@mui/material";
+import BannedNotification from "./component/BannedNotification/BannedNotification"; // import theme
 
 function App() {
 
@@ -54,6 +55,7 @@ function App() {
       <Route path="/callback" element={<Callback />} />
       <Route path="/verify" element={<VerifyEmail />} />
       <Route path="/verify-email" element={<EmailVerification />} />
+      <Route path="/user-is-ban" element={<BannedNotification/>}/>
       <Route path="/payment-success" element={<PaymentSuccess />} />
         <Route path="/forgot-pass" element={<ForgotPassword />} />
       <Route path="/" element={<LoginComponent />} />

@@ -1,5 +1,6 @@
 package com.example.jobmaster.security.jwt;
 
+import com.example.jobmaster.entity.UserEntity;
 import com.example.jobmaster.repository.UserRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -7,9 +8,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -24,22 +25,17 @@ public class JWTFilter extends OncePerRequestFilter {
     @Autowired
     private UserRepository userRepository;
 
-
-    //bộ lọc token
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        // Lấy giá trị của header "Authorization" từ request
         final String requestTokenHeader = request.getHeader("Authorization");
 
         String username = null;
         String jwtToken = null;
-        // Kiểm tra nếu header "Authorization" tồn tại và bắt đầu bằng "Bearer "
+
         if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
-            // Lấy phần token JWT từ header
             jwtToken = requestTokenHeader.substring(7);
             try {
-                // Lấy tên người dùng từ token JWT
                 username = jwtUntil.getUsernameFromToken(jwtToken);
             } catch (IllegalArgumentException e) {
                 System.out.println("Unable to get JWT Token");
@@ -50,24 +46,26 @@ public class JWTFilter extends OncePerRequestFilter {
             logger.warn("JWT Token does not begin with Bearer String");
         }
 
-        // Nếu tên người dùng không null và chưa được xác thực
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            // Lấy thông tin người dùng từ cơ sở dữ liệu
-            UserDetails userDetails = this.userRepository.findByUsername(username);
-            // Kiểm tra tính hợp lệ của token JWT
-            if (jwtUntil.validateToken(jwtToken, userDetails)) {
-                // Tạo đối tượng xác thực
-                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
+            UserEntity userDetails = this.userRepository.findByUsername(username);
 
-                // Đặt thông tin chi tiết của request vào đối tượng xác thực
-                usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                // Đặt đối tượng xác thực vào trong SecurityContext
-                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+            if (userDetails != null && "INACTIVE".equals(userDetails.getIsActive())) {
+                // Người dùng bị cấm hoạt động
+                response.setStatus(HttpStatus.FORBIDDEN.value());
+                response.setContentType("application/json");
+                response.getWriter().write("{\"error\": \"USER IS BANNED\"}");
+                response.getWriter().flush();
+                return; // Ngăn không cho request tiếp tục qua các filter khác
+            }
+
+            if (jwtUntil.validateToken(jwtToken, userDetails)) {
+                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities());
+                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
         }
-        // Chuyển tiếp request và response cho filter tiếp theo trong chuỗi filter
+
         filterChain.doFilter(request, response);
     }
-
 }

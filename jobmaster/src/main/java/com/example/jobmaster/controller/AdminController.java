@@ -142,4 +142,19 @@ public class AdminController {
         return ResponseEntity.ok(iAdminService.updateStatusCampaign(campaignId,status));
     }
 
+    @GetMapping("/update-status-candidate")
+    public ResponseEntity updateStatusCandidate(
+            @RequestParam(value = "username") String username,
+            @RequestParam(value = "status") String status
+    ){
+        return ResponseEntity.ok(iAdminService.updateStatusCandidate(username,status));
+    }
+
+    @GetMapping("/update-status-account-enterprise")
+    public ResponseEntity updateStatusAccountEnterprise(
+            @RequestParam(value = "username") String username,
+            @RequestParam(value = "status") String status
+    ){
+        return ResponseEntity.ok(iAdminService.updateStatusAccountEnterprise(username,status));
+    }
 }

@@ -77,7 +77,7 @@ const ApplyJobPopup = ({ open, onClose, postId }) => {
                 postId: postId,
                 email: email,
                 phoneNumber: phoneNumber,
-                fullName: fullName
+                name: fullName
             }
             consumer.getListJob(data).then((e) => {
                 setNotification({

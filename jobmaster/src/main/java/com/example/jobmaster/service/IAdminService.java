@@ -33,4 +33,9 @@ public interface IAdminService {
     PageResponse<FieldEntity> getListField(int pageSize, int pageNumber,String code,String name);
 
     PageResponse<PositionEntity> getListPosition(int pageSize, int pageNumber,String code,String name);
+
+    String updateStatusCandidate(String username,String status);
+
+
+    String updateStatusAccountEnterprise(String username,String status);
 }

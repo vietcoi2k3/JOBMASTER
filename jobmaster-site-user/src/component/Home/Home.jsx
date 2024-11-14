@@ -23,7 +23,10 @@ const Home = () => {
     return (
         <Box sx={{ bgcolor: '#f0f2f5', minHeight: '100vh', p: 5 }}>
 
-            <SliderHome/>
+            <Box sx={{margin:'auto',width:'100%',textAlign:'center'}}>
+                <SliderHome/>
+            </Box>
+
 
             <Typography variant="h4" sx={{ mt: 2, fontWeight: 'bold' ,color:"#3758F9"}}>
                 Việc làm tốt nhất

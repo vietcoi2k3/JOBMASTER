@@ -16,7 +16,7 @@ import AdminApi from "../../api/AdminApi";
 import Notification from "../../notification/Notification";
 
 function CreateFieldPopup({ open, onClose }) {
-    const [status, setStatus] = useState('Hiệu lực'); // Trạng thái ban đầu
+    const [status, setStatus] = useState('ACTIVE'); // Trạng thái ban đầu
     const [code,setCode] = useState(null)
     const [name,setName] = useState(null)
     const [notification, setNotification] = useState({ open: false, message: '',type:'' });
@@ -72,7 +72,7 @@ function CreateFieldPopup({ open, onClose }) {
                 <TextField
                     autoFocus
                     margin="dense"
-                    label="Code"
+                    label="Mã"
                     type="text"
                     fullWidth
                     required
@@ -94,7 +94,6 @@ function CreateFieldPopup({ open, onClose }) {
                     value={status}
                     onChange={handleStatusChange}
                     fullWidth
-                    displayEmpty
                     variant="outlined"
                     sx={{ marginTop: 2 }}
                 >

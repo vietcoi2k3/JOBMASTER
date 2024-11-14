@@ -4,6 +4,8 @@ import { Box } from '@mui/material';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import sliderimg from "../../assets/sliderimg.png"
+import sliderimg2 from "../../assets/ảnh Top CV.png"
+import sliderimg3 from "../../assets/Concentrix_Banner.webp"
 
 // Cấu hình cho slider
 const settings = {
@@ -19,16 +21,13 @@ const settings = {
 // Danh sách ảnh mặc định
 const defaultImages = [
     {
-        src: 'https://example.com/image1.jpg',
-        alt: 'Ảnh 1',
+        src: sliderimg
     },
     {
-        src: 'https://example.com/image2.jpg',
-        alt: 'Ảnh 2',
+        src: sliderimg2
     },
     {
-        src: 'https://example.com/image3.jpg',
-        alt: 'Ảnh 3',
+        src: sliderimg3
     },
 ];
 
@@ -39,9 +38,9 @@ const SliderHome = () => {
                 {defaultImages.map((image, index) => (
                     <Box key={index}>
                         <img
-                            src={sliderimg}
+                            src={image.src}
                             alt={image.alt}
-                            style={{ width: '100%', height: '400px', objectFit: 'cover' }}
+                            style={{ width: '100%', height: '300px', objectFit: 'cover',margin:'auto' }}
                         />
                     </Box>
                 ))}

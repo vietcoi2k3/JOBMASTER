@@ -48,7 +48,7 @@ public class UserEntity extends BaseEntity implements UserDetails {
     public void prePersist() {
         if (this.balance == null) {
             this.balance = BigDecimal.ZERO;
-            this.isActive = "INACTIVE";
+            this.isActive = "WAITING_ACTIVE";
         }
     }
 

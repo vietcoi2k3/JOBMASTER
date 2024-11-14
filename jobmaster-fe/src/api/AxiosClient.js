@@ -26,7 +26,18 @@ axiosClient.interceptors.response.use(
     return response?.data
   },
   function (error) {
-    // Xử lý lỗi từ response
+      if (error.response && error.response.status === 403) {
+          // Thực hiện logout (ví dụ: xóa token)
+          localStorage.removeItem('access_token'); // Hoặc token bạn đang sử dụng
+
+          window.location.href = '/'; // Điều hướng về trang đăng nhập
+
+          // Trả về thông báo lỗi
+          return Promise.reject({
+              status: 'invalid_account',
+              message: 'Tài khoản không hợp lệ. Vui lòng đăng nhập lại.',
+          });
+      }
     return Promise.reject(error)
   },
 )

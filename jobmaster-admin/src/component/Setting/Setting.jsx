@@ -11,7 +11,13 @@ import {
     Box,
     TextField,
     Button,
-    Pagination, Tooltip
+    Pagination,
+    Tooltip,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -21,26 +27,40 @@ import CreateFieldPopup from "./CreateFieldPopup";
 import { useNavigate } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
 
-// Component for the table
 function SettingTable() {
     const navigate = useNavigate();
-    const [tabIndex, setTabIndex] = useState(0); // State for active tab
-    const [code, setCode] = useState(''); // Change initial state to empty string
-    const [name, setName] = useState(''); // Change initial state to empty string
+    const [tabIndex, setTabIndex] = useState(0);
+    const [code, setCode] = useState('');
+    const [name, setName] = useState('');
     const [field, setField] = useState([]);
     const [open, setOpen] = useState(false);
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5); // Number of items per page
-    const [totalCount, setTotalCount] = useState(0); // Total items count from backend
+    const [itemsPerPage] = useState(5);
+    const [totalCount, setTotalCount] = useState(0);
+    const [fieldToDelete, setFieldToDelete] = useState(null); // Store the field to delete
 
     const handleClickOpen = () => {
         setOpen(true);
     };
 
-    const handleDelete = (id) => {
-        AdminApi.deleteField(id).then(() => {
-            fetchFields();
-        });
+    const handleDelete = () => {
+        if (fieldToDelete) {
+            AdminApi.deleteField(fieldToDelete.id).then(() => {
+                fetchFields();
+                setDeleteDialogOpen(false); // Close dialog after deletion
+            });
+        }
+    };
+
+    const openDeleteDialog = (field) => {
+        setFieldToDelete(field);
+        setDeleteDialogOpen(true); // Open confirmation dialog
+    };
+
+    const handleCloseDeleteDialog = () => {
+        setDeleteDialogOpen(false);
+        setFieldToDelete(null); // Reset field to delete
     };
 
     const handleClose = () => {
@@ -50,32 +70,28 @@ function SettingTable() {
 
     const fetchFields = () => {
         AdminApi.getListField(code, name, currentPage, 10).then((response) => {
-            setField(response.data); // Assume response.data is the list of fields
-            setTotalCount(response.totalPage); // Assume response.totalCount is the total number of fields
+            setField(response.data);
+            setTotalCount(response.totalPage);
         });
-    };
-
-    const handleTabChange = (event, newValue) => {
-        setTabIndex(newValue);
     };
 
     const handlePageChange = (event, newPage) => {
         setCurrentPage(newPage);
-        fetchFields(); // Fetch fields for the new page
+        fetchFields();
     };
 
     const handleSearchChange = (event) => {
         const { name, value } = event.target;
         if (name === 'code') {
-            setCode(value); // Update code state
+            setCode(value);
         } else if (name === 'name') {
-            setName(value); // Update name state
+            setName(value);
         }
     };
 
     const handleSearchKeyDown = (event) => {
         if (event.key === 'Enter') {
-            fetchFields(); // Call fetchFields when Enter is pressed
+            fetchFields();
         }
     };
 
@@ -92,24 +108,24 @@ function SettingTable() {
                             label="Tên lĩnh vực"
                             variant="outlined"
                             size="small"
-                            name="name" // Set name for input
-                            value={name} // Bind state to value
-                            onChange={handleSearchChange} // Handle change
-                            onKeyDown={handleSearchKeyDown} // Call fetch on Enter
+                            name="name"
+                            value={name}
+                            onChange={handleSearchChange}
+                            onKeyDown={handleSearchKeyDown}
                         />
                         <TextField
                             label="Mã lĩnh vực"
                             variant="outlined"
                             size="small"
-                            name="code" // Set name for input
-                            value={code} // Bind state to value
-                            onChange={handleSearchChange} // Handle change
-                            onKeyDown={handleSearchKeyDown} // Call fetch on Enter
+                            name="code"
+                            value={code}
+                            onChange={handleSearchChange}
+                            onKeyDown={handleSearchKeyDown}
                         />
                         <Button
                             variant="contained"
                             color="primary"
-                            onClick={fetchFields} // Call fetch on button click
+                            onClick={fetchFields}
                             startIcon={<SearchIcon />}
                         >
                             Tìm kiếm
@@ -144,12 +160,15 @@ function SettingTable() {
                                 </TableCell>
                                 <TableCell>
                                     <IconButton aria-label="view" color="primary">
-                                       <Tooltip title={"Xem chi tiết"}>
-                                           <VisibilityIcon />
-                                       </Tooltip>
+                                        <Tooltip title={"Xem chi tiết"}>
+                                            <VisibilityIcon />
+                                        </Tooltip>
                                     </IconButton>
-                                    <IconButton aria-label="delete" color="primary" onClick={() => handleDelete(field.id)}>
-
+                                    <IconButton
+                                        aria-label="delete"
+                                        color="primary"
+                                        onClick={() => openDeleteDialog(field)}
+                                    >
                                         <Tooltip title={"Xóa"}>
                                             <DeleteIcon color="error"/>
                                         </Tooltip>
@@ -171,6 +190,27 @@ function SettingTable() {
             />
 
             <CreateFieldPopup open={open} onClose={handleClose} />
+
+            {/* Delete confirmation dialog */}
+            <Dialog
+                open={deleteDialogOpen}
+                onClose={handleCloseDeleteDialog}
+            >
+                <DialogTitle>Xác nhận xóa</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Bạn có chắc chắn muốn xóa lĩnh vực này không?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseDeleteDialog} color="primary">
+                        Hủy
+                    </Button>
+                    <Button onClick={handleDelete} color="error">
+                        Xóa
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 }

@@ -143,6 +143,26 @@ const AdminApi =  {
                 id: id,
             },
         });
+    },
+
+    updateStatusCandidate(username,status){
+        const url ="/admin/update-status-candidate"
+        return axiosClient.get(url, {
+            params: {
+                status: status,
+                username: username,
+            },
+        });
+    },
+
+    updateStatusAccountEnterprise(username,status){
+        const url ="/admin/update-status-account-enterprise"
+        return axiosClient.get(url, {
+            params: {
+                status: status,
+                username: username,
+            },
+        });
     }
 
 }

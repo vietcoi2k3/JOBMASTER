@@ -24,9 +24,9 @@ import java.util.Optional;
 public interface EnterpriseRepository extends JpaRepository<EnterpriseEntity,String> {
     EnterpriseEntity findByUserId(String userId);
 
-    @Query("SELECT new com.example.jobmaster.dto.Response.EnterpriseResponse(u.username, c.companyName, c.isActive) " +
-            "FROM EnterpriseEntity c INNER JOIN UserEntity u ON c.userId = u.id" +
-            " order by  c.modifiedAt desc ")
+    @Query("SELECT new com.example.jobmaster.dto.Response.EnterpriseResponse(u.username, c.companyName, u.isActive) " +
+            "FROM EnterpriseEntity c INNER JOIN UserEntity u ON c.userId = u.id group by u.username, c.companyName, u.isActive" +
+            " order by  MAX(c.modifiedAt) desc ")
     Page<EnterpriseResponse> getListAdmin(Pageable pageable);
 
     @Query("""

@@ -81,6 +81,9 @@ const LoginComponent = () => {
             let email = formData.email
             navigate('/verify-email', { state: { email } });
           }
+          if (e.response.data==="USER IS BAN"){
+            navigate('/user-is-ban');
+          }
           if (e.response.data === "Mật khẩu không khớp") {
             setNotification({
               open: true,

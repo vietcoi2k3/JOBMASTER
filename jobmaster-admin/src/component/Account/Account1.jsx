@@ -11,63 +11,45 @@ import {
     Box,
     TextField,
     Button,
-    Pagination
+    Pagination,
+    Select,
+    MenuItem,
+    FormControl,
+    InputLabel,
 } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import AddIcon from '@mui/icons-material/Add';
-import AdminApi from "../../api/AdminApi";
-import CreateFieldPopup from "./CreateFieldPopup";
 import { useNavigate } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
+import AdminApi from "../../api/AdminApi";
 
 function Account1() {
     const navigate = useNavigate();
-    const [tabIndex, setTabIndex] = useState(0); // State for active tab
-    const [pageNumber, setPageNumber] = useState(1); // Current page number
+    const [pageNumber, setPageNumber] = useState(1);
     const [candidate, setCandidate] = useState([]);
-    const [totalPages, setTotalPages] = useState(1); // Total pages for pagination
-    const [open, setOpen] = useState(false);
-
-    const getStatusInfo = (status) => {
-        switch (status) {
-            case 'ACTIVE':
-                return { color: 'green', text: 'Đang hoạt động' };
-            case 'WATTING_ACTIVE':
-                return { color: 'goldenrod', text: 'Chờ kích hoạt' };
-            case 'INACTIVE':
-                return { color: 'red', text: 'Không hoạt động' };
-            default:
-                return { color: 'black', text: 'Không xác định' };
-        }
-    };
-
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-        fetchCandidates(); // Refresh data after closing popup
-    };
+    const [totalPages, setTotalPages] = useState(1);
 
     const fetchCandidates = async () => {
         const response = await AdminApi.getListAccountCandidate(pageNumber);
-        setCandidate(response.data); // Update the candidate list
-        setTotalPages(response.totalPage); // Update total pages for pagination
+        setCandidate(response.data);
+        setTotalPages(response.totalPage);
     };
 
     useEffect(() => {
-        fetchCandidates(); // Fetch candidates when page number changes
+        fetchCandidates();
     }, [pageNumber]);
 
     const handlePageChange = (event, value) => {
-        setPageNumber(value); // Update page number when user interacts with pagination
+        setPageNumber(value);
+    };
+
+    const handleChangeStatus = (username, newStatus) => {
+        AdminApi.updateStatusCandidate(username, newStatus).then(() => {
+            fetchCandidates();
+        });
     };
 
     return (
-        <Box sx={{ width: '100%', padding: 2, bgcolor: '#E8EDF2' }}>
-            <Box sx={{ bgcolor: '#ffffff', padding: 2, borderRadius: 2, mb: 2 }}>
+        <Box sx={{ width: '100%', padding: 3, bgcolor: '#f9f9f9' }}>
+            <Box sx={{ bgcolor: '#ffffff', p: 3, borderRadius: 3, boxShadow: 2, mb: 3 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Box sx={{ display: 'flex', gap: 2 }}>
                         <TextField label="Tên tài khoản" variant="outlined" size="small" />
@@ -75,7 +57,7 @@ function Account1() {
                         <Button
                             variant="contained"
                             color="primary"
-                            onClick={fetch}
+                            onClick={fetchCandidates}
                             startIcon={<SearchIcon />}
                         >
                             Tìm kiếm
@@ -84,55 +66,50 @@ function Account1() {
                 </Box>
             </Box>
 
-            <TableContainer component={Paper} sx={{ marginTop: 2, maxHeight: 500 }}>
+            <TableContainer component={Paper} sx={{ maxHeight: 500, borderRadius: 2  }}>
                 <Table stickyHeader>
                     <TableHead>
-                        <TableRow sx = {{bgcolor:'#3758F9'}}>
+                        <TableRow>
                             <TableCell sx={{ fontWeight: 'bold' }}>STT</TableCell>
-                            <TableCell sx={{ fontWeight: 'bold' }} >Tài khoản</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold'}}>Tài khoản</TableCell>
                             <TableCell sx={{ fontWeight: 'bold' }}>Tên</TableCell>
                             <TableCell sx={{ fontWeight: 'bold' }}>Trạng thái</TableCell>
-                            <TableCell sx={{ fontWeight: 'bold' }}>Thao tác</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {candidate.map((item, index) => {
-                            const { color, text } = getStatusInfo(item.status);
-                            return (
-                                <TableRow
-                                    key={item.id}
-                                    sx={{
-                                        '&:hover': {
-                                            backgroundColor: '#f5f5f5',
-                                        },
-                                    }}
-                                >
-                                    <TableCell>{((pageNumber - 1) * 10) + index + 1}</TableCell>
-                                    <TableCell>{item.username}</TableCell>
-                                    <TableCell>{item.fullName}</TableCell>
-                                    <TableCell style={{ color }}>{text}</TableCell>
-                                    <TableCell>
-                                        <IconButton aria-label="view" color="primary">
-                                            <VisibilityIcon />
-                                        </IconButton>
-                                        {/* Uncomment if delete functionality is needed */}
-                                        {/* <IconButton
-                                            aria-label="delete"
-                                            color="primary"
-                                            onClick={() => handleDelete(item.id)}
+                        {candidate.map((item, index) => (
+                            <TableRow
+                                key={item.id}
+                                sx={{
+                                    '&:hover': { backgroundColor: '#f0f0f0' },
+                                    transition: 'background-color 0.3s ease',
+                                }}
+                            >
+                                <TableCell>{((pageNumber - 1) * 10) + index + 1}</TableCell>
+                                <TableCell>{item.username}</TableCell>
+                                <TableCell>{item.fullName}</TableCell>
+                                <TableCell>
+                                    <FormControl fullWidth size="small" variant="outlined">
+                                        <InputLabel>Trạng thái</InputLabel>
+                                        <Select
+                                            label="Trạng thái"
+                                            value={item.status}
+                                            onChange={(e) => handleChangeStatus(item.username, e.target.value)}
+                                            sx={{ color: item.status === 'ACTIVE' ? 'green' : item.status === 'INACTIVE' ? 'red' : 'goldenrod' }}
                                         >
-                                            <DeleteIcon />
-                                        </IconButton> */}
-                                    </TableCell>
-                                </TableRow>
-                            );
-                        })}
+                                            <MenuItem value="ACTIVE">Đang hoạt động</MenuItem>
+                                            <MenuItem value="INACTIVE">Không hoạt động</MenuItem>
+                                            <MenuItem value="WAITING_ACTIVE">Chờ kích hoạt</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                </TableCell>
+                            </TableRow>
+                        ))}
                     </TableBody>
                 </Table>
             </TableContainer>
 
-            {/* Pagination */}
-            <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
                 <Pagination
                     count={totalPages}
                     page={pageNumber}
@@ -140,8 +117,6 @@ function Account1() {
                     color="primary"
                 />
             </Box>
-
-            <CreateFieldPopup open={open} onClose={handleClose} />
         </Box>
     );
 }

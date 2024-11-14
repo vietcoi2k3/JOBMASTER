@@ -87,6 +87,10 @@ public class UserServiceImpl implements IUserService {
         if (userRepository.existsByUsername(response.getEmail()) || userRepository.existsByGoogleId(response.getSub())) {
             UserEntity user = userRepository.findByUsername(response.getEmail());
             String origin = httpServletRequest.getHeader("Origin");
+            if (user.getIsActive().equals(UserEnum.INACTIVE.name())) {
+                System.out.println();
+                throw new IllegalArgumentException("USER IS BAN");
+            }
             if (origin.equals("http://localhost:3001")&&user.getUserInfoId()==null){
                 UserInfoEntity userInfoEntity = new UserInfoEntity();
                 userInfoEntity.setUserId(user.getId());
@@ -236,6 +240,10 @@ public class UserServiceImpl implements IUserService {
         if (user.getIsActive().equals(UserEnum.WAITING_ACTIVE.name())) {
             System.out.println();
             throw new IllegalArgumentException("Tài khoản chưa xác thực");
+        }
+        if (user.getIsActive().equals(UserEnum.INACTIVE.name())) {
+            System.out.println();
+            throw new IllegalArgumentException("USER IS BAN");
         }
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             throw new IllegalArgumentException("Mật khẩu không khớp");

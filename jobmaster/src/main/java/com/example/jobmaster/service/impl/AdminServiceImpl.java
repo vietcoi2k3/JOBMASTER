@@ -233,5 +233,23 @@ public class AdminServiceImpl implements IAdminService {
                 .build();
     }
 
+    @Override
+    public String updateStatusCandidate(String username, String status) {
+        UserEntity user = userRepository.findByUsername(username);
+        user.setIsActive(status);
+
+        userRepository.save(user);
+        return "done";
+    }
+
+    @Override
+    public String updateStatusAccountEnterprise(String username, String status) {
+        UserEntity user = userRepository.findByUsername(username);
+        user.setIsActive(status);
+
+        userRepository.save(user);
+        return "done";
+    }
+
 
 }
