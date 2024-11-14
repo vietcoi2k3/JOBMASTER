@@ -19,25 +19,25 @@ export default function Criteria() {
     const [field,setField] = useState([])
     const [position,setPosition] = useState([])
     const [city,setCity] = useState([])
-    // useEffect(() => {
-    //     AuthApi.getAllField().then((e)=>{
-    //         setField(e)
-    //     })
-    //     AuthApi.getAllPosition().then((e)=>{
-    //         setPosition(e)
-    //     })
-    //     AuthApi.getAllCity().then((e)=>{
-    //         setCity(e)
-    //     })
-    //     Consumer.getCriteria().then((e)=>{
-    //         // setLocation(e.city)
-    //         // setFieldSelect(e.field)
-    //         // setPositionSelect(e.position)
-    //         // setCompanySize(e.scales)
-    //         // setJobType(e.typeWorking)
-    //         // setExperience(e.experience)
-    //     })
-    // }, []);
+    useEffect(() => {
+        AuthApi.getAllField().then((e)=>{
+            setField(e)
+        })
+        AuthApi.getAllPosition().then((e)=>{
+            setPosition(e)
+        })
+        AuthApi.getAllCity().then((e)=>{
+            setCity(e)
+        })
+        Consumer.getCriteria().then((e)=>{
+            // setLocation(e.city)
+            // setFieldSelect(e.field)
+            // setPositionSelect(e.position)
+            // setCompanySize(e.scales)
+            // setJobType(e.typeWorking)
+            // setExperience(e.experience)
+        })
+    }, []);
 
     const handleCloseNotification = () => {
         setNotification({ ...notification, open: false });

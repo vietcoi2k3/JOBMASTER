@@ -18,7 +18,7 @@ public interface PostRepository extends JpaRepository<PostEntity,String> {
 
     @Query(
             value = "SELECT * FROM ( " +
-                    "SELECT c.*,pc.package_id,pc.expired, " +
+                    "SELECT c.*, pc.package_id, pc.expired, " +
                     "ROW_NUMBER() OVER (PARTITION BY c.id ORDER BY (CASE WHEN pc.package_id = 'SP01' THEN 0 ELSE 1 END)) AS rn " +
                     "FROM post_entity c " +
                     "LEFT JOIN campaign_entity ce ON c.campaign_id = ce.id " +
@@ -30,7 +30,9 @@ public interface PostRepository extends JpaRepository<PostEntity,String> {
                     "AND ce.is_active = TRUE AND c.status = 'APPROVED' " +
                     ") AS subquery " +
                     "WHERE rn = 1 " + // Chọn bản ghi đầu tiên cho mỗi id
-                    "ORDER BY  (CASE WHEN package_id = 'SP01' AND expired  >= CURRENT_DATE THEN 0 ELSE 1 END),modified_at" , // Sắp xếp theo thứ tự mà không cần dùng c.id
+                    "ORDER BY " +
+                    "(CASE WHEN package_id = 'SP01' AND expired >= CURRENT_DATE THEN 0 ELSE 1 END), " +
+                    "(CASE WHEN package_id = 'SP01' AND expired >= CURRENT_DATE THEN RAND () ELSE modified_at END)",
 
             countQuery = "SELECT COUNT(DISTINCT c.id) FROM post_entity c " +
                     "LEFT JOIN campaign_entity ce ON c.campaign_id = ce.id " +
@@ -49,6 +51,7 @@ public interface PostRepository extends JpaRepository<PostEntity,String> {
             @Param("field") String field,
             Pageable pageable
     );
+
 
 
 

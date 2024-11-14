@@ -42,29 +42,39 @@ class SignUp extends Component {
       open: false,
       listCity: [],
       listDistrict: [],
-      idCity: "01",
       errors: {},
     };
   }
 
+  componentDidMount() {
+    this.getProvince();
+  }
+
   handleChange = (e) => {
-    this.setState({
-      formData: {
-        ...this.state.formData,
-        [e.target.name]: e.target.value,
-      },
-    });
+    const { name, value } = e.target;
+    this.setState(
+        {
+          formData: {
+            ...this.state.formData,
+            [name]: value,
+          },
+        },
+        () => {
+          if (name === "city") {
+            this.getDistrict(value);
+          }
+        }
+    );
   };
 
   getProvince = () => {
-    Province.getProvince().then(response =>
+    Province.getProvince().then((response) =>
         this.setState({ listCity: response })
     );
   };
 
-  getDistrict = () => {
-    const { idCity } = this.state;
-    Province.getDistrictByProvince(idCity).then(response =>
+  getDistrict = (cityId) => {
+    Province.getDistrictByProvince(cityId).then((response) =>
         this.setState({ listDistrict: response.results })
     );
   };
@@ -72,8 +82,7 @@ class SignUp extends Component {
   handleLogin = () => {
     const clientId = "421794227239-vvm5o77fkd4qsendqmr4movhv6kmqt3m.apps.googleusercontent.com";
     const redirectUri = "http://localhost:3000/callback";
-    const scope =
-        "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email";
+    const scope = "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email";
     const responseType = "code";
     const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}&scope=${scope}`;
 
@@ -103,22 +112,24 @@ class SignUp extends Component {
 
       this.setState({ loading: true });
 
-      AuthApi.registerEnterprise(this.state.formData).then(() => {
-        let email = this.state.formData.email;
-        let password = this.state.formData.password;
-        this.props.history.push("/verify-email", { state: { email, password } });
-      }).catch((error) => {
-        if (error.response.data === "Tài khoản đã tồn tại") {
-          this.setState({
-            notification: {
-              open: true,
-              message: "Tài khoản đã tồn tại!",
-            },
+      AuthApi.registerEnterprise(this.state.formData)
+          .then(() => {
+            let { email, password } = this.state.formData;
+            this.props.history.push("/verify-email", { state: { email, password } });
+          })
+          .catch((error) => {
+            if (error.response.data === "Tài khoản đã tồn tại") {
+              this.setState({
+                notification: {
+                  open: true,
+                  message: "Tài khoản đã tồn tại!",
+                },
+              });
+            }
+          })
+          .finally(() => {
+            this.setState({ loading: false });
           });
-        }
-      }).finally(() => {
-        this.setState({ loading: false });
-      });
     }
   };
 
@@ -145,24 +156,6 @@ class SignUp extends Component {
                       </Typography>
                     </Box>
 
-                    <Box sx={{ my: 4 }}>
-                      <Box sx={{ border: 1, borderColor: 'primary.main', borderRadius: 2, p: 3 }}>
-                        <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Quy định</Typography>
-                        <Typography sx={{ mt: 2 }}>
-                          Để đảm bảo chất lượng dịch vụ,{" "}
-                          <span style={{ color: 'red' }}>Jobmaster không cho phép tạo nhiều tài khoản khác nhau</span>
-                          <p>
-                            Nếu phát hiện vi phạm, JobMaster sẽ ngừng cung cấp dịch vụ tới tất
-                            cả các tài khoản trùng lặp hoặc chặn toàn bộ truy cập tới hệ thống
-                            website của JobMaster. Đối với trường hợp khách hàng đã sử dụng hết
-                            3 tin tuyển dụng miễn phí, JobMaster hỗ trợ kích hoạt đăng tin tuyển
-                            dụng không giới hạn sau khi quý doanh nghiệp cung cấp thông tin giấy
-                            phép kinh doanh.
-                          </p>
-                        </Typography>
-                      </Box>
-                    </Box>
-
                     <Snackbar
                         open={open}
                         autoHideDuration={6000}
@@ -183,12 +176,6 @@ class SignUp extends Component {
                     >
                       Đăng kí bằng Google
                     </Button>
-
-                    <Box sx={{ display: 'flex', alignItems: 'center', my: 4 }}>
-                      <Box sx={{ flexGrow: 1, borderTop: 1, borderColor: 'gray' }} />
-                      <Typography sx={{ mx: 2, color: 'gray' }}>Hoặc bằng email</Typography>
-                      <Box sx={{ flexGrow: 1, borderTop: 1, borderColor: 'gray' }} />
-                    </Box>
 
                     <TextField
                         fullWidth
@@ -229,7 +216,7 @@ class SignUp extends Component {
                             onChange={this.handleChange}
                             error={!!errors.fullName}
                             helperText={errors.fullName}
-                            sx ={{marginBottom:2}}
+                            sx={{ mb: 2 }}
                         />
                       </Grid>
                       <Grid item xs={12} md={6}>
@@ -271,7 +258,7 @@ class SignUp extends Component {
                             Tỉnh/Thành phố
                           </MenuItem>
                           {listCity.map((city, index) => (
-                              <MenuItem key={index} value={city.id}>{city.name}</MenuItem>
+                              <MenuItem key={index} value={city.province_id}>{city.province_name}</MenuItem>
                           ))}
                         </Select>
                       </Grid>
@@ -288,38 +275,47 @@ class SignUp extends Component {
                             Quận/Huyện
                           </MenuItem>
                           {listDistrict.map((district, index) => (
-                              <MenuItem key={index} value={district.id}>{district.name}</MenuItem>
+                              <MenuItem key={index} value={district.district_id}>{district.district_name}</MenuItem>
                           ))}
                         </Select>
                       </Grid>
                     </Grid>
 
-                    <Box sx={{ display: 'flex', alignItems: 'center', mt: 3 }}>
-                      <Checkbox checked={isAgree} onChange={() => this.setState({ isAgree: !isAgree })} />
-                      <Typography sx={{ color: 'text.secondary' }}>
-                        Tôi đồng ý với <MuiLink href="#" variant="body2">Điều khoản dịch vụ</MuiLink>
+                    <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
+                      <Checkbox checked={isAgree} onChange={(e) => this.setState({ isAgree: e.target.checked })} />
+                      <Typography variant="body2">
+                        Tôi đồng ý với các
+                        <MuiLink component={Link} to="/terms">
+                          điều khoản sử dụng
+                        </MuiLink>
                       </Typography>
                     </Box>
 
                     <Button
                         fullWidth
-                        sx={{ mt: 2 }}
                         variant="contained"
+                        color="primary"
                         onClick={this.handleSubmit}
                         disabled={loading}
+                        sx={{ mt: 2 }}
                     >
-                      Đăng ký
+                      Đăng kí
                     </Button>
+
+                    <Typography align="center" sx={{ mt: 2 }}>
+                      Bạn đã có tài khoản? <MuiLink component={Link} to="/login">Đăng nhập</MuiLink>
+                    </Typography>
                   </Paper>
                 </Grid>
 
                 <Grid item xs={12} md={6} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                  <img src={logo2} alt="" style={{ width: '100%' }} />
+                  <Box>
+                    <img src={logo2} alt="Logo" width="80%" />
+                  </Box>
                 </Grid>
               </Grid>
           )}
         </Box>
-
     );
   }
 }

@@ -99,9 +99,14 @@ const JobForm = ({ operator }) => {
         }
     }, [id])
     useEffect(()=>{
-        if(data.city&&listCity){
+        getProvince()
+        console.log(listCity)
+        if(data.city&&listCity.length!==0){
             // console.log(listCity.find(e=>e.province_name===data.city)+"4444444444444")
-            getDistrict(listCity.find(e=>e.province_name===data.city).province_id);
+            setTimeout(()=>{
+                getDistrict(listCity.find(e=>e.province_name===data.city).province_id)
+            },1000)
+            ;
 
         }
     },[data.city]);
