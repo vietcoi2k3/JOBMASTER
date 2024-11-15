@@ -30,12 +30,12 @@ export default function Criteria() {
             setCity(e)
         })
         Consumer.getCriteria().then((e)=>{
-            // setLocation(e.city)
-            // setFieldSelect(e.field)
-            // setPositionSelect(e.position)
-            // setCompanySize(e.scales)
-            // setJobType(e.typeWorking)
-            // setExperience(e.experience)
+            setLocation(e.city)
+            setFieldSelect(e.field)
+            setPositionSelect(e.position)
+            setCompanySize(e.scales)
+            setJobType(e.typeWorking)
+            setExperience(e.experience)
         })
     }, []);
 
